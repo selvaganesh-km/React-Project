@@ -1,0 +1,92 @@
+.inputForm-control {
+    position: relative;
+}
+
+.inputForm-control input {
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px #888888 solid;
+    display: block;
+    width: 100%;
+    padding: 15px 0 10px 0;
+    font-size: 14px;
+    color: #888888;
+}
+
+.inputForm-control input:focus,
+.inputForm-control input:valid {
+    outline: 0;
+    border-bottom: 1.5px #4270f4 solid;
+}
+
+.inputForm-control label {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    pointer-events: none;
+}
+
+.inputForm-control label span {
+    display: inline-block;
+    font-size: 13px;
+    min-width: 5px;
+    color: #888888;
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), color 0.3s;
+}
+
+.inputForm-control input:focus+label span,
+.inputForm-control input:valid+label span {
+    color: #4270f4;
+    transform: translateY(-30px);
+}
+
+
+/* Input Two */
+
+.inputForm-container {
+    position: relative;
+    /* margin: 50px auto;
+    width: 200px; */
+}
+
+.inputForm-container input[type="text"] {
+    font-size: 16px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #888888;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+}
+
+.inputForm-container .label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: #888888;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.inputForm-container input[type="text"]:focus+.label,
+.inputForm-container input[type="text"]:valid+.label {
+    top: -15px;
+    font-size: 14px;
+    color: #4270f4;
+}
+
+.inputForm-container .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1.5px;
+    width: 100%;
+    background-color: #4270f4;
+    transform: scaleX(0);
+    transition: all 0.3s ease;
+}
+
+.inputForm-container input[type="text"]:focus+.label+.underline,
+.inputForm-container input[type="text"]:valid+.label+.underline {
+    transform: scaleX(1);
+}

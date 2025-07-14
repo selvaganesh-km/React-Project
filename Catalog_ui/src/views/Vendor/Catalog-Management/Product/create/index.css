@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+.catalog-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* margin: 40px 0 0 0; */
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.catalog-dropdown {
+    /* background: #f8f8f8; */
+    padding: 5px;
+    border-radius: 3px;
+    width: 40px;
+    display: flex;
+    justify-content: space-around;
+    cursor: pointer;
+    /* box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px; */
+}
+
+.fa-angle-down {
+    position: relative;
+    top: 2px;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.catalog-rotate-dropdown-arrow {
+    transform: rotate(-180deg);
+}
+
+.catalog-dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    margin-top: 8px;
+    width: 120px;
+    padding: 5px;
+    position: absolute;
+    top: 103px;
+    left: 49px;
+    box-shadow: 0 0 5px -1px rgba(0, 0, 0, 0.3);
+    background: #fafafa;
+    animation: opencatalog-DropDown 0.4s ease forwards;
+    transform-origin: top left;
+}
+
+.catalog-dropdown-menu span {
+    padding: 5px;
+    font-size: 12.5px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    cursor: pointer;
+    transition: 'background' 0.3s ease;
+}
+
+.catalog-dropdown-menu span:hover {
+    background: #eee;
+    color: var(--bs-gray-dark);
+}
+
+.catalog-chevron {
+    font-size: 10.5px;
+}
+
+@keyframes openDropDown {
+    from {
+        transform: rotateX(50deg);
+        opacity: 0;
+    }
+    to {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+.catalog-prddlt {
+    border: 1px solid lightgray;
+    border-radius: 3px 0 0px 3px;
+    padding: 3px;
+}
+
+.catalogprd-drop {
+    border-top: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    border-radius: 0 3px 3px 0;
+    padding: 3px;
+}
+
+.catalogprd-tbl-td {
+    border-right: 1px solid lightgray !important;
+}
+
+.upload-container {
+    margin-top: 20px;
+}
+
+.upload-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.upload-thumbnail {
+    flex: 0 0 150px;
+}
+
+.upload-thumbnail img,
+.upload-thumbnail video {
+    width: 150px;
+    height: auto;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.upload-details {
+    margin-left: 20px;
+    flex: 1;
+    text-align: start;
+}
+
+.upload-details p {
+    margin: 0px 0;
+    font-size: 12px;
+}
+
+.upload-details button {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.upload-details .catalog-imgUpload {
+    color: #ef5252;
+    font-size: 13px;
+}
+
+.upload-container {
+    max-height: 230px;
+    overflow-y: auto;
+    padding-right: 8px;
+    padding-left: 5px;
+}
+
+
+/* Make table scrollable */
+
+.table-scroll-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+
+/* Sticky columns */
+
+.sticky-col-1 {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: white;
+}
+
+.sticky-col-2 {
+    position: sticky;
+    left: 120px;
+    /* Adjust this value based on width of first column */
+    z-index: 2;
+    background: white;
+}
+
+
+/* Ensure table headers appear on top of cells */
+
+thead .sticky-col-1,
+thead .sticky-col-2 {
+    z-index: 3;
+}
