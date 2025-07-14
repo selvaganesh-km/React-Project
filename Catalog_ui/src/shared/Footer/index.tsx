@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import './index.css';
 import { Col, Row } from 'react-bootstrap';
@@ -5,12 +6,24 @@ import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
+=======
+import React from 'react'
+import { Link } from 'react-router-dom'
+import './index.css';
+function Footer() {
+  return (
+    <div>
+>>>>>>> 6bf8d67 (react_project)
     <footer className="footer pt-3  ">
       <div className="container-fluid">
         <div className="row align-items-center justify-content-lg-between">
           <div className="col-lg-6 mb-lg-0 mb-4">
             <div className="copyright text-center text-muted text-lg-start">
+<<<<<<< HEAD
               © {new Date().getFullYear()}, <Link to={"/vendor/dashboard"}>Bizconvo</Link> All rights reserved.
+=======
+            <i className="fa-solid fa-copyright"></i> {new Date().getFullYear()}, <Link to={"/vendor/dashboard"}>Flow</Link> All rights reserved.
+>>>>>>> 6bf8d67 (react_project)
             </div>
           </div>
           <div className="col-lg-6">
@@ -26,6 +39,14 @@ function Footer() {
         </div>
       </div>
     </footer>
+<<<<<<< HEAD
   )
 }
 export default Footer;
+=======
+    </div>
+  )
+}
+
+export default Footer
+>>>>>>> 6bf8d67 (react_project)

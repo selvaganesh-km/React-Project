@@ -1,4 +1,16 @@
+<<<<<<< HEAD
 footer, footer a, footer p{
   font-size: 13px; 
   font-weight: 500;
+=======
+footer,
+footer a,
+footer p {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+footer {
+    margin-bottom: 0px !important;
+>>>>>>> 6bf8d67 (react_project)
 }

@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+<<<<<<< HEAD
 import CacheService from './services/CacheService';
 import metaData from './shared/Cache/metaData.json';
 import { ErrorHandlerProvider } from './ErrorHandleContext';
@@ -30,6 +31,19 @@ const initializeApp = async () => {
 
 initializeApp();
 
+=======
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+    <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
+>>>>>>> 6bf8d67 (react_project)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
