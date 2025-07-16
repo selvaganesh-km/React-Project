@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -116,31 +115,6 @@ function App() {
         style={{ width: "500px" }}
       // #00D26E
       />
-=======
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import { Route, Routes } from 'react-router-dom';
-import VendorDashboard from './views/Vendor/Dashboard/vendorDashboard';
-import SuperAdminDashboard from './views/SuperAdmin/superAdminDashboard/superAdminDashboard';
-import VendorDetails from './views/SuperAdmin/VendorDetails/vendorDetails';
-import Page404 from './views/Page404';
-import SignIn from './views/SuperAdmin/Sign-In';
-
-function App() {
-  return (
-    <div className="App">
-      <Routes>
-        <Route path="*" element={<Page404 />} />
-        <Route path="/" element={<SignIn/>}/>
-        <Route path="/superAdmin/dashboard" element={<SuperAdminDashboard/>}/>
-        <Route path="/vendor/dashboard" element={<VendorDashboard/>}/>
-        <Route path="/superAdmin/vendor" element={<VendorDetails/>}/>
-      </Routes>
->>>>>>> 6bf8d67 (react_project)
     </div>
   );
 }
