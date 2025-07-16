@@ -196,30 +196,45 @@ thead .sticky-col-2 {
     background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1024' height='640'><path d='M1017 68L541 626q-11 12-26 12t-26-12L13 68Q-3 49 6 24.5T39 0h952q24 0 33 24.5t-7 43.5z'></path></svg>") 90%/12px 6px no-repeat;
     font-family: inherit;
     color: inherit;
+    font-size: 12px;
 }
 
 .currency-amount {
     text-align: right;
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+
+.catalogCurrency-cnt {
+    margin-top: 12px;
 }
 
 .currency-addon {
     width: 6em;
     text-align: left;
     position: relative;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .input-group {
     display: flex;
 }
 
-.currency-symbol,
-.currency-addon {
+.currency-symbol {
     padding: 0.5em;
-    background-color: #f5f5f5;
     border: 1px solid #ccc;
 }
 
-.catalog-currencyInpt {
-    border-top-right-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+.currency-addon {
+    border: 1px solid #ccc;
+}
+
+.catalogInput-tdwidth {
+    min-width: 300px;
+}
+
+.catalogInput-Width {
+    width: 100%;
+    min-width: 250px;
 }

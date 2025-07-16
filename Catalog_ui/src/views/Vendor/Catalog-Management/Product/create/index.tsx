@@ -3,7 +3,7 @@ import DashboardLayout from '../../../../../layouts/DashboardLayout'
 import TopNav from '../../../../../shared/TopNav'
 import { Link, useNavigate } from 'react-router-dom'
 import Footer from '../../../../../shared/Footer'
-import CatalogUpload from "../../../../../assets/img/Catalog_img&vdo.png"
+import CatalogUpload from "../../../../../assets/img/Catalog_img&vdo.jpg"
 import "./index.css";
 type PreviewFile = {
   file: File;
@@ -16,13 +16,15 @@ type PreviewFile = {
 const formatSize = (bytes: number) => `${(bytes / 1024).toFixed(2)} KB`;
 const formatDate = (date: Date) => date.toLocaleString();
 function CatalogProductCreate() {
-    const currencies = [
-  { code: "USD", symbol: "$", placeholder: "0.00" },
-  { code: "EUR", symbol: "€", placeholder: "0.00" },
-  { code: "GBP", symbol: "£", placeholder: "0.00" },
-  { code: "JPY", symbol: "¥", placeholder: "0" },
-  { code: "CAD", symbol: "$", placeholder: "0.00" },
-  { code: "AUD", symbol: "$", placeholder: "0.00" },
+const currencies = [
+  { code: "INR", label: "INR - Indian Rupee", symbol: "₹", placeholder: "Enter amount" },
+  { code: "USD", label: "USD - US Dollar", symbol: "$", placeholder: "Enter amount" },
+  { code: "EUR", label: "EUR - Euro", symbol: "€", placeholder: "Enter amount" },
+  { code: "HRK", label: "HRK - Croatian Kuna", symbol: "kn", placeholder: "Enter amount" },
+  { code: "HTG", label: "HTG - Haitian Gourde", symbol: "G", placeholder: "Enter amount" },
+  { code: "HUF", label: "HUF - Hungarian Forint", symbol: "Ft", placeholder: "Enter amount" },
+  { code: "IDR", label: "IDR - Indonesian Rupiah", symbol: "Rp", placeholder: "Enter amount" },
+  { code: "ILS", label: "ILS - Israeli New Shekel", symbol: "₪", placeholder: "Enter amount" },
 ];
 const [currency, setCurrency] = useState(currencies[0]); // default to USD
   const [amount, setAmount] = useState("");
@@ -209,7 +211,7 @@ const handleDelete = (indexToRemove: number) => {
                                                     <td className=" align-middle text-center text-sm sticky-col-2" data-bs-toggle="modal" data-bs-target="#exampleModal" style={{cursor:"pointer"}}>
                                                         <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="33px" height="33px" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none"><path d="M595 4820 c-220 -30 -422 -174 -519 -371 -82 -168 -77 -54 -74 -1804 l3 -1550 27 -80 c61 -179 187 -329 339 -404 168 -82 30 -75 1633 -79 l1428 -3 62 -43 c519 -369 1241 -182 1521 393 159 326 131 722 -72 1029 -144 217 -422 392 -695 437 l-37 6 -3 962 -3 962 -26 72 c-85 232 -243 385 -469 455 l-75 23 -1490 1 c-820 1 -1517 -2 -1550 -6z m3042 -275 c145 -43 262 -162 299 -304 12 -46 14 -192 14 -840 l0 -785 -372 371 c-362 360 -374 372 -419 378 -33 5 -55 3 -75 -8 -16 -9 -276 -263 -579 -566 l-550 -551 -385 384 c-357 356 -388 385 -427 391 -28 4 -50 2 -70 -8 -15 -9 -205 -193 -420 -410 l-393 -394 0 991 c0 1074 -1 1048 54 1147 49 88 156 172 261 205 32 10 355 13 1526 13 1294 1 1492 -1 1536 -14z m131 -2236 c-103 -32 -167 -64 -288 -144 -315 -208 -492 -626 -425 -1006 17 -101 75 -275 110 -335 l26 -44 -1263 3 c-892 2 -1279 7 -1316 15 -168 36 -294 155 -337 317 -12 47 -15 124 -15 385 l0 325 426 433 c234 237 431 432 437 432 7 0 181 -169 387 -375 400 -400 406 -405 480 -385 28 8 149 124 590 565 l555 555 358 -358 357 -357 -82 -26z m425 -224 c189 -21 395 -146 512 -310 224 -315 184 -733 -94 -1005 -143 -139 -322 -210 -531 -210 -216 0 -405 82 -561 244 -137 141 -196 281 -206 486 -11 234 58 409 227 581 127 129 272 199 450 219 74 8 87 7 203 -5z"/><path d="M1861 3700 c-106 -22 -203 -99 -249 -198 -23 -49 -27 -70 -27 -147 0 -78 4 -97 28 -147 60 -122 164 -190 303 -196 125 -6 217 37 294 136 64 83 86 205 55 308 -50 170 -231 279 -404 244z"/><path d="M4030 1879 c-30 -12 -346 -323 -366 -361 -46 -87 14 -188 111 -188 47 0 69 12 128 68l47 46 0 -288 c0 -272 1 -291 20 -321 39 -64 125 -81 184 -38 53 38 56 58 56 364 l0 283 54 -53 c46 -46 61 -54 101 -59 107 -12 174 81 131 181 -17 40 -331 352 -369 366 -34 13 -63 13 -97 0z"/></g></svg>
                                                     </td>
-                                                   <td className=" align-middle col-md-12 text-start text-sm" style={{ minWidth: "300px" }}>
+                                                   <td className=" align-middle col-md-12 text-start text-sm" catalogInput-tdwidth>
                                                     <div className="w-100">
                                                         <div className="login-input-group">
                                                         <div className="vendor-create-container w-100">
@@ -217,8 +219,7 @@ const handleDelete = (indexToRemove: number) => {
                                                             autoComplete="off"
                                                             type="text"
                                                             id="vendor-crt-input"
-                                                            className="vendor-crt-input"
-                                                            style={{ width: "100%", minWidth: "250px" }} 
+                                                            className="vendor-crt-input catalogInput-Width"
                                                             placeholder=" "
                                                             required
                                                             />
@@ -230,7 +231,7 @@ const handleDelete = (indexToRemove: number) => {
                                                     </div>
                                                     </td>
 
-                                                    <td className=" align-middle col-md-12 text-start text-sm" style={{ minWidth: "300px" }}>
+                                                    <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth">
                                                     <div className="w-100">
                                                         <div className="login-input-group">
                                                         <div className="vendor-create-container w-100">
@@ -238,8 +239,7 @@ const handleDelete = (indexToRemove: number) => {
                                                             autoComplete="off"
                                                             type="text"
                                                             id="vendor-crt-input"
-                                                            className="vendor-crt-input"
-                                                            style={{ width: "100%", minWidth: "250px" }} 
+                                                            className="vendor-crt-input catalogInput-Width"
                                                             placeholder=" "
                                                             required
                                                             />
@@ -250,7 +250,7 @@ const handleDelete = (indexToRemove: number) => {
                                                         </div>
                                                     </div>
                                                     </td>
-                                                    <td className=" align-middle col-md-12 text-start text-sm" style={{ minWidth: "300px" }}>
+                                                    <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth ">
                                                     <div className="w-100">
                                                         <div className="login-input-group">
                                                         <div className="vendor-create-container w-100">
@@ -258,8 +258,7 @@ const handleDelete = (indexToRemove: number) => {
                                                             autoComplete="off"
                                                             type="text"
                                                             id="vendor-crt-input"
-                                                            className="vendor-crt-input"
-                                                            style={{ width: "100%", minWidth: "250px" }} 
+                                                            className="vendor-crt-input catalogInput-Width"
                                                             placeholder=" "
                                                             required
                                                             />
@@ -270,8 +269,42 @@ const handleDelete = (indexToRemove: number) => {
                                                         </div>
                                                     </div>
                                                     </td>
-                                                    <td>
-                                                        
+                                                   <td className="catalogInput-tdwidth">
+                                                    <div className="wrapper catalogCurrency-cnt">
+                                                        <form className="form-inline">
+                                                            <div className="input-group">
+                                                                <div className="currency-addon">
+                                                                <select 
+                                                                style={{ outline: 'none', boxShadow: 'none', border: 'none' }}
+                                                                className="currency-selector"
+                                                                value={currency.code}
+                                                                onChange={handleCurrencyChange}
+                                                                >
+                                                                {currencies.map((cur) => (
+                                                                    <option
+                                                                    // key={cur.code}
+                                                                    // value={cur.label}
+                                                                    data-symbol={cur.symbol}
+                                                                    data-placeholder={cur.placeholder}
+                                                                    >
+                                                                    {cur.code}
+                                                                    </option>
+                                                                ))}
+                                                                </select>
+                                                            </div>
+                                                            <div className="currency-symbol">{currency.symbol}</div>
+                                                            <input
+                                                            style={{  boxShadow: 'none' }}
+                                                                type="text"
+                                                                className="form-control catalog-currencyInpt currency-amount"
+                                                                placeholder={currency.placeholder}
+                                                                value={amount}
+                                                                onChange={(e) => setAmount(e.target.value)}
+                                                            />
+                                                            
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                     </td>
                                                     <td className="text-center align-middle vendor-login-td">
                                                         <div className="actionEdit-tooltip-container">
@@ -292,41 +325,7 @@ const handleDelete = (indexToRemove: number) => {
                                                         </div>
                                                         </div>
                                                     </td>
-                                                    <td>
-                                                    <div className="wrapper">
-                                                        <form className="form-inline">
-                                                            <div className="input-group">
-                                                                <div className="currency-addon">
-                                                                <select
-                                                                className="currency-selector"
-                                                                value={currency.code}
-                                                                onChange={handleCurrencyChange}
-                                                                >
-                                                                {currencies.map((cur) => (
-                                                                    <option
-                                                                    key={cur.code}
-                                                                    value={cur.code}
-                                                                    data-symbol={cur.symbol}
-                                                                    data-placeholder={cur.placeholder}
-                                                                    >
-                                                                    {cur.code}
-                                                                    </option>
-                                                                ))}
-                                                                </select>
-                                                            </div>
-                                                            <div className="currency-symbol">{currency.symbol}</div>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control catalog-currencyInpt currency-amount"
-                                                                placeholder={currency.placeholder}
-                                                                value={amount}
-                                                                onChange={(e) => setAmount(e.target.value)}
-                                                            />
-                                                            
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                    </td>
+                                                    
                                                 </tr>
                                                 
                                             </tbody>
