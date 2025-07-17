@@ -15,7 +15,9 @@ type PreviewFile = {
 };
 const formatSize = (bytes: number) => `${(bytes / 1024).toFixed(2)} KB`;
 const formatDate = (date: Date) => date.toLocaleString();
+
 function CatalogProductCreate() {
+
 const currencies = [
   { code: "INR", label: "INR - Indian Rupee", symbol: "₹", placeholder: "Enter amount" },
   { code: "USD", label: "USD - US Dollar", symbol: "$", placeholder: "Enter amount" },
@@ -26,9 +28,20 @@ const currencies = [
   { code: "IDR", label: "IDR - Indonesian Rupiah", symbol: "Rp", placeholder: "Enter amount" },
   { code: "ILS", label: "ILS - Israeli New Shekel", symbol: "₪", placeholder: "Enter amount" },
 ];
-const [currency, setCurrency] = useState(currencies[0]); // default to USD
+    const [value, setValue] = useState("");
+  const [touched, setTouched] = useState(false);
+  const maxChars = 9999;
+    const [currency, setCurrency] = useState(currencies[0]); // default to USD
   const [amount, setAmount] = useState("");
-
+  const [salePrice, setsalePrice] = useState("");
+    const [catConditionDrop] = useState<any[]>([
+    {"id": 1,"condition":"New"},
+    {"id": 1,"condition":"Refurbished"},
+    {"id": 1,"condition":"Used (like new)"},
+    {"id": 1,"condition":"Used (good)"},
+    {"id": 1,"condition":"Used (fair)"},
+   ]);
+   const [catalogCondition,setcatalogCondition]=useState("")
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = currencies.find((c) => c.code === e.target.value);
     if (selected) {
@@ -60,13 +73,14 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     setPreviewFiles(prev => [...prev, ...previewData]);
   };
-
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
-const handleDelete = (indexToRemove: number) => {
+    const handleDelete = (indexToRemove: number) => {
     setPreviewFiles(prev => prev.filter((_, index) => index !== indexToRemove));
   };
+   const [checked, setChecked] = useState(false);
+   
   return (
     <>
         <DashboardLayout>
@@ -232,22 +246,22 @@ const handleDelete = (indexToRemove: number) => {
                                                     </td>
 
                                                     <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth">
-                                                    <div className="w-100">
-                                                        <div className="login-input-group">
-                                                        <div className="vendor-create-container w-100">
-                                                            <input
-                                                            autoComplete="off"
-                                                            type="text"
-                                                            id="vendor-crt-input"
-                                                            className="vendor-crt-input catalogInput-Width"
-                                                            placeholder=" "
-                                                            required
-                                                            />
-                                                            <label htmlFor="vendor-crt-input" className="vendor-crt-label">
-                                                            <i className="fa-brands fa-battle-net"></i> Description
-                                                            </label>
-                                                        </div>
-                                                        </div>
+                                                    <div className="description-wrapper">
+                                                    <div className={`description-input-box ${value ? "active" : ""}`}>
+                                                        
+                                                        <textarea
+                                                        className="small-placeholder"
+                                                        placeholder="Describe the features and benefits"
+                                                        value={value}
+                                                        maxLength={maxChars}
+                                                        onChange={(e) => setValue(e.target.value)}
+                                                        onFocus={() => setTouched(true)}
+                                                        onBlur={() => setTouched(true)}
+                                                        />
+                                                        <span className="char-counter">
+                                                        {value.length}/{maxChars}
+                                                        </span>
+                                                    </div>
                                                     </div>
                                                     </td>
                                                     <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth ">
@@ -263,7 +277,7 @@ const handleDelete = (indexToRemove: number) => {
                                                             required
                                                             />
                                                             <label htmlFor="vendor-crt-input" className="vendor-crt-label">
-                                                            <i className="fa-brands fa-battle-net"></i> Website link	
+                                                            <i className="fa-solid fa-globe"></i> Website link	
                                                             </label>
                                                         </div>
                                                         </div>
@@ -294,36 +308,139 @@ const handleDelete = (indexToRemove: number) => {
                                                             </div>
                                                             <div className="currency-symbol">{currency.symbol}</div>
                                                             <input
-                                                            style={{  boxShadow: 'none' }}
+                                                                style={{  boxShadow: 'none' }}
                                                                 type="text"
                                                                 className="form-control catalog-currencyInpt currency-amount"
                                                                 placeholder={currency.placeholder}
                                                                 value={amount}
                                                                 onChange={(e) => setAmount(e.target.value)}
                                                             />
-                                                            
                                                             </div>
                                                         </form>
                                                     </div>
                                                     </td>
+                                                    <td>
+                                                      <div className={`custom-amount-box catalogCurrency-cnt ${checked ? 'checked' : ''}`}>
+                                                        <div
+                                                            className={`checkbox-box ${checked ? 'checked' : ''}`}
+                                                            onClick={() => setChecked(!checked)}>
+                                                            {checked && <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                                                            width="14px" height="14px" viewBox="0 0 512.000000 512.000000"
+                                                            preserveAspectRatio="xMidYMid meet">
+
+                                                            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                                                            stroke="none">
+                                                            <path d="M4805 4281 c-1007 -372 -2093 -1036 -3085 -1884 -103 -88 -138 -113
+                                                            -146 -104 -7 7 -136 198 -288 424 -153 227 -286 418 -297 424 -28 15 -31 13
+                                                            -474 -369 -290 -249 -381 -333 -383 -352 -2 -21 118 -156 732 -822 405 -437
+                                                            743 -799 752 -802 28 -11 56 17 118 115 239 378 626 898 916 1229 514 587
+                                                            1046 1073 2100 1917 252 201 269 222 218 257 -12 9 -25 16 -28 16 -3 -1 -63
+                                                            -22 -135 -49z"/>
+                                                            </g>
+                                                            </svg>
+                                                            }
+                                                        </div>
+                                                        <input
+                                                            type="text"
+                                                            className="amount-input"
+                                                            value={checked ? `${currency.symbol} ${salePrice.replace(new RegExp(`[${currency.symbol}]`, 'g'), '').trim()}` : ''}
+                                                            onChange={(e) => setsalePrice(e.target.value.replace(new RegExp(`[${currency.symbol}]`, 'g'), '').trim())}
+                                                            disabled={!checked}
+                                                            />
+                                                        </div>
+                                                    </td>
                                                     <td className="text-center align-middle vendor-login-td">
-                                                        <div className="actionEdit-tooltip-container">
-                                                        <button
-                                                            className="btn-3 vendorbtn-edit"
-                                                            type="button"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#exampleModal"
-                                                            // onClick={() => {openModal("edit");handlebotFlowGet(listData?.id); setbotId(listData?.id)}}
-                                                        >
-                                                            <span className="btn-inner--icon">
-                                                                <i className="fa-regular fa-pen-to-square"></i>
-                                                            </span>
-                                                        </button>
-                                                        &nbsp;
-                                                        <div className="actionEdit-tooltip-text">
-                                                            Edit
+                                                        
+                                                    </td>
+                                                    <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth ">
+                                                        {/* <div className="vendor-create-container dropdown " data-bs-toggle="dropdown" aria-expanded="false">
+                                                      <input
+                                                         autoComplete="off"
+                                                         type="text"
+                                                         id="vendor-crt-input"
+                                                         className={`vendor-crt-input loginfilled-frame-username `}
+                                                         value={catalogCondition}
+                                                         placeholder=" "
+                                                         required
+                                                         onChange={(e)=>setcatalogCondition(e.target.value)}
+                                                      />
+                                                      <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-file-signature"></i> Condition</label>
+                                                      <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
+                                                      <ul className="dropdown-menu template-dropdown storename-dropdown-menu">
+                                                      {catConditionDrop.length === 0 ? (
+                                                            <li className="dropdown-nodata-found">No data found</li>
+                                                         ) : (
+                                                            catConditionDrop.map((dropdownValue, id) => (                                                            
+                                                            <li key={id}>
+                                                               <a
+                                                                  className="dropdown-item"
+                                                                  href="#"
+                                                                  onClick={() => { setcatalogCondition(dropdownValue.condition) }}
+                                                               >
+                                                                  {dropdownValue.condition}
+                                                               </a>
+                                                            </li>
+                                                         )))}
+                                                      </ul>
+                                                   </div> */}
+                                                    </td>
+                                                   <td className="text-center align-middle vendor-login-td">
+                                                        <div className="form-check form-switch ms-1 is-filled">
+                                                         <input
+                                                            className="form-check-input"
+                                                            type="checkbox"
+                                                            id="flexSwitchCheckDefault"
+                                                         /><span className='text-sm fs-6'>In Stock</span>
+                                                      </div>
+                                                    </td>
+                                                    <td className="text-center align-middle vendor-login-td">
+                                                        <div className="form-check form-switch ms-1 is-filled">
+                                                         <input
+                                                            className="form-check-input"
+                                                            type="checkbox"
+                                                         />
+                                                      </div>
+                                                    </td>
+                                                    <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth ">
+                                                    <div className="w-100">
+                                                        <div className="login-input-group">
+                                                        <div className="vendor-create-container w-100">
+                                                            <input
+                                                            autoComplete="off"
+                                                            type="text"
+                                                            id="vendor-crt-input"
+                                                            className="vendor-crt-input catalogInput-Width"
+                                                            placeholder=" "
+                                                            required
+                                                            />
+                                                            <label htmlFor="vendor-crt-input" className="vendor-crt-label">
+                                                            <i className="fa-solid fa-award"></i> Brand	
+                                                            </label>
                                                         </div>
                                                         </div>
+                                                    </div>
+                                                    </td>
+                                                   
+                                                    
+                                                        <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth ">
+                                                    <div className="w-100">
+                                                        <div className="login-input-group">
+                                                        <div className="vendor-create-container w-100">
+                                                            <input
+                                                            autoComplete="off"
+                                                            type="text"
+                                                            id="vendor-crt-input"
+                                                            className="vendor-crt-input catalogInput-Width"
+                                                            placeholder=" "
+                                                            required
+                                                            />
+                                                            <label htmlFor="vendor-crt-input" className="vendor-crt-label">
+                                                            <i className="fa-solid fa-square-pen"></i> Content Id
+                                                            </label>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    
                                                     </td>
                                                     
                                                 </tr>

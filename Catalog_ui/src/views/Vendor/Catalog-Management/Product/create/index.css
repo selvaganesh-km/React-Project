@@ -236,5 +236,120 @@ thead .sticky-col-2 {
 
 .catalogInput-Width {
     width: 100%;
-    min-width: 250px;
+    min-width: 280px;
+}
+
+.description-wrapper {
+    width: 100%;
+    margin-top: -13px;
+}
+
+.description-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    color: #e3d9d9;
+}
+
+.description-label i {
+    font-size: 14px;
+    margin-left: 5px;
+    color: #e3d9d9;
+}
+
+.description-input-box {
+    position: absolute;
+    border: 1px solid #e3d9d9;
+    border-radius: 10px;
+    padding: 10px;
+    transition: border 0.2s ease;
+    background: #fff;
+    min-width: 280px;
+}
+
+.description-input-box textarea {
+    width: 100%;
+    height: 15px;
+    min-height: 10px;
+    max-height: 160px;
+    border: none;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none;
+    background: transparent;
+    resize: none;
+}
+
+.description-input-box.active textarea {
+    height: 120px;
+    resize: none;
+}
+
+.char-counter {
+    position: absolute;
+    bottom: 0px;
+    right: 5px;
+    font-size: 11px;
+    color: #a8a8a8;
+    display: flex;
+    align-items: center;
+}
+
+.small-placeholder::placeholder {
+    font-size: 12px !important;
+    margin-top: 5px;
+    color: #a8a8a8;
+}
+
+.custom-amount-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #cbd2d9;
+    border-radius: 10px;
+    background-color: #f1f4f7;
+    width: 260px;
+    /* padding: 6px 10px; */
+    transition: background-color 0.2s ease;
+}
+
+.custom-amount-box.checked {
+    background-color: white;
+}
+
+.checkbox-box {
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid #ccd3da;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    background-color: white;
+    cursor: pointer;
+    margin: 3% 5%;
+}
+
+.checkbox-box.checked {
+    border: 1.5px solid #ccd3da;
+}
+
+.checkbox-box svg {
+    fill: #0a78be;
+    font-size: 14px;
+}
+
+.amount-input {
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    width: 100%;
+    outline: none;
+    cursor: default;
+    height: 40px;
+    border-left: 1px solid #cbd2d9;
+    padding-left: 5%;
 }
