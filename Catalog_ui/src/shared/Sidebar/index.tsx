@@ -12,7 +12,7 @@ function Sidebar() {
   const isStoreRoute = ["/vendor/store", "/vendor/staff"].includes(location.pathname);
   const isContentHubRoute = ["/vendor/sms", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template"].includes(location.pathname);
   const isContactRoute = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"].includes(location.pathname);
-  const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign", "/vendor/campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
+  const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign", "/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
   const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/custom-campaign"].includes(location.pathname);
   const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create"].includes(location.pathname);
   const [isDropdownOpen, setDropdownOpen] = useState(isStoreRoute);
@@ -55,7 +55,7 @@ function Sidebar() {
     const validRoutes2 = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"];
     const validRoutes3 = ["/vendor/chat-bot", "/vendor/chat-bot/flow"];
     const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/custom-campaign"];
-    const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"];
+    const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"];
     const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create"];
 
     if (validRoutes.includes(location.pathname)) {

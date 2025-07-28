@@ -182,6 +182,13 @@ const commongetMyProfileAPI = API_EP_BOOK.COMMON_GETMYPROFILE_API_EP;
 const commonupdateMyProfileAPI = API_EP_BOOK.COMMON_MYPROFILEUPDATE_API_EP;
 const commonchangePasswordAPI = API_EP_BOOK.COMMON_CHANGE_PASSWORD_API_EP;
 
+//Catalog
+const catalogListAPI = API_EP_BOOK.LIST_CATALOG_API_EP;
+const catalogCreateAPI = API_EP_BOOK.CREATE_CATALOG_API_EP;
+
+//Product
+const productListAPI = API_EP_BOOK.PRODUCT_LIST_API_EP;
+
 const VendorAPI = {
     
     //General
@@ -1368,5 +1375,29 @@ const VendorAPI = {
         return API(requestAPIData)
     },
     // CONTACT_GROUP API'S END
+
+    // CATALOG API'S START
+    catalogListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogListAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogCreateAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogCreateAPI, requestAPIData);
+        return getResponse;
+    },
+    // CATALOG API'S END
+
+    // PRODUCT API'S START
+    productListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productListAPI, requestAPIData);
+        return getResponse;
+    },
+    // PRODUCT API'S END
 }
 export default VendorAPI;

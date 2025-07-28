@@ -133,3 +133,17 @@
     pointer-events: none;
     opacity: 0.6;
 }
+
+.contact-selectAllbtn {
+    margin-top: 0px;
+}
+
+.contactShowtxt {
+    margin-left: 0px !important;
+}
+
+.contactShow {
+    margin-top: 5px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}

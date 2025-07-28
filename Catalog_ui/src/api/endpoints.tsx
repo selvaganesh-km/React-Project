@@ -211,7 +211,13 @@ let endpoints = {
 	CUSTOMCAMPAIGNUPDATE: 'custom_campaign/update',
 	CUSTOMCAMPAIGNGET: 'custom_campaign/get/:id',
 	CUSTOMCAMPAIGNSTATUS: 'custom_campaign/statusChange/:id',
+	
+	//Catalog
+	CATALOGLIST: 'catalog/list',
+	CATALOGCREATE: 'catalog/create',
 
+	//Product 
+	PRODUCTLIST: 'catalog_products/list',
 }
 
 let API_EP_BOOK = {
@@ -776,6 +782,18 @@ let API_EP_BOOK = {
 		url: endpoints.DELETESTAFF, method: 'DELETE', authorization: true
 	},
 
+	//Catalog
+	LIST_CATALOG_API_EP: {
+		url: endpoints.CATALOGLIST, method: 'POST', authorization: true
+	},
+	CREATE_CATALOG_API_EP: {
+		url: endpoints.CATALOGCREATE, method: 'POST', authorization: true
+	},
+	//Catalog
+	PRODUCT_LIST_API_EP: {
+		url: endpoints.PRODUCTLIST, method: 'POST', authorization: true
+	},
+	
 	//Rules
 	GET_RULES_METADATA_API_EP: {
 		url: endpoints.METADATA + '/Rules_Creation', method: 'GET', authorization: true

@@ -615,7 +615,7 @@ function WhatsappCreateTemplate() {
                                 className="vendor-crt-btn"
                                 onClick={() => navigate("/vendor/whatsapp-template")}
                             >
-                                Back to Templates
+                                <i className="fa-solid fa-chevron-left"></i> Back to Templates
                             </button><button className="vendor-crt-btn" onClick={() => navigate("")}>
                                     Help{" "}
                                 </button></> : ''}
@@ -623,7 +623,7 @@ function WhatsappCreateTemplate() {
                             {setValue === 'edit-whatsapp-template' ? (
                                 <>
                                     <button className="vendor-crt-btn" onClick={() => navigate("/vendor/whatsapp-template")}>
-                                        Back to Templates
+                                        <i className="fa-solid fa-chevron-left"></i> Back to Templates
                                     </button>
                                     <button className="vendor-crt-btn" onClick={() => navigate("")}>
                                         Edit this Template on Meta <i className="fas fa-external-link-alt"></i>

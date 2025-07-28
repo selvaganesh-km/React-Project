@@ -722,14 +722,14 @@ function VendorStaff() {
                                                          <div className="vendor-create-container">
                                                             <input autoComplete="off" onChange={(e) => setconfirmPassword(e.target.value)} value={confirmPassword} type={showConfirmPassword ? 'text' : 'password'} id="vendor-crt-input"
                                                              className={`vendor-crt-input`} 
-                                                             style={
-                                                               submit &&
-                                                                confirmPassword.length === 0
-                                                                 ? { borderColor: "red" }
-                                                                 : confirmPassword.length !== 0 && confirmPassword !== password
-                                                                 ? { borderColor: "red" }
-                                                                 : {}
-                                                             } 
+                                                            //  style={
+                                                            //    submit &&
+                                                            //     confirmPassword.length === 0
+                                                            //      ? { borderColor: "red" }
+                                                            //      : confirmPassword.length !== 0 && confirmPassword !== password
+                                                            //      ? { borderColor: "red" }
+                                                            //      : {}
+                                                            //  } 
                                                              placeholder=" " required />
                                                             <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-key"></i> Confirm Password</label>
                                                          </div>

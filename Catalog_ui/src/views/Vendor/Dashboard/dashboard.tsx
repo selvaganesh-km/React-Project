@@ -52,7 +52,7 @@ function VendorDashboard() {
                <div className="container-fluid py-1">
                   <nav aria-label="breadcrumb">
                      <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li className="breadcrumb-item text-sm"><a className="opacity-5 tblName" href="#">Pages</a></li>
+                        <li className="breadcrumb-item text-sm"><a className="opacity-5 tblName" href="#">Home</a></li>
                         <li className="breadcrumb-item text-sm tblName active" aria-current="page">Vendor Dashboard</li>
                      </ol>
                      <h6 className="font-weight-bolder text-start mb-0 tblName">Vendor Dashboard</h6>
@@ -140,7 +140,7 @@ function VendorDashboard() {
                                              <i className="fa-solid fa-message text-white"></i>
                                           </div>
                                           <h5 className="tblName font-weight-bolder mb-0 mt-3">
-                                             {vendorDashcount?.WhatsappQueueCount || 0}
+                                            0
                                           </h5>
                                           <span className="vendordash-total">Messages in Queue SMS</span>
                                           <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/sms/campaign")}}>Manage Queue SMS</p>

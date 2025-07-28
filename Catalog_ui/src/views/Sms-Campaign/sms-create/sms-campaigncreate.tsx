@@ -233,7 +233,7 @@ function CreatesmsPromotion() {
                     </nav>
                 </div>
                 <div className="col-md-6 text-end">
-                        <button className="vendor-crt-btn" onClick={() => navigate('/vendor/sms/campaign')}>Back To Campaign</button>
+                        <button className="vendor-crt-btn" onClick={() => navigate('/vendor/sms/campaign')}><i className="fa-solid fa-chevron-left"></i> Back To Campaign</button>
                      </div>
                      </div>
                      </div>

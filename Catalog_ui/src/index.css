@@ -774,6 +774,7 @@ Stroke effects - Nucleo outline icons
     --bs-cyan: #06b6d4;
     --bs-white: #fff;
     --bs-gray: #52525b;
+    --bs-font-gray: #4c4c4c;
     --bs-gray-dark: #bc2d36;
     --bs-gray-light: #ee6161;
     --bs-gray-100: #f4f4f5;
@@ -27511,7 +27512,7 @@ textarea {
 }
 
 .tblName {
-    color: #4c4c4c;
+    color: var(--bs-font-gray);
 }
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../../../shared/Footer";
 import { Link } from "react-router-dom";
 import TopNav from "../../../../shared/TopNav";
@@ -6,6 +6,7 @@ import DashboardLayout from "../../../../layouts/DashboardLayout";
 import { Pagination } from "react-bootstrap";
 import VendorAPI from "../../../../api/services/vendorLogin/vendorApi";
 import { toast } from "react-toastify";
+import { FadeLoader } from "react-spinners";
 
 function CatalogDetails() {
   const [modalMode, setModalMode] = useState("create");
@@ -18,6 +19,7 @@ function CatalogDetails() {
   const [catalogName, setcatalogName] = useState("");
   const [catalogType, setcatalogType] = useState<string>("");
   const [bussinessId, setbussinessId] = useState("");
+  const [catalogList, setcatalogList] = useState<any>([]);
   const [catalogTypeDrop] = useState([
     { label: "Online products", icon: <i className="fa-solid fa-shirt"></i> },
     {
@@ -107,6 +109,35 @@ function CatalogDetails() {
   const openModal = (mode: any) => {
     setModalMode(mode);
   };
+   const handlecatalogListAPI = (page: any) => {
+      setLoading(true)
+      const apiData = {
+          pageIndex: page - 1,
+          dataLength: recordsPerPage
+      };
+      VendorAPI.catalogListAPI(apiData)
+          .then((responseData: any) => {
+              if (responseData.apiStatus.code === '200') {
+                  setLoading(false)
+                  setcatalogList(responseData.responseData.catalogData)
+                  setTotalRecords(responseData.responseData.totalRecordCount)
+              } else {
+                  setcatalogList([])
+                  setLoading(false)
+              }
+          })
+          .catch((error: any) => {
+              setLoading(false)
+              console.error("Error during login:", error);
+              toast.error("An error occurred during login.");
+          });
+  }
+   const resetForm = () => {
+        setcatalogName("");
+        setcatalogType("");
+        setbussinessId("");
+        setSubmit(false)
+    }
   const handlecreatCatalog = () => {
     setSubmit(true);
     if (!catalogName || !catalogType || !bussinessId) {
@@ -117,11 +148,11 @@ function CatalogDetails() {
       vertical: catalogType,
       business_id: bussinessId,
     };
-    VendorAPI.botFlowCreate(apiData)
+    VendorAPI.catalogCreateAPI(apiData)
       .then((responseData: any) => {
         if (responseData.apiStatus.code === "200") {
           // resetForm();
-          // handlebotFlowList(currentPage);
+          handlecatalogListAPI(currentPage)
           setSubmit(false);
           toast.success(responseData.apiStatus.message);
           const closeButton = document.getElementById("closeModal");
@@ -137,6 +168,9 @@ function CatalogDetails() {
         toast.error("An error occurred during login.");
       });
   };
+  useEffect(()=>{
+    handlecatalogListAPI(currentPage)
+  },[])
   return (
     <>
       <DashboardLayout>
@@ -183,15 +217,15 @@ function CatalogDetails() {
                 <div className="card mb-4">
                   <div className="card-body px-0 pt-0 pb-2">
                     <div className="table-responsive p-0">
-                      {/* {
+                      {
                                     loading ? (
                                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
                                             <FadeLoader color="#36d7b7" />
                                         </div>
-                                    ) : flowListData.length === 0 ? (
+                                    ) : catalogList.length === 0 ? (
                                         <p className="table-list-nodata or-text" style={{ textAlign: "center", marginTop: "40px" }}><span>No data found</span></p>
                                     ) : (
-                                        <> */}
+                                        <>
                       <table className="table align-items-center justify-content-center mb-0">
                         <thead>
                           <tr className="vendor-table-mainhead">
@@ -207,38 +241,38 @@ function CatalogDetails() {
                           </tr>
                         </thead>
                         <tbody className="text-start">
-                          {/* {flowListData?.map((listData: any) => ( */}
+                          {catalogList?.map((listData: any) => (
                           <tr
-                          // key={listData.id}
+                          key={listData.id}
                           >
                             <td>
                               <div className="d-flex px-2">
                                 <div className="align-middle text-start text-sm my-auto">
-                                  {/* <span>{listData?.name}</span> */}
+                                  <span>{listData?.name}</span>
                                 </div>
                               </div>
                             </td>
                             <td className="align-middle text-start text-sm">
-                              {/* <span>{listData?.description}</span> */}
+                              <span>{listData?.vertical}</span>
                             </td>
                             <td className="align-middle text-start text-sm">
-                              {/* <span>{listData?.description}</span> */}
+                              <span>{listData?.business_id}</span>
                             </td>
                           </tr>
-                          {/* ))} */}
+                         ))}
                         </tbody>
                       </table>
-                      {/* {flowListData.length === 0 ? "" :
-                                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }} className="store-pagination">
-                                            <Pagination>
-                                                <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                                {renderPaginationItems()}
-                                                <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                            </Pagination>
-                                        </div>
-                                    } */}
-                      {/* </>
-                                    )} */}
+                      {catalogList.length === 0 ? "" :
+                          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }} className="store-pagination">
+                              <Pagination>
+                                  <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                                  {renderPaginationItems()}
+                                  <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                              </Pagination>
+                          </div>
+                      }
+                      </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -407,6 +441,7 @@ function CatalogDetails() {
                   type="button"
                   className="btn btn-secondary"
                   data-bs-dismiss="modal"
+                   onClick={resetForm}
                 >
                   Close
                 </button>

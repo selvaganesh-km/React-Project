@@ -363,7 +363,7 @@ function SmsCampaignDashboard() {
                             </nav>
                         </div>
                         <div className="col-md-6 text-end">
-                            <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/sms/campaign") }}>Back to Campaigns</button>&nbsp;
+                            <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/sms/campaign") }}><i className="fa-solid fa-chevron-left"></i> Back to Campaigns</button>&nbsp;
                             <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/create-smscampaign") }}>Create Campaign</button>
                         </div>
                     </div>
@@ -416,11 +416,12 @@ function SmsCampaignDashboard() {
                                     </div>
                                     </div>
                                         <div className="w-50 myprofile-content">
-                                        <div>
                                         <div className="mb-2 icon camp-icon-shape  superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                         <i className="fa-solid fa-hourglass-start text-white"></i>
                                         </div>
-                                            <div className=" campaign-dash-fonts">Execution Scheduled at</div>
+                                        <div className="row">
+                                        <div className="col-md-6">
+                                        <div className=" campaign-dash-fonts">Execution Scheduled at</div>
                                             <h6 className="campaign-dash-fonts">
                                                 {new Date(campaigndetails?.scheduleAt).toLocaleString('en-US', {
                                                         year: 'numeric',
@@ -431,15 +432,23 @@ function SmsCampaignDashboard() {
                                                         second: '2-digit',
                                                         hour12: true
                                                     }).replace(',', '').replace(' ', ' ')}
-                                                </h6>
+                                            </h6>
                                         </div>
-                                        <div>
+                                        <div className="col-md-6">
                                         <div className=" campaign-dash-fonts">Execution Status</div>
                                             <div className="custom-Executed">
                                             {campaigndetails?.sendStatus === "Executed" ?<span className="campaign-dash-execute">{campaigndetails?.sendStatus}</span> : 
-                                            <span className="text-xs campaign-status-warn">{campaigndetails?.sendStatus}</span>}</div>
+                                            <span className="text-xs campaign-status-warn">{campaigndetails? campaigndetails.sendStatus :""}</span>}</div>
                                         </div>
-                                    </div>
+                                    <div className="col-md-6">
+                                        {campaigndetails?.groupName ? 
+                                        <>
+                                        <div className="campaign-dash-fonts">All contacts from: </div>
+                                        <h6 className="campaign-dash-fonts">{campaigndetails?.groupName}</h6>
+                                        </>:<></>}
+                                        </div>
+                                        </div>
+                                        </div>
                                 </div>
                             </div>
                             </>

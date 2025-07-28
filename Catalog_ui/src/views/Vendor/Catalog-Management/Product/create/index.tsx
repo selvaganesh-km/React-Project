@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import DashboardLayout from '../../../../../layouts/DashboardLayout'
 import TopNav from '../../../../../shared/TopNav'
 import { Link, useNavigate } from 'react-router-dom'
@@ -13,11 +13,70 @@ type PreviewFile = {
   size: string;
   modifiedTime: string; 
 };
+
+type Category = {
+  name: string;
+  subs: string[];
+};
+
+const categories: Category[] = [
+  {
+    name: "Antiques & Collectibles",
+    subs: [
+      "Collectible Appliances",
+      "Collectible Coins & Paper Money",
+      "Collectible Electronics",
+      "Collectible Furniture",
+      "Collectible Glassware",
+      "Collectible Knives & Swords",
+      "Collectible Tools",
+      "Other Collectibles",
+    ],
+  },
+  {
+    name: "Arts & Crafts",
+    subs: ["Painting", "Drawing", "Crafting", "Pottery", "Other Arts"],
+  },
+  {
+    name: "Auto Parts & Accessories",
+    subs: [
+      "Engines & Components",
+      "Tires & Wheels",
+      "Interior Accessories",
+      "Exterior Accessories",
+    ],
+  },
+  {
+    name: "Books, Movies & Music",
+    subs: ["Books", "Movies", "Music CDs", "Vinyl", "Audiobooks"],
+  },
+  {
+    name: "Clothing, Shoes & Accessories",
+    subs: [
+      "Men's Clothing",
+      "Women's Clothing",
+      "Shoes",
+      "Accessories",
+    ],
+  },
+  {
+    name: "Electronics",
+    subs: [
+      "Mobile Phones",
+      "Laptops",
+      "Tablets",
+      "Wearables",
+      "Cameras",
+    ],
+  },
+];
+
 const formatSize = (bytes: number) => `${(bytes / 1024).toFixed(2)} KB`;
 const formatDate = (date: Date) => date.toLocaleString();
 
 function CatalogProductCreate() {
-
+const [catalogCondition, setcatalogCondition] = useState<string>("");
+const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 const currencies = [
   { code: "INR", label: "INR - Indian Rupee", symbol: "₹", placeholder: "Enter amount" },
   { code: "USD", label: "USD - US Dollar", symbol: "$", placeholder: "Enter amount" },
@@ -41,7 +100,79 @@ const currencies = [
     {"id": 1,"condition":"Used (good)"},
     {"id": 1,"condition":"Used (fair)"},
    ]);
-   const [catalogCondition,setcatalogCondition]=useState("")
+
+    const [open, setOpen] = useState(false);
+  const [panelFlipped, setPanelFlipped] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const [subSearchTerm, setSubSearchTerm] = useState("");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Open dropdown, focus search
+  const handleInputClick = () => {
+    setOpen(true);
+    setPanelFlipped(false);
+    setActiveIdx(null);
+    setSearchTerm("");
+    setSubSearchTerm("");
+    setTimeout(() => searchInputRef.current?.focus(), 25);
+  };
+
+  // Click outside/esc to close
+  useEffect(() => {
+    if (!open) return;
+    const handleDown = (e: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleDown);
+    document.addEventListener("keydown", handleEsc);
+    return () => {
+      document.removeEventListener("mousedown", handleDown);
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [open]);
+
+  // Filtered categories
+  const filteredCategories = categories.filter((cat) =>
+    cat.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Filtered subcategories
+  const filteredSubs =
+    activeIdx !== null
+      ? categories[activeIdx].subs.filter((sub) =>
+          sub.toLowerCase().includes(subSearchTerm.toLowerCase())
+        )
+      : [];
+
+  const handleCategoryClick = (i: number) => {
+    setActiveIdx(i);
+    setPanelFlipped(true);
+    setSubSearchTerm("");
+  };
+
+  const handleSubCategoryClick = (sub: string) => {
+    alert(`Selected: ${sub}`);
+    setOpen(false);
+  };
+
+  const handleBack = () => {
+    setPanelFlipped(false);
+    setActiveIdx(null);
+    setTimeout(() => searchInputRef.current?.focus(), 40);
+  };
+
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = currencies.find((c) => c.code === e.target.value);
     if (selected) {
@@ -108,7 +239,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                             className="vendor-crt-btn"
                             onClick={()=>navigate("/vendor/catalog/product/details")}
                         >
-                            <span>Back</span>
+                            <span><i className="fa-solid fa-chevron-left"></i> Back</span>
                         </button>
                     </div>
                 </div>
@@ -136,37 +267,37 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                                                     <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder ps-2 sticky-col-2">
                                                         Images & Videos
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Title
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Description
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Website link
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Price
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Sale Price
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Facebook product category (Optional)
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Condition
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-3">
                                                         Availability
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-3">
                                                         Status
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Brand (Optional)
                                                     </th>
-                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                    <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 ps-3">
                                                         Content ID (Optional)
                                                     </th>
                                                     {/*<th></th>*/}
@@ -327,7 +458,6 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                                                             {checked && <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
                                                             width="14px" height="14px" viewBox="0 0 512.000000 512.000000"
                                                             preserveAspectRatio="xMidYMid meet">
-
                                                             <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
                                                             stroke="none">
                                                             <path d="M4805 4281 c-1007 -372 -2093 -1036 -3085 -1884 -103 -88 -138 -113
@@ -349,41 +479,179 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td className="text-center align-middle vendor-login-td">
-                                                        
-                                                    </td>
-                                                    <td className=" align-middle col-md-12 text-start text-sm catalogInput-tdwidth ">
-                                                        {/* <div className="vendor-create-container dropdown " data-bs-toggle="dropdown" aria-expanded="false">
-                                                      <input
-                                                         autoComplete="off"
-                                                         type="text"
-                                                         id="vendor-crt-input"
-                                                         className={`vendor-crt-input loginfilled-frame-username `}
-                                                         value={catalogCondition}
-                                                         placeholder=" "
-                                                         required
-                                                         onChange={(e)=>setcatalogCondition(e.target.value)}
-                                                      />
-                                                      <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-file-signature"></i> Condition</label>
-                                                      <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
-                                                      <ul className="dropdown-menu template-dropdown storename-dropdown-menu">
-                                                      {catConditionDrop.length === 0 ? (
-                                                            <li className="dropdown-nodata-found">No data found</li>
-                                                         ) : (
-                                                            catConditionDrop.map((dropdownValue, id) => (                                                            
-                                                            <li key={id}>
-                                                               <a
-                                                                  className="dropdown-item"
-                                                                  href="#"
-                                                                  onClick={() => { setcatalogCondition(dropdownValue.condition) }}
-                                                               >
-                                                                  {dropdownValue.condition}
-                                                               </a>
-                                                            </li>
-                                                         )))}
-                                                      </ul>
-                                                   </div> */}
-                                                    </td>
+                                                   <td className="text-center align-middle vendor-login-td">
+  <div
+    className="dropdown-container login-input-group"
+    ref={containerRef}
+    style={{ width: 350, position: "relative" }}
+  >
+    {/* Dropdown Input */}
+    <input
+      className="vendor-crt-input loginfilled-frame-username"
+      id="vendor-crt-input"
+      type="text"
+      placeholder="Select Categorie"
+      readOnly
+      onClick={handleInputClick}
+      value={
+        activeIdx !== null && panelFlipped
+          ? categories[activeIdx].name
+          : ""
+      }
+    />
+    {/* Chevron Icon */}
+    <span
+      className={`dropdown-chevron${open ? " open" : ""}`}
+      aria-hidden="true"
+    >
+      &#9662;
+    </span>
+
+    {/* Dropdown Menu */}
+    <div
+      className={`dropdown-menu-wrapper${open ? " open" : ""}`}
+      tabIndex={-1}
+    >
+      <div className="panel-flip">
+        <div className={`inner-flip${panelFlipped ? " show-sub" : ""}`}>
+          {/* Main category panel */}
+          <div className="menu-panel">
+            <input
+              className="search-internal"
+              type="text"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              ref={searchInputRef}
+              autoFocus={open && !panelFlipped}
+              onKeyDown={e => {
+                if ((e as React.KeyboardEvent).key === "Escape") setOpen(false);
+              }}
+            />
+            <ul className="menu-list">
+              {filteredCategories.length === 0 ? (
+                <li style={{ color: "#b0b3bb", fontStyle: "italic" }}>
+                  No categories found
+                </li>
+              ) : (
+                filteredCategories.map((cat, i) => {
+                  const realIdx = categories.findIndex(
+                    (c) => c.name === cat.name
+                  );
+                  return (
+                    <li
+                      key={cat.name}
+                      className={activeIdx === realIdx ? "active" : ""}
+                    >
+                      <span
+                        className="cat-name"
+                        onClick={() => handleCategoryClick(realIdx)}
+                      >
+                        {cat.name}
+                      </span>
+                      <span className="arrow">&#8250;</span>
+                    </li>
+                  );
+                })
+              )}
+            </ul>
+          </div>
+          {/* Subcategory panel */}
+          <div className="submenu-panel">
+            <div className="back-row" tabIndex={0} onClick={handleBack}>
+              <span className="back-arrow">&#8249;</span>
+              <span id="catTitle">
+                {activeIdx !== null ? categories[activeIdx].name : ""}
+              </span>
+            </div>
+            <input
+              className="search-internal"
+              type="text"
+              placeholder="Search Subcategories"
+              style={{marginTop:"8px", marginBottom:"4px"}}
+              value={subSearchTerm}
+              onChange={e => setSubSearchTerm(e.target.value)}
+              autoFocus={panelFlipped}
+              onKeyDown={e => {
+                if ((e as React.KeyboardEvent).key === "Escape") setOpen(false);
+              }}
+            />
+            <ul className="submenu-list">
+              {panelFlipped && filteredSubs.length === 0 && (
+                <li style={{ color: "#b0b3bb", fontStyle: "italic" }}>
+                  No subcategories found
+                </li>
+              )}
+              {panelFlipped &&
+                filteredSubs.map((sub) => (
+                  <li
+                    key={sub}
+                    onClick={() => handleSubCategoryClick(sub)}
+                  >
+                    {sub}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</td>
+
+    <td className="align-middle col-md-12 text-start text-sm catalogInput-tdwidth mt-2" style={{ minWidth: 210, position: 'relative' }}>
+
+  <div className="custom-condition-dropdown-wrap login-input-group">
+    <div
+      className={`vendor-crt-input catalogInput-Width custom-condition-field${dropdownOpen ? " open" : ""}`}
+      tabIndex={0}
+      onClick={() => setDropdownOpen(o => !o)}
+      onBlur={() => setTimeout(() => setDropdownOpen(false), 110)}
+      role="button"
+      aria-haspopup="listbox"
+      aria-expanded={dropdownOpen}
+    >
+      {catalogCondition
+        ? <span>{catalogCondition}</span>
+        : <span className="custom-condition-placeholder vendor-create-container w-100">Select condition</span>
+      }
+      <span className={`custom-condition-chevron${dropdownOpen ? " active" : ""}`}>&#9662;</span>
+    </div>
+    {dropdownOpen && (
+      <div className="custom-condition-list-pop" role="listbox">
+        <ul className="custom-condition-list">
+          {catConditionDrop.length === 0
+            ? <li className="custom-condition-item" style={{ color: "#b1bac9", textAlign: "center" }}>No data found</li>
+            : catConditionDrop.map((dropdownValue, id) => (
+              <li
+                key={dropdownValue.condition}
+                className={
+                  "custom-condition-item" +
+                  (catalogCondition === dropdownValue.condition ? " selected" : "")
+                }
+                tabIndex={0}
+                onClick={() => {
+                  setcatalogCondition(dropdownValue.condition);
+                  setDropdownOpen(false);
+                }}
+                onKeyDown={e => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setcatalogCondition(dropdownValue.condition);
+                    setDropdownOpen(false);
+                  }
+                }}
+                role="option"
+                aria-selected={catalogCondition === dropdownValue.condition}
+              >
+                {dropdownValue.condition}
+              </li>
+            ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</td>
+
                                                    <td className="text-center align-middle vendor-login-td">
                                                         <div className="form-check form-switch ms-1 is-filled">
                                                          <input

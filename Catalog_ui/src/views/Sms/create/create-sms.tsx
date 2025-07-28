@@ -168,7 +168,7 @@ function CreateSms() {
                         </div>
                         <div className="col-md-8 text-end whatsapp-three-btn">
                         <button className="vendor-crt-btn" onClick={() => navigate("/vendor/sms")}>
-                            Back
+                          <i className="fa-solid fa-chevron-left"></i> Back
                         </button>
                         </div>
                     </div>

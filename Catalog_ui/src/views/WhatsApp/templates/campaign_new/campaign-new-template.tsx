@@ -623,7 +623,7 @@ function Createcampaign() {
                   </div>
                   <div className="col-md-6 text-end">
                      {contactDetailsValue.firstName ? (
-                        <button className="vendor-crt-btn" onClick={() => navigate('/vendor/contacts')}>Back To Contact</button>
+                        <button className="vendor-crt-btn" onClick={() => navigate('/vendor/contacts')}><i className="fa-solid fa-chevron-left"></i> Back To Contact</button>
                      ) : null} &nbsp;
                      <button className="vendor-crt-btn" onClick={() => { whatsappGetApi(getId) }}>Sync WhatsApp Templates</button>&nbsp;
                      <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/campaign") }}>Manage Campaigns</button>

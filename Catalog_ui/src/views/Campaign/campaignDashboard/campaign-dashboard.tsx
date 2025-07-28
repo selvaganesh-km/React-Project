@@ -52,7 +52,8 @@ function CampaignDashboard() {
     const [search,setSearch]=useState("");
     const [queuesearch,setqueueSearch]=useState("");
     const [campDashcount,setcampDashcount]=useState<any>("")
-
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [queuedebouncedSearch, setqueueDebouncedSearch] = useState('');
     const totalPages = Math.ceil(totalRecords / recordsPerPage);
     
     const handlePageChange = (pageNumber: any) => {
@@ -333,17 +334,37 @@ function CampaignDashboard() {
             handlecampDashCount();
         }
     }, [getId]);
+     useEffect(() => {
+        const handler = setTimeout(() => {
+          setDebouncedSearch(search);
+          setCurrentPage(1);
+        }, 1000);
+    
+        return () => {
+          clearTimeout(handler);
+        };
+      }, [search]);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+          setqueueDebouncedSearch(queuesearch);
+          setqueueCurrentPage(1);
+        }, 1000);
+    
+        return () => {
+          clearTimeout(handler);
+        };
+      }, [queuesearch]);
     useEffect(() => {
         if (getId) {
-            handlecampaignExecuteList(currentPage, search);
+            handlecampaignExecuteList(currentPage, debouncedSearch);
         }
-    }, [getId, currentPage, search,recordsPerPage]);
+    }, [getId, currentPage, debouncedSearch,recordsPerPage]);
+    
     useEffect(() => {
         if (getId) {
-            handlecampaignQueueList(queuecurrentPage,queuesearch);
+            handlecampaignQueueList(queuecurrentPage,queuedebouncedSearch);
         }
-    }, [getId, queuecurrentPage,queuesearch, recordsQueuePerPage]);
-
+    }, [getId, queuecurrentPage,queuedebouncedSearch, recordsQueuePerPage]);
     
     useEffect(() => {
         const queryParams = window.location.pathname;
@@ -369,7 +390,7 @@ function CampaignDashboard() {
                             </nav>
                         </div>
                         <div className="col-md-6 text-end">
-                            <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/campaign") }}>Back to Campaigns</button>&nbsp;
+                            <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/campaign") }}><i className="fa-solid fa-chevron-left"></i> Back to Campaigns</button>&nbsp;
                             <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/create-campaign") }}>Create Campaign</button>
                         </div>
                     </div>
@@ -422,34 +443,43 @@ function CampaignDashboard() {
                                     </div>
                                     </div>
                                         <div className="w-50 myprofile-content">
-                                        <div>
                                         <div className="mb-2 icon camp-icon-shape  superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                         <i className="fa-solid fa-hourglass-start text-white"></i>
                                         </div>
-                                            <div className=" campaign-dash-fonts">Execution Scheduled at</div>
-                                            <h6 className="tblName campaign-dash-fonts">
-                                                {new Date(campaigndetails?.scheduleAt).toLocaleString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'short',
-                                                        day: '2-digit',
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                        second: '2-digit',
-                                                        hour12: true
-                                                    }).replace(',', '').replace(' ', ' ')}
-                                                </h6>
-                                        </div>
-                                        <div>
-                                        <div className=" campaign-dash-fonts">Execution Status</div>
-                                            <div className="custom-Executed">
-                                            {campaigndetails?.sendStatus === "Executed" ?<span className="campaign-dash-execute">{campaigndetails?.sendStatus}</span> : 
-                                            <span className="text-xs campaign-status-warn">{campaigndetails? campaigndetails.sendStatus :""}</span>}</div>
-                                        </div>
+                                    <div className="row">
+                                    <div className="col-md-6">
+                                    <div className=" campaign-dash-fonts">Execution Scheduled at</div>
+                                        <h6 className="campaign-dash-fonts">
+                                            {new Date(campaigndetails?.scheduleAt).toLocaleString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: '2-digit',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    second: '2-digit',
+                                                    hour12: true
+                                                }).replace(',', '').replace(' ', ' ')}
+                                        </h6>
+                                    </div>
+                                    <div className="col-md-6">
+                                    <div className=" campaign-dash-fonts">Execution Status</div>
+                                        <div className="custom-Executed">
+                                        {campaigndetails?.sendStatus === "Executed" ?<span className="campaign-dash-execute">{campaigndetails?.sendStatus}</span> : 
+                                        <span className="text-xs campaign-status-warn">{campaigndetails? campaigndetails.sendStatus :""}</span>}</div>
+                                    </div>
+                                    <div className="col-md-6">
+                                    {campaigndetails?.groupName ? 
+                                    <>
+                                    <div className="campaign-dash-fonts">All contacts from: </div>
+                                    <h6 className="campaign-dash-fonts">{campaigndetails?.groupName}</h6>
+                                    </>:<></>}
+                                    </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
                             </>
-                    )}
+                            )}  
                             <div className="dashboard-maincontent container-fluid py-4">
                                 <div className="row">
                                     <div className="col-lg-12 col-12">
@@ -756,9 +786,10 @@ function CampaignDashboard() {
                                                                 <>
                                                                 <thead>
                                                                     <tr className="campaign-action">
-                                                                        <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7">Name</th>
+                                                                        <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7">NAME</th>
                                                                         <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7 ps-2">PHONE NUMBER</th>
-                                                                        <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7 ps-2">MESSAGE DELIVERY STATUS</th>
+                                                                        <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7 ps-2">DELIVERY STATUS</th>
+                                                                        <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7 ps-3">REASON</th>
                                                                         <th className="text-uppercase campaign-table-head text-xxs font-weight-bolder opacity-7 ps-2">LAST STATUS UPDATE AT</th>
                                                                     </tr>
                                                                 </thead>
@@ -784,9 +815,16 @@ function CampaignDashboard() {
                                                                                 </>
                                                                                 :executedList?.message_status==="failed"?
                                                                                 <>
-                                                                                <i className="fa-solid fa-triangle-exclamation text-danger"></i> <span className="text-sm text-danger"> Failed - <span className="text-xs">Message Undeliverable</span></span></>
+                                                                                <div className="actionCampFailedMsg-tooltip-container">
+                                                                                <div className="actionChathelp-tooltip-text" style={{ whiteSpace: 'pre-wrap' }}>
+                                                                                    <i className="fa-solid fa-circle-exclamation text-warning"></i> {executedList?.error_message}
+                                                                                </div>
+                                                                                <i className="fa-solid fa-triangle-exclamation text-danger"></i> <span className="text-sm text-danger"> Failed - <span className="text-xs">Message Undeliverable</span></span></div></>
                                                                                 :""
                                                                                 }</td>
+                                                                                <td className="text-xs ps-3" style={{ whiteSpace: 'pre-wrap' }}>
+                                                                                    {executedList?.error_message ? <>{executedList?.error_message}</>:<></>}
+                                                                                </td>
                                                                             <td>
                                                                             <span className="text-sm">
                                                                                 {executedList?.updated_date

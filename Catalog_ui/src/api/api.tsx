@@ -1,5 +1,5 @@
-// export const baseURL = "http://192.168.0.120/Biz_convo/api/";
-export const baseURL = "https://crm.bizconvo.in/be/api/";
+export const baseURL = "https://90a8627add33.ngrok-free.app/catalog_management/api/";
+// export const baseURL = "https://crm.bizconvo.in/be/api/";
 
 
 const API: any = async (requestURL: any, requestAPIData: any) => {

@@ -346,10 +346,10 @@ function ContactCustomField() {
                                                     {recordsPerPage}
                                                 </button>
                                                 <ul className="dropdown-menu show-entries-dropdown">
-                                                    <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(5); setCurrentPage(1); }}>5</a></li>
-                                                    <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(10); setCurrentPage(1); }}>10</a></li>
-                                                    <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(15); setCurrentPage(1); }}>15</a></li>
-                                                    <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(20); setCurrentPage(1); }}>20</a></li>
+                                                   <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(10); setCurrentPage(1); }}>10</a></li>
+                                                   <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(20); setCurrentPage(1); }}>20</a></li>
+                                                   <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(50); setCurrentPage(1); }}>50</a></li>
+                                                   <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(100); setCurrentPage(1); }}>100</a></li>
                                                 </ul>
                                             </div>
                                             <span className='ms-2 show-entries-cnt'>Entries</span>

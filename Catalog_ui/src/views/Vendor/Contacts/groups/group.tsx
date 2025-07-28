@@ -689,11 +689,12 @@ const contactGrouparchiveActive =async (name: any) => {
                                                                     <button className="btn show-entries-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                                         {recordsPerPage}
                                                                     </button>
-                                                                        <ul className="dropdown-menu show-entries-dropdown w-25">
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(10);setCurrentPage(1)}}>10</a></li>
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(15);setCurrentPage(1)}}>15</a></li>
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(20);setCurrentPage(1)}}>20</a></li>
-                                                                    </ul>
+                                                                        <ul className="dropdown-menu show-entries-dropdown">
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(10); setCurrentPage(1); }}>10</a></li>
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(20); setCurrentPage(1); }}>20</a></li>
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(50); setCurrentPage(1); }}>50</a></li>
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(100); setCurrentPage(1); }}>100</a></li>
+                                                                        </ul>
                                                                 </div>
                                                             <span className='show-entries-cnt1'>Entries</span>
                                                         </div>
@@ -871,12 +872,12 @@ const contactGrouparchiveActive =async (name: any) => {
                                                                     <button className="btn show-entries-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                                         {recordsPerPage}
                                                                     </button>
-                                                                        <ul className="dropdown-menu show-entries-dropdown">
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(5);setCurrentPage(1)}}>5</a></li>
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(10);setCurrentPage(1)}}>10</a></li>
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(15);setCurrentPage(1)}}>15</a></li>
-                                                                        <li><a className="dropdown-item" onClick={()=>{setrecordsPerPage(20);setCurrentPage(1)}}>20</a></li>
-                                                                    </ul>
+                                                                       <ul className="dropdown-menu show-entries-dropdown">
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(10); setCurrentPage(1); }}>10</a></li>
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(20); setCurrentPage(1); }}>20</a></li>
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(50); setCurrentPage(1); }}>50</a></li>
+                                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(100); setCurrentPage(1); }}>100</a></li>
+                                                                        </ul>
                                                                 </div>
                                                             <span className='show-entries-cnt1'>Entries</span>
                                                         </div>

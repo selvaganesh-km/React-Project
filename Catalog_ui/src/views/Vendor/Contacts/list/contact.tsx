@@ -73,6 +73,7 @@ function StoreContacts() {
    const [loading, setLoading] = useState(false)
    const [submit, setSubmit] = useState(false);
    const [customCampaign, setcustomCampaign] = useState(false);
+   const [campaignOpt, setcampaignOpt] = useState(false);
    const [deleteAll, setDeleteAll] = useState(false);
    const [id, setId] = useState('')
    const [fName, setFName] = useState('')
@@ -97,6 +98,8 @@ function StoreContacts() {
    const [fileName, setFileName] = useState("");
    const [groupName, setGroupName] = useState<any[]>([]);
    const [groupId, setGroupId] = useState<string[]>([]);
+   const [search,setSearch]=useState("");
+   const [debouncedSearch, setDebouncedSearch] = useState('');
    const EMAIL_VALIDATION_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i
    const [selectedGroupIds, setSelectedGroupIds] = useState<any[]>([]);
    const[disabled,setdisabled]=useState(false);
@@ -172,13 +175,14 @@ function StoreContacts() {
       setDeleteAll(false)
       setLoading(false)
       setcustomCampaign(false)
+      setcampaignOpt(false)
    };
 
   
 
    // Contact List Api
 
-   const superAdminConatctList = (page: any) => {
+   const superAdminConatctList = (page: any,search:string) => {
       setLoading(true)
       const apiData = {
          pageIndex: page - 1,
@@ -309,7 +313,8 @@ function StoreContacts() {
             address: address,
          },
          groupdetails: groupName,
-         send_custom_campaign:customCampaign===true ? "1" : "0"
+         send_custom_campaign:customCampaign===true ? "1" : "0",
+         campaign_opt_out:campaignOpt===true ? "1":"0"
       };
 
       const apiCall = modalMode === "create" ? VendorAPI.contactCreateAPI(apiData) : VendorAPI.contactEditAPI(apiData);
@@ -320,7 +325,7 @@ function StoreContacts() {
                resetForm()
                toast.success(responseData.apiStatus.message);
                const closeButton = document.getElementById("closeCreate");
-               superAdminConatctList(currentPage);
+               superAdminConatctList(currentPage,debouncedSearch);
 
                if (closeButton) {
                   closeButton.click();
@@ -370,6 +375,8 @@ function StoreContacts() {
             setAddress(data?.otherInformation?.address)
             const customCampaign=data?.send_custom_campaign;
             setcustomCampaign(customCampaign==="1" ? true : false);
+            const campaignOpt=data?.campaign_opt_out;
+            setcampaignOpt(campaignOpt==="1" ? true : false);
             const groupNames = data?.groupDetails.map((group: any) => group.groupName);
             setGroupName(data?.groupDetails);
             const groupIds = data?.groupDetails.map((group: any) => group.groupId);
@@ -412,7 +419,7 @@ function StoreContacts() {
                closeButton.click();
             }
             toast.success(responseData.apiStatus.message);
-            superAdminConatctList(currentPage);
+            superAdminConatctList(currentPage,debouncedSearch);
          } else {
             toast.error(`get failed: ${responseData.apiStatus.message}`);
             // setLoading(false)
@@ -435,7 +442,7 @@ function StoreContacts() {
                      if (closeButton) {
                         closeButton.click();
                      }
-                     superAdminConatctList(currentPage);
+                     superAdminConatctList(currentPage,debouncedSearch);
                      toast.success(responseData.apiStatus.message);
                    } else {
                        setLoading(false)
@@ -460,7 +467,7 @@ function StoreContacts() {
                setSelectedGroupIds([])
                const closeButton = document.getElementById("alldelete");
              if (closeButton) {
-                superAdminConatctList(currentPage);
+                superAdminConatctList(currentPage,debouncedSearch);
                 closeButton.click();
              }
             } else {
@@ -493,7 +500,7 @@ function StoreContacts() {
                        setSelectedGroupIds([])
                        const closeButton = document.getElementById("contactCloseModal");
                      if (closeButton) {
-                        superAdminConatctList(currentPage);
+                        superAdminConatctList(currentPage,debouncedSearch);
                         closeButton.click();
                      }
                    } else {
@@ -721,7 +728,7 @@ function StoreContacts() {
       try {
          const response = await VendorAPI.importContact(formData);
          if (response.apiStatus?.code === "200") {
-            superAdminConatctList(currentPage)
+            superAdminConatctList(currentPage,debouncedSearch)
             toast.success(response.apiStatus.message);
             document.getElementById("closepopup")?.click();
          } else {
@@ -771,6 +778,7 @@ function StoreContacts() {
    const handleChatNavigate=(contactList:any)=>{
       const chatDetails={
          mobile: contactList.mobile,
+         firstName: contactList.firstName,
       }
       navigate(`/vendor/whatapp-chat/${contactList?.id}`,{state:{chatDetails}})
    }
@@ -807,11 +815,20 @@ function StoreContacts() {
          groupConatctList(groupcurrentPage)
       }
    }, [location.pathname,gpName,groupcurrentPage])
+useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setCurrentPage(1);
+    }, 1000);
 
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
    useEffect(() => {
       if(location.pathname==="/vendor/contacts")
-      superAdminConatctList(currentPage)
-   }, [location.pathname,currentPage,recordsPerPage])
+      superAdminConatctList(currentPage,debouncedSearch)
+   }, [location.pathname,currentPage,recordsPerPage,debouncedSearch])
       
    useEffect(() => {
    const modalElements = [
@@ -894,41 +911,76 @@ function StoreContacts() {
                                        <thead>
                                        {location.pathname==="/vendor/contacts" ?
                                        <>
-                                       <div className='d-flex select-btn-main show-entries-main position-absolute'>
-                                          <button className='bulk-select'  onClick={handleSelectAll}>{selectedGroupIds.length === listContact.length ? 'Unselect All' : 'Select All'}</button>
-                                          <div className="dropdown">
-                                                   <button className="btn show-entries-btn1 dropdown-toggle" 
-                                                   // disabled={disabled} 
-                                                   type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                      Bulk Actions
+                                       <div className='d-flex justify-content-between align-items-center position-absolute w-100 px-3 mt-n1'>
+                                             {/* Left Section - Select All + Bulk Actions */}
+                                             <div className='d-flex align-items-center gap-3 mt-3'>
+                                                <button className='bulk-select contact-selectAllbtn' onClick={handleSelectAll}>
+                                                   {selectedGroupIds.length === listContact.length ? 'Unselect All' : 'Select All'}
+                                                </button>
+                                                <div className="dropdown">
+                                                   <button className="btn show-entries-btn1 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                   Bulk Actions
                                                    </button>
-                                                      <ul className="dropdown-menu show-entries-dropdown">
-                                                      <li><a className="dropdown-item" data-bs-toggle="modal"
-                                                               data-bs-target="#vendoralldelete" onClick={()=>setDeleteAll(true)}>Delete All Contacts</a></li>
-                                                      <li><a className={`dropdown-item ${selectedGroupIds.length === 0 ? 'disabled' : ''}`}
-                                                               {...(selectedGroupIds.length > 0 && {'data-bs-toggle': 'modal','data-bs-target': '#vendorselecteddelete',})}
-                                                               href="#"
-                                                               style={{ cursor: selectedGroupIds.length === 0 ? 'not-allowed' : 'pointer' }}
-                                                               onClick={(e) => {if (selectedGroupIds.length === 0) e.preventDefault();}}>Delete Selected Contacts</a></li>
-                                                      <li><a className={`dropdown-item ${selectedGroupIds.length === 0 ? 'disabled' : ''}`}
-                                                               {...(selectedGroupIds.length > 0 && {'data-bs-toggle': 'modal','data-bs-target': '#contactassignGroup',})}
-                                                               href="#"
-                                                               style={{ cursor: selectedGroupIds.length === 0 ? 'not-allowed' : 'pointer' }}
-                                                               onClick={(e) => {if (selectedGroupIds.length === 0) e.preventDefault();}}>Assign Group to Selected Contacts</a></li>
+                                                   <ul className="dropdown-menu show-entries-dropdown">
+                                                   <li>
+                                                      <a className="dropdown-item" data-bs-toggle="modal" data-bs-target="#vendoralldelete" onClick={() => setDeleteAll(true)}>
+                                                         Delete All Contacts
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a
+                                                         className={`dropdown-item ${selectedGroupIds.length === 0 ? 'disabled' : ''}`}
+                                                         {...(selectedGroupIds.length > 0 && { 'data-bs-toggle': 'modal', 'data-bs-target': '#vendorselecteddelete' })}
+                                                         href="#"
+                                                         style={{ cursor: selectedGroupIds.length === 0 ? 'not-allowed' : 'pointer' }}
+                                                         onClick={(e) => { if (selectedGroupIds.length === 0) e.preventDefault(); }}
+                                                      >
+                                                         Delete Selected Contacts
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a
+                                                         className={`dropdown-item ${selectedGroupIds.length === 0 ? 'disabled' : ''}`}
+                                                         {...(selectedGroupIds.length > 0 && { 'data-bs-toggle': 'modal', 'data-bs-target': '#contactassignGroup' })}
+                                                         href="#"
+                                                         style={{ cursor: selectedGroupIds.length === 0 ? 'not-allowed' : 'pointer' }}
+                                                         onClick={(e) => { if (selectedGroupIds.length === 0) e.preventDefault(); }}
+                                                      >
+                                                         Assign Group to Selected Contacts
+                                                      </a>
+                                                   </li>
                                                    </ul>
+                                                </div>
                                              </div>
-                                          </div>
+
+                                             {/* Right Section - Search Input */}
+                                             <div className="vendor-create-container mt-4" style={{ width: '40%' }}>
+                                                <input
+                                                   type="text"
+                                                   id="vendor-crt-input"
+                                                   className="vendor-crt-input"
+                                                   autoComplete="off"
+                                                   onChange={(e) => setSearch(e.target.value)} value={search}
+                                                   placeholder=" "
+                                                   required
+                                                />
+                                                <label htmlFor="vendor-crt-input" className="vendor-crt-label">
+                                                   <i className="fa-solid fa-magnifying-glass"></i> Search
+                                                </label>
+                                             </div>
+                                             </div>
                                           <div className='d-flex show-entries-main mt-5'>
                                              <span className='show-entries-cnt'>Show</span> 
                                                    <div className="dropdown">
                                                       <button className="btn show-entries-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                          {recordsPerPage}
                                                       </button>
-                                                         <ul className="dropdown-menu show-entries-dropdown w-25">
-                                                         <li><a className="dropdown-item" onClick={()=>setrecordsPerPage(10)}>10</a></li>
-                                                         <li><a className="dropdown-item" onClick={()=>setrecordsPerPage(15)}>15</a></li>
-                                                         <li><a className="dropdown-item" onClick={()=>setrecordsPerPage(20)}>20</a></li>
-                                                      </ul>
+                                                         <ul className="dropdown-menu show-entries-dropdown">
+                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(10); setCurrentPage(1); }}>10</a></li>
+                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(20); setCurrentPage(1); }}>20</a></li>
+                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(50); setCurrentPage(1); }}>50</a></li>
+                                                            <li><a className="dropdown-item" onClick={() => { setrecordsPerPage(100); setCurrentPage(1); }}>100</a></li>
+                                                         </ul>
                                                    </div>
                                              <span className='show-entries-cnt1'>Entries</span>
                                           </div>
@@ -1505,6 +1557,13 @@ function StoreContacts() {
                                  className="form-check-input"
                                  type="checkbox"
                                  id="flexSwitchCheckDefault"
+                                 onChange={()=>{
+                                    if(campaignOpt===true){
+                                       setcampaignOpt(false)
+                                    }
+                                    else{
+                                    setcampaignOpt(true)}
+                                 }}
                               /> <span className="text-xs">Opt out Marketing Messages</span>
                            </div>
                         </div>

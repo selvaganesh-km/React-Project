@@ -203,6 +203,27 @@ const WhatsApp_Chat: React.FC = () => {
   //   Get By Id
 
   const contactListGet = async (id:any) => {
+    if (!id) {
+        // Clear all state when ID is null or undefined
+        setFName('');
+        setLName('');
+        setgenderDropDown('');
+        setcountryName('');
+        setStoreId('');
+        setStoreName('');
+        setDate('');
+        setsaleAmount('');
+        setMobNumber('');
+        setLangName('');
+        setLanguageCode('');
+        setEmail('');
+        setLoyality('');
+        setAnniversary('');
+        setAddress('');
+        setGroupName([]);
+        setGroupId([]);
+        return;
+    }
     try {
        const responseData = await VendorAPI.contactGetAPI(id);
        if (responseData.apiStatus.code === '200') {
@@ -665,10 +686,13 @@ const handleChatClear = () => {
                                                             <div className="d-flex gap-2 align-items-center cursor-pointer">
                                                                 <div>
                                                                     <h5 className="whatsapp-chat-profile-first mt-n4">
-                                                                        {listData?.contactName
-                                                                            ?.split(' ')
-                                                                            .map((word: string) => word.charAt(0).toUpperCase())
-                                                                            .join('')}
+                                                                        {listData?.contactName?.trim()
+                                                                            ? listData.contactName
+                                                                                .trim()
+                                                                                .split(' ')
+                                                                                .map((word: string) => Array.from(word)[0]?.toUpperCase())
+                                                                                .join('')
+                                                                            : listData?.contactNumber?.slice(0, 2)}
                                                                     </h5>                                                                
                                                                 </div>  
                                                                 <div className="pt-2">
@@ -710,10 +734,15 @@ const handleChatClear = () => {
                                         <div className="chat-header">
                                             <div className="d-flex gap-2">
                                                 <div>
-                                                    <h5 className="whatsapp-chat-profile-first">{contactName
-                                                        ?.split(' ')
-                                                        .map((word: string) => word.charAt(0).toUpperCase())
-                                                        .join('')}</h5>
+                                                    <h5 className="whatsapp-chat-profile-first">
+                                                        {contactName?.trim()
+                                                        ? contactName
+                                                            .trim()
+                                                            .split(' ')
+                                                            .map((word: string) => Array.from(word)[0]?.toUpperCase())
+                                                            .join('')
+                                                        : contactNumber?.slice(0, 2)}
+                                                    </h5>
                                                 </div>
                                                 <div>
                                                     <h6 className="text-white">{contactName} - <span className="text-success">{to}</span></h6>

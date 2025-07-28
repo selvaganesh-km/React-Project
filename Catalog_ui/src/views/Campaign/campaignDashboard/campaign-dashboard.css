@@ -77,3 +77,29 @@
     font-size: 15px;
     position: relative;
 }
+
+.actionCampFailedMsg-tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.actionCampFailedMsg-tooltip-container .actionChathelp-tooltip-text {
+    visibility: hidden;
+    background-color: #feefae;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    color: black;
+    padding: 3px 10px;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 100%;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.actionCampFailedMsg-tooltip-container:hover .actionChathelp-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
