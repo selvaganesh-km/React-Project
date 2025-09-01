@@ -358,3 +358,140 @@
         box-shadow: 20px 0 #075e54, -20px 0 #075e545d;
     }
 }
+
+.scroll-btn {
+    position: sticky;
+    background: #0cc0df;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    z-index: 1000;
+    display: flex;
+    font-size: 13px;
+    float: right;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease;
+    font-weight: bold;
+}
+
+.scroll-btn-left {
+    margin-right: 10px;
+}
+
+.scroll-top {
+    bottom: 0px;
+}
+
+.scroll-bottom {
+    bottom: 0px;
+    right: 15px;
+}
+
+
+/* Mobile responsiveness */
+
+@media (max-width: 600px) {
+    .scroll-btn {
+        width: 35px;
+        height: 25px;
+        right: 8px;
+    }
+    .scroll-top {
+        bottom: 70px;
+    }
+    .scroll-bottom {
+        bottom: 15px;
+    }
+}
+
+.template-failed-msg {
+    font-size: 12px;
+    margin-bottom: 2px;
+    font-style: italic;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.bg-whatsapp {
+    background: #f9fff4 !important;
+}
+
+.chat-reactionEmoji-user {
+    position: absolute;
+    display: flex;
+    background: #fbf8f5;
+    border-radius: 100px;
+    width: 23px;
+    height: 23px;
+    padding: 3px;
+    margin-top: -8px;
+    left: 30px;
+    font-size: 12px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14);
+    margin-bottom: 5px;
+}
+
+.chat-reactionEmoji-bot {
+    position: absolute;
+    display: flex;
+    background: #fbf8f5;
+    border-radius: 100px;
+    width: 23px;
+    height: 23px;
+    padding: 3px;
+    margin-top: -2px;
+    right: 10px;
+    font-size: 12px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14);
+}
+
+.bot-replyTo {
+    font-size: 8px;
+}
+
+.highlighted-bot-msg {
+    background-color: hsla(82, 64%, 92%, 0.2);
+    border-radius: 8px;
+    animation: flash-highlight 2s ease-in-out;
+}
+
+@keyframes flash-highlight {
+    0% {
+        background-color: hsla(82, 62%, 67%, 0.9);
+    }
+    40% {
+        background-color: hsla(82, 60%, 70%, 0.6);
+    }
+    70% {
+        background-color: hsla(82, 70%, 85%, 0.4);
+    }
+    100% {
+        background-color: hsla(82, 64%, 92%, 0.2);
+    }
+}
+
+.whatsChat-count {
+    background: #ffd600;
+    color: black;
+    padding: 2px 7px;
+    font-size: 11.3px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.whatsChatSide-Count {
+    background-color: #2dce89;
+    color: #4e6c80;
+    width: 25px;
+    border-radius: 50%;
+    height: 25px;
+    text-align: center;
+    padding-top: 3px;
+    font-weight: bold;
+    font-size: 12px;
+    float: right;
+}

@@ -10,7 +10,7 @@ import VendorAPI from "../../../api/services/vendorLogin/vendorApi";
 import { toast } from "react-toastify";
 import API from "../../../api/api";
 import API_EP_BOOK from "../../../api/endpoints";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FadeLoader } from "react-spinners";
 declare global {
     interface Window {
@@ -153,16 +153,16 @@ function Sms_Settings() {
                     <div className="container-fluid py-1">
                         <nav aria-label="breadcrumb">
                             <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                <li className="breadcrumb-item text-sm"><a className="opacity-5 tblName" href="#">Pages</a></li>
-                                <li className="breadcrumb-item text-sm tblName active" aria-current="page">Settings</li>
+                                 <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                                <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Settings</li>
                             </ol>
-                            <h6 className="font-weight-bolder text-start mb-0 tblName">Sms Settings</h6>
+                            <h6 className="font-weight-bolder text-start mb-0 grayFont">Sms Settings</h6>
                         </nav>
                     </div>
 
                     <div className="dashboard-maincontent container-fluid py-4">
                         <div className="card p-3">
-                            <h3 className="tblName">Sms Setup</h3>
+                            <h4 className="grayFont">Sms Setup</h4>
                             <div className="row">
                             {loading ? (
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
@@ -173,7 +173,7 @@ function Sms_Settings() {
                                     {/* Sms Developer Account */}
                                     <div className="col-md-6">
                                         <div className="campaign-template border shadow-lg mb-5">
-                                            <h6 onClick={ShowTernary} className="campaign-temp-head tblName">
+                                            <h6 onClick={ShowTernary} className="campaign-temp-head">
                                                 Sms Developer Account <span className="setting-whatsapp-ternary">Click to expand/collapse</span>
                                             </h6>
                                             <div className={`campaign-content-wrapper ${showdata ? 'show' : ''}`}>
@@ -253,7 +253,7 @@ function Sms_Settings() {
                                     {/* Test Contact for Campaign */}
                                     <div className="col-md-6">
                                         <div className="campaign-template border shadow-lg mb-5">
-                                            <h6 className="campaign-temp-head tblName" onClick={ShowButtonDatas}>
+                                            <h6 className="campaign-temp-head" onClick={ShowButtonDatas}>
                                                 Test Contact for Campaign <span className="setting-whatsapp-ternary">Click to expand/collapse</span>
                                             </h6>
                                             <div className={`campaign-content-wrapper ${showbuttons ? 'show' : ''}`}>

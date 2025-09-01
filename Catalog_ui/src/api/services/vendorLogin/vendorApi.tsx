@@ -69,7 +69,8 @@ const whatsappChatsendAPI = API_EP_BOOK.WHATSAPP_CHATSEND;
 const whatsappChatListAPI = API_EP_BOOK.WHATSAPP_CHATLIST;
 const whatsappChatClearAPI = API_EP_BOOK.WHATSAPP_CHATCLEAR;
 const whatsappContactSideListAPI = API_EP_BOOK.WHATSAPP_CONTACTSIDELIST;
-
+const whatsappContactUnreadSideListAPI = API_EP_BOOK.WHATSAPP_CONTACTUNREADSIDELIST;
+const sideListWappAPI = API_EP_BOOK.SIDE_LIST_WAPPCOUNT;
 // Bot Reply
 const botReplyList = API_EP_BOOK.BOT_REPLY_LIST;
 const chatBotCreateAPI = API_EP_BOOK.CHAT_BOT_CREATE;
@@ -185,9 +186,36 @@ const commonchangePasswordAPI = API_EP_BOOK.COMMON_CHANGE_PASSWORD_API_EP;
 //Catalog
 const catalogListAPI = API_EP_BOOK.LIST_CATALOG_API_EP;
 const catalogCreateAPI = API_EP_BOOK.CREATE_CATALOG_API_EP;
-
+const catalogSyncAPI = API_EP_BOOK.CATALOG_SYNC_API_EP;
+const catalogBussinessDropAPI = API_EP_BOOK.CATALOG_BUSSINESS_DROP_API_EP;
+const cataloglistLinkedAPI = API_EP_BOOK.CATALOG_LIST_LINKED_API_EP;
+const catalogLinkAPI = API_EP_BOOK.CATALOG_LINK_API_EP;
+const catalogLinkBizIdAPI = API_EP_BOOK.CATALOG_LINK_BIZID_API_EP;
+const catalogBizInfoAPI = API_EP_BOOK.CATALOG_BIZ_INFO_API_EP;
+const catalogDeleteAPI = API_EP_BOOK.CATALOG_DELETE_API_EP;
+const catalogwhatsappsetupList = API_EP_BOOK.CATALOG_WHATSAPP_SETUP_LIST;
+const catalogwhatsappwebhookList = API_EP_BOOK.CATALOG_WHATSAPP_WEBHOOK_LIST;
+const catalogwhatsapphealthList = API_EP_BOOK.CATALOG_WHATSAPP_HEALTH_LIST;
+const catalogwhatsapptokenInfo = API_EP_BOOK.CATALOG_WHATSAPP_TOKEN_INFO;
+const catalogwhatsappIntegrationSet = API_EP_BOOK.CATALOG_WHATSAPP_INTEGRATIONSET;
+const catalogwhatsapptestContact = API_EP_BOOK.CATALOG_WHATSAPP_TEST_CONTACT;
+const catalogwhatsappHealthy = API_EP_BOOK.CATALOG_WHATSAPP_HEALTHY;
+const catalogwhatsappbussinessInfo = API_EP_BOOK.CATALOG_WHATSAPP_BUSSINESS_INFO;
+const catalogwhatsappIndustryDrop = API_EP_BOOK.CATALOG_WHATSAPP_INDUSTRY_DROP;
+const catalogwhatsappbussinessProfileUpdate = API_EP_BOOK.CATALOG_WHATSAPP_BUSSINESS_PROFILE_UPDATE;
+const catalogwhatsappImgUploadAPI = API_EP_BOOK.CATALOG_ADMIN_IMG_UPLOAD_API_EP;
 //Product
 const productListAPI = API_EP_BOOK.PRODUCT_LIST_API_EP;
+const productCreateAPI = API_EP_BOOK.PRODUCT_CREATE_API_EP;
+const productUpdateAPI = API_EP_BOOK.PRODUCT_UPDATE_API_EP;
+const productDeleteAPI = API_EP_BOOK.PRODUCT_DELETE_API_EP;
+const productGetAPI = API_EP_BOOK.PRODUCT_GET_API_EP;
+const productSyncAPI = API_EP_BOOK.PRODUCT_SYNC_API_EP;
+const productStatusChangeAPI = API_EP_BOOK.PRODUCT_STATUS_CHANGE_API_EP;
+
+//Order
+const OrderListAPI = API_EP_BOOK.ORDER_LIST_API_EP;
+const OrderStatusUpdateAPI = API_EP_BOOK.ORDER_STATUS_UPDATE_API_EP;
 
 const VendorAPI = {
     
@@ -410,7 +438,17 @@ const VendorAPI = {
         const getResponse = API(whatsappContactSideListAPI, requestAPIData);
         return getResponse;
     },
-
+    whatsappContactUnreadSideListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(whatsappContactUnreadSideListAPI, requestAPIData);
+        return getResponse;
+    },
+    sideListWappAPI: function () {
+        const getResponse = API(sideListWappAPI);
+        return getResponse;
+    },
     // Bot Reply
 
     botReplyList: function (apiData: any) {
@@ -1389,6 +1427,119 @@ const VendorAPI = {
         }; const getResponse = API(catalogCreateAPI, requestAPIData);
         return getResponse;
     },
+    catalogSyncAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogSyncAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogLinkAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogLinkAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogLinkBizIdAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogLinkBizIdAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogDeleteAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogDeleteAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogBizInfoAPI: function () {
+        const getResponse = API(catalogBizInfoAPI);
+        return getResponse;
+    },
+    cataloglistLinkedAPI: function () {
+        const getResponse = API(cataloglistLinkedAPI);
+        return getResponse;
+    },
+    catalogBussinessDropAPI: function () {
+        const getResponse = API(catalogBussinessDropAPI);
+        return getResponse;
+    },
+    catalogwhatsapphealthList: function () {
+         const requestAPIData = {
+            url: catalogwhatsapphealthList.url,
+            method: catalogwhatsapphealthList.method,
+            authorization: catalogwhatsapphealthList.authorization,
+        };
+        return API(requestAPIData);
+    },
+    catalogwhatsappwebhookList: function () {
+         const requestAPIData = {
+            url: catalogwhatsappwebhookList.url,
+            method: catalogwhatsappwebhookList.method,
+            authorization: catalogwhatsappwebhookList.authorization,
+        };
+        return API(requestAPIData);
+    },
+    catalogwhatsappsetupList: function () {
+         const requestAPIData = {
+            url: catalogwhatsappsetupList.url,
+            method: catalogwhatsappsetupList.method,
+            authorization: catalogwhatsappsetupList.authorization,
+        };
+        return API(requestAPIData);
+    },
+
+    catalogwhatsapptokenInfo: function () {
+         const requestAPIData = {
+            url: catalogwhatsapptokenInfo.url,
+            method: catalogwhatsapptokenInfo.method,
+            authorization: catalogwhatsapptokenInfo.authorization,
+        };
+        return API(requestAPIData);
+    },
+    catalogwhatsappIntegrationSet: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(catalogwhatsappIntegrationSet, requestAPIData);
+        return getResponse;
+    },
+    catalogwhatsappHealthy: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(catalogwhatsappHealthy, requestAPIData);
+        return getResponse;
+    },
+    catalogwhatsappbussinessInfo: function () {
+         const requestAPIData = {
+            url: catalogwhatsappbussinessInfo.url,
+            method: catalogwhatsappbussinessInfo.method,
+            authorization: catalogwhatsappbussinessInfo.authorization,
+        };
+        return API(requestAPIData);
+    },
+    catalogwhatsappIndustryDrop: function () {
+        const apiUrl = whatsappIndustryDrop.url;
+        const requestAPIData = {
+            url: apiUrl,
+            method: catalogwhatsappIndustryDrop.method,
+            authorization: catalogwhatsappIndustryDrop.authorization
+        };
+        return API(requestAPIData);
+    },
+    catalogwhatsappbussinessProfileUpdate: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(catalogwhatsappbussinessProfileUpdate, requestAPIData);
+        return getResponse;
+    },
+    catalogwhatsappImgUploadAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogwhatsappImgUploadAPI, requestAPIData);
+        return getResponse;
+    },
     // CATALOG API'S END
 
     // PRODUCT API'S START
@@ -1398,6 +1549,69 @@ const VendorAPI = {
         }; const getResponse = API(productListAPI, requestAPIData);
         return getResponse;
     },
+    productCreateAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productCreateAPI, requestAPIData);
+        return getResponse;
+    },
+    productUpdateAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productUpdateAPI, requestAPIData);
+        return getResponse;
+    },
+    productDeleteAPI: function (id: any) {
+        const url = productDeleteAPI.url.replace(':id', id);
+        const requestAPIData = {
+            url: url,
+            method: productDeleteAPI.method,
+            authorization: productDeleteAPI.authorization
+        };
+
+        return API(requestAPIData)
+    },
+    productGetAPI: function (id: any) {
+        const url = productGetAPI.url.replace(':id', id);
+        const requestAPIData = {
+            url: url,
+            method: productGetAPI.method,
+            authorization: productGetAPI.authorization
+        };
+
+        return API(requestAPIData)
+    },
+    productSyncAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productSyncAPI, requestAPIData);
+        return getResponse;
+    },
+    productStatusChangeAPI: function (id: any) {
+        const url = productStatusChangeAPI.url.replace(':id', id);
+        const requestAPIData = {
+            url: url,
+            method: productStatusChangeAPI.method,
+            authorization: productStatusChangeAPI.authorization
+        };
+
+        return API(requestAPIData)
+    },
     // PRODUCT API'S END
+
+    // ORDER API'S START
+    OrderListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(OrderListAPI, requestAPIData);
+        return getResponse;
+    },
+    OrderStatusUpdateAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(OrderStatusUpdateAPI, requestAPIData);
+        return getResponse;
+    },
+    // ORDER API'S END
 }
 export default VendorAPI;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import Userimg from "../../../assets/img/team-2.jpg";
 import Userimg1 from "../../../assets/img/small-logos/logo-spotify.svg"
@@ -51,13 +51,18 @@ function Createcampaign() {
    const [fileName, setFileName] = useState<string | null>(null);
    const [textInput, setTextInput] = useState('');
    const [BodytextInput, setBodyTextInput] = useState('');
-
    const [footertextInput, setFooterTextInput] = useState('');
    const [bodyTextValues, setBodyTextValues] = useState('')
-   // const [bodyTextValues1, setBodyTextValues1] = useState('')
    const [bodyTextValues1, setBodyTextValues1] = useState<string[]>([]);
    const [bodyArrayValues, setBodyArrayValues] = useState<string[]>([]);
+   const [carousels, setCarousels] = useState<any[]>([]);
+   const [carouselMediaIds, setCarouselMediaIds] = useState<any[]>([]);
+   console.log(carouselMediaIds,"setFileNames")
+   console.log(carousels,"setCarousel")
    const [bodyStringValue, setBodyStringValue] = useState<string>("");
+   const [slides,setslides] = useState<any>([]);
+   const [carouselTyp, setCarouselTyp] = useState('')
+   const [currentIndex, setCurrentIndex] = useState(0);
    const [textValues, setTextValues] = useState('')
    const [phoneNumber, setPhoneNumber] = useState('');
    const [imgValue, setImgValue] = useState('')
@@ -96,7 +101,42 @@ function Createcampaign() {
    const [scheduleStatus, setscheduleStatus] = useState(false);
    const [scheduledAt, setscheduledAt] = useState('');
    const [sendNum, setsendNum] = useState('');
-
+    const wrapperRef = useRef<HTMLDivElement>(null);
+   const videoLoaded = useRef(false);
+ 
+   const nextSlide = () => {
+  requestAnimationFrame(() => {
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
+  });
+};
+ 
+ const prevSlide = () => {
+  requestAnimationFrame(() => {
+    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  });
+};
+ 
+//   useEffect(() => {
+//   if (!wrapperRef.current) return;
+//   if (!videoLoaded.current) return; // wait until video is ready
+ 
+//   let frameId: number;
+//   const observer = new ResizeObserver((entries) => {
+//     if (frameId) cancelAnimationFrame(frameId);
+//     frameId = requestAnimationFrame(() => {
+//       entries.forEach((entry) => {
+//         console.log("Observed size:", entry.contentRect);
+//       });
+//     });
+//   });
+ 
+//   observer.observe(wrapperRef.current);
+ 
+//   return () => {
+//     if (frameId) cancelAnimationFrame(frameId);
+//     observer.disconnect();
+//   };
+// }, [videoLoaded.current]);
    const navigate = useNavigate();
 
    const [setValue, setSetValue] = useState("")
@@ -112,6 +152,22 @@ function Createcampaign() {
          // handlesendMsg();
       }
    }, [getId]);
+   const [currentCarousel, setCurrentCarousel] = useState(0);
+console.log(currentCarousel,"carousel")
+  const handleNext = () => {
+    if (currentCarousel < carousels.length - 1) {
+      setCurrentCarousel(currentCarousel + 1);
+      setCurrentIndex(currentCarousel + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentCarousel > 0) {
+      setCurrentCarousel(currentCarousel - 1);
+      setCurrentIndex(currentCarousel - 1);
+    }
+  };
+
    const [BodytextNumbers, setBodytextNumbers] = useState<string[]>([]);
    useEffect(() => {
       if (BodytextInput) {
@@ -130,19 +186,188 @@ function Createcampaign() {
          }
       }
    }, [BodytextInput])
+   const [carouselVariables, setCarouselVariables] = useState<
+    {
+      cardIndex: number;
+      variables: {
+      type: "body" | "button";
+        varName: string;
+        varValue: { varTypeName: string; varTypeId: string };
+      }[];
+    }[]
+   >([]);
+console.log(JSON.stringify(carouselVariables, null, 2), "→ carouselVariables");
+ 
+  const handleVariableSelect = (
+  cardIndex: number,
+  varName: string,
+  option: { id: string; variable_name: string }
+) => {
+  setCarouselVariables((prev:any) => {
+    const card = prev.find((c:any) => c.cardIndex === cardIndex);
+    if (card) {
+      const updatedVariables = card.variables.map((v:any) =>
+        v.varName === varName
+          ? { type: "body", varName, varValue: { varTypeName: option.variable_name, varTypeId: option.id } }
+          : v
+      );
+      if (!updatedVariables.some((v:any) => v.varName === varName)) {
+        updatedVariables.push({ type: "body", varName, varValue: { varTypeName: option.variable_name, varTypeId: option.id } });
+      }
+      return prev.map((c:any) =>
+        c.cardIndex === cardIndex ? { ...c, variables: updatedVariables } : c
+      );
+    } else {
+      return [
+        ...prev,
+        {
+          cardIndex,
+          variables: [{ type: "body", varName, varValue: { varTypeName: option.variable_name, varTypeId: option.id } }],
+        },
+      ];
+    }
+  });
+  setInputValues((prev) => ({
+    ...prev,
+    [`${cardIndex}-${varName}`]: option.variable_name,
+  }));
+};
+
+
+const handleInputChange = (
+  cardIndex: number,
+  inputVarName: string,
+  newValue: string
+) => {
+  // Update local input values
+  setInputValues((prev) => ({
+    ...prev,
+    [`${cardIndex}-${inputVarName}`]: newValue,
+  }));
+
+  // Match button vars like "button-0-text"
+  const buttonMatch = inputVarName.match(/^button-(\d+)-(text|example)$/);
+  const isButton = !!buttonMatch;
+
+  const extractedVarName = isButton ? buttonMatch![1] : inputVarName;
+  const type: "body" | "button" = isButton ? "button" : "body";
+
+  console.log("varName:", inputVarName);
+  console.log("extractedVarName:", extractedVarName);
+  console.log("type:", type);
+
+  const newVar = {
+    type,
+    varName: extractedVarName,
+    varValue: {
+      varTypeName: newValue,
+      varTypeId: "0",
+    },
+  };
+
+  // Update carouselVariables with correct type
+setCarouselVariables((prev) => {
+  const card = prev.find((c) => c.cardIndex === cardIndex);
+
+  if (card) {
+    const existingIndex = card.variables.findIndex(
+      (v) => v.varName === extractedVarName && v.type === type
+    );
+
+    let updatedVariables: {
+      type: "body" | "button";
+      varName: string;
+      varValue: { varTypeName: string; varTypeId: string };
+    }[];
+
+    if (existingIndex !== -1) {
+      // Update the existing variable
+      updatedVariables = [...card.variables];
+      updatedVariables[existingIndex] = newVar;
+    } else {
+      // Append new variable
+      updatedVariables = [...card.variables, newVar];
+    }
+
+    return prev.map((c) =>
+      c.cardIndex === cardIndex
+        ? { ...c, variables: updatedVariables }
+        : c
+    );
+  } else {
+    // No card exists, create one
+    return [
+      ...prev,
+      {
+        cardIndex,
+        variables: [newVar],
+      },
+    ];
+  }
+});
+
+};
+
+
+
+
+
+
+
+   const [BodytextNumbers1, setBodytextNumbers1] = useState<string[]>([]);
+   useEffect(() => {
+  if (!carousels || carousels.length === 0) return;
+
+  const card = carousels[currentCarousel];
+  const bodyComponent = card.components.find((c: any) => c.type === "BODY");
+  const bodyText = bodyComponent?.text || "";
+
+  // Remove HTML tags if any
+  const cleanedText = bodyText.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Find all {{number}} placeholders
+  const regex = /{{(\d+)}}/g;
+  const matches = [...cleanedText.matchAll(regex)];
+
+  const numbers = matches.map((m) => m[1]);
+  setBodytextNumbers1(numbers);
+}, [carousels, currentCarousel]);
+
+
    const handlePhoneClick = (phone: any) => {
       setPhoneNumber(phone);
    };
-   var [payload, setPayload] = useState<any>();
-   useEffect(() => {
-   }, [payload])
    
    const handlecreateCampaign = () => {
       setSubmit(true);
-      const hasEmptyBodyText = BodytextNumbers.some(item => !inputValues[item]);
-      if (!campaignName || !groupName || !groupId || hasEmptyBodyText) {
-         return;
-      }
+        for (let index = 0; index < carousels.length; index++) {
+    const card = carousels[index];
+
+    // Body variables
+    const hasEmptyBodyText = BodytextNumbers1.some(varName => {
+      const key = `${index}-${varName}`;
+      return !inputValues[key];
+    });
+
+    // Button variables (text only)
+    const buttonComponent = card?.components?.find((c: any) => c.type === "BUTTONS");
+    const buttons = buttonComponent?.buttons || [];
+    const hasEmptyButtonText = buttons.some((_: any, btnIdx: number) => {
+      const key = `${index}-button-${btnIdx}-text`;
+      return !inputValues[key];
+    });
+
+    if (!campaignName || !groupName || !groupId || hasEmptyBodyText || hasEmptyButtonText) {
+      // Jump to that carousel with missing values
+      setCurrentCarousel(index);
+      setCurrentIndex(index);
+      return; // Stop execution and prevent API call
+    }
+  }
+      // const hasEmptyBodyText = BodytextNumbers.some(item => !inputValues[item]);
+      // if (!campaignName || !groupName || !groupId || hasEmptyBodyText) {
+      //    return;
+      // }
       setLoading(true)
       const apiData = {
          templateId: getId,
@@ -152,6 +377,9 @@ function Createcampaign() {
          },
          title: campaignName,
          mediaId:imgid,
+         ...(carouselTyp==="CAROUSEL" && {
+            carouselMedia:carouselMediaIds
+         }),
          restrictLangCode: restrictLangCode,
          scheduleStatus: scheduleStatus,
          ...(scheduleStatus ? {
@@ -188,6 +416,16 @@ function Createcampaign() {
                      },
                    })),
                  } : null,
+            carouselTyp === "CAROUSEL" ?{
+               type:"carousel",
+               cards: carouselVariables.map((card: any) => ({
+               variables: card.variables.map((variable: any) => ({
+              type: variable.type,
+              varName: variable.varName,
+              varValue: variable.varValue
+            }))
+          }))
+            }:null,
          ].filter(item => item !== null)
       }
       VendorAPI.campaignCreateAPI(apiData)
@@ -239,6 +477,8 @@ function Createcampaign() {
             if (componentFormat) {
                setSelectedValue(componentFormat);
             }
+            console.log(selectedValue,"value")
+            console.log(componentFormat,"value1")
             const bodyTextComponent = data?.components?.find((comp: any) => comp.example?.body_text);
             const textComponent = data?.components?.find((comp: any) => comp.text);
             if (bodyTextComponent) {
@@ -270,6 +510,7 @@ function Createcampaign() {
                   setBodyTextValues(textData);
                }
             }
+            setimgActive(true)
             data?.components?.forEach((component: any) => {
                switch (component.type) {
                   case "HEADER":
@@ -287,7 +528,7 @@ function Createcampaign() {
                         setimgActive(true)
                         setimageInput(true)
                         setImgValue(component?.example?.header_handle[0])
-                        setImageUrl(component?.example?.header_handle[0])
+                        // setImageUrl(component?.example?.header_handle[0])
                      }
                      else if (component?.format === "VIDEO") {
                         setCompActive(component?.format === "VIDEO")
@@ -329,7 +570,52 @@ function Createcampaign() {
                   case "FOOTER":
                      setFooterTextInput(component.text);
                      break;
+                  case "CAROUSEL":
+                     setCarouselTyp(component.type);
+                     setCarousels(component?.cards);
+                     const carouselMedia = responseData?.responseData?.carousel_media || [];
+                     const filledMedia = component?.cards?.map((_: any, index: number) => {
+                        const match = carouselMedia.find((item: any) => +item.card_index === index + 1);
+                        return match?.media_url || null;
+                     });
+                     setCarouselMediaIds(filledMedia);
+                     const formattedSlides = component.cards.map((card: any, index: number) => {
+                  const header = card.components.find((c: any) => c.type === "HEADER");
+                  const body = card.components.find((c: any) => c.type === "BODY");
+                  const buttons = card.components.find((c: any) => c.type === "BUTTONS");
 
+                  // Replace placeholders with example values in body text
+                  let bodyText = body?.text || "";
+                  // const exampleValues = body?.example?.body_text?.[0] || [];
+                  // exampleValues.forEach((val: string, i: number) => {
+                  //    bodyText = bodyText.replace(`{{${i + 1}}}`, val);
+                  // });
+
+                  // Replace URL placeholders with example
+                  const formattedButtons = (buttons?.buttons || []).map((btn: any, btnIdx: number) => {
+                     let url = btn.url || "";
+                     if (btn.type === "URL" && btn.example?.length > 0) {
+                     url = url.replace(`{{1}}`, btn.example[0]);
+                     }
+                     return {
+                     type: btn.type.toLowerCase(),
+                     text: btn.text,
+                     url
+                     };
+                  });
+
+                  return {
+                     id: index,
+                     src: header?.example?.header_handle?.[0] || "",
+                     format: header?.format?.toLowerCase() || "image",
+                     title: `Slide ${index + 1}`,
+                     bodyText,
+                     buttons: formattedButtons
+                  };
+               });
+
+               setslides(formattedSlides);
+                  break;
                   case "BUTTONS":
                      component?.buttons.forEach((buttonsValue: any) => {
                         if (buttonsValue) {
@@ -369,6 +655,7 @@ function Createcampaign() {
 
                      break;
                }
+               
             });
 
          } else {
@@ -445,8 +732,16 @@ function Createcampaign() {
          setimgActive(false);
          setVdoValue("");
          setDocValue('');
-         // settimeZoneName("");
-         // settimeZoneId("");
+         setCarousels([]);
+         setCarouselVariables([]);
+         setBodytextNumbers([]);
+         setBodytextNumbers1([]);
+         setFileNames([]);
+         setImageUrls([]);
+         setImageUrl("");
+         setCurrentCarousel(0);
+         setCurrentIndex(0);
+         setCarouselTyp("");
       }
    }
 
@@ -550,14 +845,26 @@ function Createcampaign() {
    const [file, setFile] = useState<File | null>(null);
    const [imgid, setImgid] = useState("")
    const [imageUrl, setImageUrl] = useState("")
+
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
            const selectedFile = event.target.files?.[0];
-          if (selectedFile) {
-               const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-               if (!validTypes.includes(selectedFile.type)) {
-                  toast.error("Only JPG, JPEG, and PNG files are allowed.");
-                  return;
-               }
+          if (!selectedFile) return;
+           const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            const videoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+
+            const isImage = imageTypes.includes(selectedFile.type);
+            const isVideo = videoTypes.includes(selectedFile.type);
+
+            if (!isImage && !isVideo) {
+            if (selectedFile.type.startsWith('image/')) {
+                  toast.error("Only JPG, JPEG, and PNG image files are allowed.");
+            } else if (selectedFile.type.startsWith('video/')) {
+                  toast.error("Only MP4, WEBM, and OGG video files are allowed.");
+            } else {
+                  toast.error("Unsupported file type.");
+            }
+            return;
+            }
                if (file && selectedFile.name === file.name && selectedFile.size === file.size && selectedFile.lastModified === file.lastModified) {
                   console.log("Same file selected, skipping upload.");
                } else {
@@ -566,43 +873,105 @@ function Createcampaign() {
                   handleImgUpload(selectedFile);
                }
                const imagePreviewUrl = URL.createObjectURL(selectedFile);
+               console.log(imagePreviewUrl,"selvag")
                setImageUrl(imagePreviewUrl);
+       };
+const [fileNames, setFileNames] = useState<string[]>([]);
+const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+const handleFileChange1 = (event: React.ChangeEvent<HTMLInputElement>, indexToReplace: number) => {
+  const selectedFile = event.target.files?.[0];
+  if (!selectedFile) return;
+
+  const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  const videoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+
+  let format: 'image' | 'video' | null = null;
+
+  if (imageTypes.includes(selectedFile.type)) {
+    format = 'image';
+  } else if (videoTypes.includes(selectedFile.type)) {
+    format = 'video';
+  } else {
+    toast.error("Only JPG, JPEG, PNG images and MP4, WebM, OGG videos are allowed.");
+    return;
+  }
+
+  const previewUrl = URL.createObjectURL(selectedFile);
+
+  // Replace media at a specific index
+  setslides((prevSlides: any) => {
+    const updatedSlides = [...prevSlides];
+    if (indexToReplace < updatedSlides.length) {
+      updatedSlides[indexToReplace] = {
+        ...updatedSlides[indexToReplace],
+        src: previewUrl,
+        format,
+        title: selectedFile.name
+      };
+    } else {
+      toast.error("Invalid index to replace media.");
+    }
+    return updatedSlides;
+  });
+console.log(slides,"Slidezzzz")
+  // Optional: Update file names and URLs
+  setFileNames(prev => {
+    const updated = [...prev];
+    updated[indexToReplace] = selectedFile.name;
+    return updated;
+  });
+
+  setImageUrls(prev => {
+    const updated = [...prev];
+    updated[indexToReplace] = previewUrl;
+    return updated;
+  });
+
+  handleImgUpload(selectedFile);
+};
+
+
+   const handleImgUpload = async (file: File) => {
+      if (!file) {
+         toast.error("Please select a file to import.");
+         return;
+      }
+      const formData = new FormData();
+      formData.append("media_file", file);
+      try {
+         const response = await VendorAPI.whatsappImgUploadAPI(formData);
+         if (response?.apiStatus?.code==="200") {
+               setImgValue(response?.responseData?.h)
+               setImgid(response?.responseData?.id)
+               const mediaId = response?.responseData?.id;
+
+               setCarouselMediaIds((prev) => {
+            const updated = [...prev];
+            updated[currentCarousel] = mediaId;
+            return updated;
+         });
+               toast.success(response?.apiStatus?.message);
+         } else {
+               toast.error(response.apiStatus?.message);
          }
-       };
-       
-       const handleImgUpload = async (file: File) => {
-           if (!file) {
-               toast.error("Please select a file to import.");
-               return;
-           }
-           const formData = new FormData();
-           formData.append("media_file", file);
-           try {
-               const response = await VendorAPI.whatsappImgUploadAPI(formData);
-               if (response?.apiStatus?.code==="200") {
-                   setImgValue(response?.responseData?.h)
-                   setImgid(response?.responseData?.id)
-                   toast.success(response?.apiStatus?.message);
-               } else {
-                   toast.error(response.apiStatus?.message);
-               }
-           } catch (error) {
-               console.error("Import Error:", error);
-               toast.error("An error occurred while importing the file.");
-           }
-       };
-       const [minDateTime, setMinDateTime] = useState('');
-       useEffect(() => {
-         const now = new Date();
-         const formatted = now.toISOString().slice(0,16);
-         setMinDateTime(formatted);
-       }, []);
-       useEffect(()=>{
-         handleGetGroupDrop();
-         whatsappTemplateDropdwon();
-         commontimezonseDropAPI();
-         handleVariableDrop();
-       },[])
+      } catch (error) {
+         console.error("Import Error:", error);
+         toast.error("An error occurred while importing the file.");
+      }
+   };
+   const [minDateTime, setMinDateTime] = useState('');
+   useEffect(() => {
+   const now = new Date();
+   const formatted = now.toISOString().slice(0,16);
+   setMinDateTime(formatted);
+   }, []);
+   useEffect(()=>{
+   handleGetGroupDrop();
+   whatsappTemplateDropdwon();
+   commontimezonseDropAPI();
+   handleVariableDrop();
+   },[])
    if (redirect) {
       return <Navigate to={redirect} />;
    }
@@ -615,10 +984,10 @@ function Createcampaign() {
                   <div className="col-md-6">
                      <nav aria-label="breadcrumb">
                         <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                           <li className="breadcrumb-item text-sm"><a className="opacity-5 tblName" href="javascript:;">Dashboard</a></li>
-                           <li className="breadcrumb-item text-sm tblName active" aria-current="page">{contactDetailsValue.firstName ? "Send WhatsApp Template Message" : "Create New Campaign"}</li>
+                           <li className="breadcrumb-item text-sm"><a className="opacity-5 text-dark" href="javascript:;">Dashboard</a></li>
+                           <li className="breadcrumb-item text-sm text-dark active" aria-current="page">{contactDetailsValue.firstName ? "Send WhatsApp Template Message" : "Create New Campaign"}</li>
                         </ol>
-                        <h6 className="text-start font-weight-bolder mb-0 tblName">{contactDetailsValue.firstName ? ("Send WhatsApp Template Message") : (<>Create <i className="fa-brands fa-whatsapp"></i> New Campaign</>)}</h6>
+                        <h6 className="text-start font-weight-bolder mb-0">{contactDetailsValue.firstName ? ("Send WhatsApp Template Message") : (<>Create <i className="fa-brands fa-whatsapp"></i> New Campaign</>)}</h6>
                      </nav>
                   </div>
                   <div className="col-md-6 text-end">
@@ -646,7 +1015,7 @@ function Createcampaign() {
                            <p className="text-start">Select templates</p>
                            <div className="edit-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                               <input type="text" id="vendor-crt-input" 
-                              // onClick={whatsappTemplateDropdwon}
+                              onClick={whatsappTemplateDropdwon}
                               autoComplete="off" onChange={(e)=>settempName(e.target.value)}
                                  value={tempName}
                                  className="vendor-crt-input cursor-pointer"
@@ -700,7 +1069,7 @@ function Createcampaign() {
                                                    {` Assign content for {{1}} variable`}
                                                    <div className="vendor-create-container mt-3 dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                                       <input type="text" id="vendor-crt-input mb-3" 
-                                                      // onClick={handleVariableDrop}
+                                                      onClick={handleVariableDrop}
                                                          value={header_name} 
                                                          autoComplete="off"
                                                          onChange={(e) => {
@@ -743,7 +1112,7 @@ function Createcampaign() {
                                                       <input
                                                          type="text"
                                                          id={`vendor-crt-input-${item}`}
-                                                         // onClick={handleVariableDrop}
+                                                         onClick={handleVariableDrop}
                                                          autoComplete="off"
                                                          value={inputValues[item] || ''}
                                                          onChange={(e) => {
@@ -765,8 +1134,6 @@ function Createcampaign() {
                                                               }
                                                             });
                                                           }}
-                                                          
-                                                          
                                                          className={`vendor-crt-input loginfilled-frame-username ${submit && !inputValues[item] ? 'error' : ''}`}
                                                          placeholder=""
                                                          required
@@ -803,6 +1170,185 @@ function Createcampaign() {
                                              
                                           </div>
                                        </div>}
+                                    <div>
+                                       {BodytextNumbers1.length > 0 && (
+                                       <div className="text-start campaign-template mt-4">
+                                          <h6 className="campaign-temp-head">Carousel Body {currentCarousel + 1}</h6>
+                                          <div className="row">
+                                             {BodytextNumbers1.map((varName) => {
+                                             const inputKey = `${currentCarousel}-${varName}`;
+                                             const value = inputValues[inputKey] || (() => {
+                                                const card = carouselVariables.find((c) => c.cardIndex === currentCarousel);
+                                                const variableObj = card?.variables.find((v) => v.varName === varName && v.type === "body");
+                                                return variableObj?.varValue.varTypeName || '';
+                                             })();
+                                             return (
+                                                <div className={`${BodytextNumbers1.length === 1 ? "col-md-12" : "col-md-6 mt-2"}`} key={varName}>
+                                                   {`Assign content for {{${varName}}} variable`}
+                                                   <div className="vendor-create-container mt-3 dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                   <input
+                                                      type="text"
+                                                      id={`vendor-crt-input-${varName}`}
+                                                      autoComplete="off"
+                                                      value={value}
+                                                      onChange={(e) => handleInputChange(currentCarousel, varName, e.target.value)}
+                                                      className={`vendor-crt-input loginfilled-frame-username ${submit && !value ? 'error' : ''}`}
+                                                      placeholder=""
+                                                      required
+                                                   />
+                                                   <label htmlFor={`vendor-crt-input-${varName}`} className="vendor-crt-label">
+                                                      Choose or write your own
+                                                   </label>
+                                                   <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
+                                                   <ul className="dropdown-menu template-dropdown w-100">
+                                                      {variableDrop?.map((option) => (
+                                                         <li key={option.id}>
+                                                         <a
+                                                            className="dropdown-item"
+                                                            href="#"
+                                                            onClick={(e) => {
+                                                               e.preventDefault();
+                                                               handleVariableSelect(currentCarousel, varName, option);
+                                                            }}
+                                                         >
+                                                            {option.variable_name}
+                                                         </a>
+                                                         </li>
+                                                      ))}
+                                                   </ul>
+                                                   </div>
+                                                   {submit && !value && <div className="invalid-feedback d-block">Field is required</div>}
+                                                </div>
+                                             );
+                                             })}
+                                          </div>
+                                          <div className="d-flex justify-content-between mt-4">
+                                                   <button
+                                                   onClick={handlePrevious}
+                                                   disabled={currentCarousel === 0}
+                                                   className="bg-secondary border-0 text-white rounded"
+                                                   >
+                                                   ❮
+                                                   </button>
+                                                   <div>
+                                                      <span className="me-3">
+                                                         Showing entries {currentCarousel + 1} of {carousels.length}
+                                                      </span>
+                                                   </div>
+                                                   <button
+                                                   onClick={handleNext}
+                                                   disabled={currentCarousel === carousels.length - 1}
+                                                   className="bg-secondary border-0 text-white rounded"
+                                                   >
+                                                   ❯
+                                                   </button>
+                                                </div>
+                                       </div>
+                                       
+                                       )}
+                                       {(() => {
+                                       const card = carousels[currentCarousel];
+                                       const buttonComponent = card?.components?.find((c:any) => c.type === "BUTTONS");
+                                       if (!buttonComponent) {
+                                          return null;
+                                       }
+                                       const buttons = buttonComponent?.buttons || [];
+                                       const format = carousels[currentCarousel]?.components?.find((c: any) => c.type === "HEADER")?.format;
+
+                                       const uniqueButtons = buttons.filter((btn:any, index:any, self:any) =>
+                                          self.findIndex((b:any) => b.type === btn.type && b.text === btn.text) === index
+                                       );
+
+                                       return (
+                                          <div className="text-start campaign-template mt-4">
+                                             <h6 className="campaign-temp-head">Carousel Buttons {currentCarousel + 1}</h6>
+                                             <div className="row">
+                                             {uniqueButtons.map((btn:any, idx:any) => {
+                                                const textVarName = `button-${idx}-text`;
+                                                const exampleVarName = `button-${idx}-example`;
+
+                                                const textValue = inputValues[`${currentCarousel}-${textVarName}`] || '';
+                                                const exampleValue = inputValues[`${currentCarousel}-${exampleVarName}`] || '';
+
+                                                return (
+                                                   <React.Fragment key={`button-${idx}`}>
+                                                   <div className={`${uniqueButtons.length === 1 ? "col-md-12" : "col-md-6"} login-input-group`}>
+                                                      {`Assign content for Button {{${idx + 1}}}`}
+                                                      <div className="vendor-create-container mt-3">
+                                                         <input
+                                                         autoComplete="off"
+                                                         type="text"
+                                                         id={`vendor-crt-input-button-${idx}`}
+                                                         value={textValue}
+                                                         onChange={(e) => handleInputChange(currentCarousel, textVarName, e.target.value)}
+                                                         className={`vendor-crt-input loginfilled-frame-username ${submit && !textValue ? 'error' : ''}`}
+                                                         placeholder=" "
+                                                         maxLength={12}
+                                                         required
+                                                         />
+                                                         <label htmlFor={`vendor-crt-input-button-${idx}`} className="vendor-crt-label">Button Text</label>
+                                                      </div>
+                                                      {submit && !textValue && <div className="invalid-feedback d-block">Field is required</div>}
+                                                   </div>
+                                                   </React.Fragment>
+                                                );
+                                             })}
+                                             </div>
+                                             <div className="col-md-12 mt-3 mb-5 file_upload_field">
+                                                   <div className="mb-2">Carousel Image</div>
+                                                      <div className="file-inputs edit-container">
+                                                         <input
+                                                            type="file"
+                                                            name="file-input"
+                                                            id="file-input"
+                                                            className="file-input__input"
+                                                            accept={format==="IMAGE" ? ".jpg,.jpeg,.png" : ".mp4,.mov,.avi,.wmv,.mkv,.flv"}
+                                                            onChange={(e) => handleFileChange1(e, currentCarousel)}
+                                                         />
+                                                         <label className="file-input__label" htmlFor="file-input" style={{background:"white"}}>
+                                                            <svg
+                                                               aria-hidden="true"
+                                                               focusable="false"
+                                                               data-prefix="fas"
+                                                               data-icon="upload"
+                                                               className="svg-inline--fa fa-upload fa-w-16"
+                                                               role="img"
+                                                               xmlns="http://www.w3.org/2000/svg"
+                                                               viewBox="0 0 512 512"
+                                                            >
+                                                               <path
+                                                                  fill="currentColor"
+                                                                  d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
+                                                               ></path>
+                                                            </svg>
+                                                            <span>Upload file</span> <span className="mx-2">{fileNames[currentCarousel]}</span></label>
+                                                      </div>
+                                                   </div>
+                                             <div className="d-flex justify-content-between mt-4">
+                                                   <button
+                                                   onClick={handlePrevious}
+                                                   disabled={currentCarousel === 0}
+                                                   className="bg-secondary border-0 text-white rounded"
+                                                   >
+                                                   ❮
+                                                   </button>
+                                                   <div>
+                                                      <span className="me-3">
+                                                         Showing entries {currentCarousel + 1} of {carousels.length}
+                                                      </span>
+                                                   </div>
+                                                   <button
+                                                   onClick={handleNext}
+                                                   disabled={currentCarousel === carousels.length - 1}
+                                                   className="bg-secondary border-0 text-white rounded"
+                                                   >
+                                                   ❯
+                                                   </button>
+                                                </div>
+                                          </div>
+                                       );
+                                       })()}
+                                       </div>
                                        <h5 className="text-start">Step 2</h5>
                                        <div className="text-start campaign-template mt-4">
                                           <h6 className="campaign-temp-head">Contact and Schedule</h6>
@@ -818,7 +1364,7 @@ function Createcampaign() {
                                           <p className="pt-2 campaign-groupcnt">Groups/Contact</p>
                                           <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                              <input type="text" id="vendor-crt-input" 
-                                                // onClick={handleGetGroupDrop} 
+                                                onClick={handleGetGroupDrop} 
                                                 value={groupName}
                                                 autoComplete="off" onChange={(e)=>setGroupName(e.target.value)}
                                                 className={`vendor-crt-input loginfilled-frame-username ${submit && !groupName ? 'error' : ''}`}
@@ -853,6 +1399,7 @@ function Createcampaign() {
                                                             name="file-input"
                                                             id="file-input"
                                                             className="file-input__input"
+                                                            accept={selectedValue==="image" ? ".jpg,.jpeg,.png" : ".mp4,.mov,.avi,.wmv,.mkv,.flv"}
                                                             onChange={handleFileChange}
                                                          />
                                                          <label className="file-input__label" htmlFor="file-input" style={{background:"white"}}>
@@ -890,7 +1437,7 @@ function Createcampaign() {
                                                    <div className="vendor-create-container dropdown mt-4" data-bs-toggle="dropdown" aria-expanded="false">
                                                       <input type="text" id="vendor-crt-input" 
                                                       value={timeZoneName}
-                                                      // onClick={commontimezonseDropAPI} 
+                                                      onClick={commontimezonseDropAPI} 
                                                       autoComplete="off" onChange={(e)=>settimeZoneName(e.target.value)}
                                                       className="vendor-crt-input" placeholder=" " required />
                                                       <label htmlFor="vendor-crt-input" className="vendor-crt-label">Select your Timezone</label>
@@ -936,19 +1483,39 @@ function Createcampaign() {
                                           </div>
                                        </div>
                                     </div>
-                                    <div className="col-md-6 text-start ">
+                                    <div className="col-md-6 text-start sticky-top h-100">
                                        <div className="campaign-template">
                                           <h6 className="campaign-temp-head">Message Preview</h6>
                                           <div className="campaign-msgImg">
                                              <div className="conversation">
                                                 <div className="conversation-container">
-                                                   <div className=" p-4 message received">
+                                                   <div className=" p-4 message received z-0" >
                                                       <p className="campaign-msg-cnt template-headertxt"><b>{textInput}
                                                          {imgValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                             {/* <i className="fa fa-5x fa-image text-white"></i> */}
-                                                            <img className="w-100" src={imageUrl} alt="" />
+                                                            <img className="w-100" src={imageUrl||imgValue} alt="" />
                                                             </div> : null}
-                                                         {vdoValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '35px', background: 'gainsboro' }}><i className="fa fa-5x fa-play-circle"></i></div> : null}
+                                                         {(vdoValue || imageUrl) && (
+                                                         <div
+                                                            className="rounded"
+                                                            style={{
+                                                               display: 'flex',
+                                                               justifyContent: 'center',
+                                                               alignItems: 'center',
+                                                               background: 'gainsboro',
+                                                               pointerEvents: 'auto',
+                                                            }}
+                                                         >
+                                                            <video
+                                                               className="w-100 rounded"
+                                                               controls
+                                                               autoPlay
+                                                               loop
+                                                               playsInline
+                                                               src={imageUrl || vdoValue}
+                                                            />
+                                                         </div>
+                                                         )}
                                                          {docValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '35px', background: 'gainsboro' }}><i className="fa fa-5x fa-file-alt text-white"></i></div> : null}
                                                       </b></p>
                                                       <p className="campaign-msg-cnt template-bodytxt"
@@ -979,6 +1546,108 @@ function Createcampaign() {
                                                          )}
                                                       </div>
                                                    </div>
+                                       {carouselTyp &&(
+                                       <div className="main-container-carousels">
+                                          <div
+                                                style={{
+                                                   display: "flex",
+                                                   width: `${slides.length * 100}%`,
+                                                   transform: `translateX(-${currentIndex * (100 / slides.length)}%)`,
+                                                   transition: "transform 0.3s ease"
+                                                }}
+                                             />
+                                          <div className="carousel-container">
+                                          <div className="wrapper conversation-container px-1 pb-0">
+                                          <div className="slider-wrapper">
+                                             <div
+                                                className="inner"
+                                                style={{
+                                                width: `${slides.length * 100}%`,
+                                                transform: `translateX(-${currentIndex * (100 / slides.length)}%)`
+                                                }}
+                                             >
+                                                {slides.map((slide:any, index:any) => (
+                                                <article key={index} style={{ width: `${100 / slides.length}%` }}>
+                                                   <div className={`info ${slide.position || ""}`}>
+                                                      {/* <h3>{slide.title}</h3> */}
+                                                   </div>
+                                                   {slide.format === 'video' ? (
+                                                      <video src={slide.src} controls
+                                                       onLoadedMetadata={() => {
+                                                         videoLoaded.current = true;
+                                                         requestAnimationFrame(() => setCurrentIndex((prev) => prev));
+                                                      }}/>
+                                                   ) : (
+                                                      <img src={slide.src} alt={slide.title || `Slide ${index}`} />
+                                                   )}
+                                                </article>
+                                                ))}
+                                             </div>
+                                          </div>
+
+                                          {slides && slides.length >= 2 && (
+                                             <div className="slider-nav-buttons modal-slider-nav-buttons ">
+                                                <button onClick={(e) => { prevSlide(); e.preventDefault(); }}>❮</button>
+                                                <button onClick={(e) => { nextSlide(); e.preventDefault(); }}>❯</button>
+                                             </div>
+                                          )}
+
+                                          <div className="slider-dot-control">
+                                             {slides.map((_:any, index:any) => (
+                                                <span
+                                                key={index}
+                                                className={index === currentIndex ? 'active-dot' : ''}
+                                                onClick={() => setCurrentIndex(index)}
+                                                />
+                                             ))}
+                                          </div>
+
+                                          {/* Description and Buttons */}
+                                          
+                                          </div>
+                                          {slides[currentIndex] && slides[currentIndex].bodyText && (
+  <div key={slides[currentIndex].id}>
+    <p
+      style={{ textAlign: "justify", fontSize: "12px", padding: "0 5px" }}
+      dangerouslySetInnerHTML={{
+        __html: slides[currentIndex].bodyText
+          .replace(/\*(.*?)\*/g, "<b>$1</b>")
+          .replace(/_(.*?)_/g, "<i>$1</i>")
+          .replace(/~(.*?)~/g, "<strike>$1</strike>")
+          .replace(/\n/g, "<br>")
+      }}
+    ></p>
+  </div>
+)}
+
+{slides[currentIndex] && slides[currentIndex].buttons && (
+  <div className="template-buttontxt">
+    {slides[currentIndex].buttons.map((button: any, idx: any) => {
+      let icon = null;
+
+      if (button.type === "quick_reply") {
+        icon = <i className="fa-solid fa-reply bt-1"></i>;
+      } else if (button.type === "phone_number") {
+        icon = <i className="fa-solid fa-phone"></i>;
+      } else if (button.type === "url") {
+        icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
+      }
+
+      return (
+        <p
+          key={idx}
+          className="template-buttontxt button-option-style text-center"
+        >
+          {icon} {button.text}
+        </p>
+      );
+    })}
+  </div>
+)}
+
+                                          </div>
+
+                                          </div>)}
                                                 </div>
                                              </div>
                                           </div>

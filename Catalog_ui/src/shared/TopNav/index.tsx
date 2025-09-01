@@ -55,8 +55,8 @@ function TopNav() {
             <div className="container-fluid py-1">
                <div className="ms-md-auto d-flex align-items-center">
                   <div className="input-group">
-                     <span className="input-group-text text-body"><i className="fas fa-search" aria-hidden="true"></i></span>
-                     <input type="text" className="form-control" placeholder="Type here..." />
+                     <span className="input-group-text text-body transparent"><i className="fas fa-search transparent" aria-hidden="true"></i></span>
+                     <input type="text" className="form-control transparent no-focus-borde input-disable" placeholder=""  disabled />
                   </div> 
                </div>
                <div className="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">

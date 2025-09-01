@@ -356,10 +356,10 @@ function SmsCampaignDashboard() {
                         <div className="col-md-6">
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                    <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/vendor/create-smscampaign"}>Create Campaign</Link></li>
-                                    <li className="breadcrumb-item text-sm tblName active" aria-current="page">Campaign Dashboard</li>
+                                    <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/create-smscampaign"}>Create Campaign</Link></li>
+                                    <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Campaign Dashboard</li>
                                 </ol>
-                                <h6 className="text-start font-weight-bolder mb-0 tblName">Campaign Dashboard</h6>
+                                <h6 className="text-start font-weight-bolder mb-0 grayFont">Campaign Dashboard</h6>
                             </nav>
                         </div>
                         <div className="col-md-6 text-end">
@@ -591,7 +591,7 @@ function SmsCampaignDashboard() {
                                                     <ul className="campaign-tabs nav nav-tabs">
                                                         <li className="nav-item">
                                                             <button
-                                                                style={tab ? { background: "#014aac", color: "white", border: "0px" } : {}}
+                                                                style={tab ? { background: "linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%)", color: "white", border: "0px" } : {}}
                                                                 className="nav-link active"
                                                                 aria-current="page"
                                                                 onClick={handleQuene}
@@ -601,7 +601,7 @@ function SmsCampaignDashboard() {
                                                         </li>
                                                         <li className="nav-item">
                                                             <button
-                                                                style={!tab ? { background: "#014aac", color: "white", border: "0px" } : {}}
+                                                                style={!tab ? { background: "linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%)", color: "white", border: "0px" } : {}}
                                                                 className="nav-link active"
                                                                 aria-current="page"
                                                                 onClick={handleExecuted}

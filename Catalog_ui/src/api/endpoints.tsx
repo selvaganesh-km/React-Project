@@ -59,6 +59,8 @@ let endpoints = {
 	CHATSEND:"whatsappchat/send",
 	CHATLIST:"whatsappchat/list",
 	CONTACTSIDELIST:"whatsappchat/sidelist",
+	CONTACTUNREADSIDELIST:"whatsappchat/sidelistunread",
+	SIDELISTWAPPCOUNT:"whatsappchat/sidelistunreadcount",
 	CHATCLEAR:"whatsappchat/clearchathistory",
 
 	//Bot Replies 
@@ -215,9 +217,39 @@ let endpoints = {
 	//Catalog
 	CATALOGLIST: 'catalog/list',
 	CATALOGCREATE: 'catalog/create',
-
+	CATALOGSYNC: 'catalog/sync',
+	CATALOGBUSSINESSDROP: 'catalog/business_info',
+	
+	//Catalog Subcription
+	CATALOGLINK: 'catalog/updateLinked',
+	CATALOGDELETE: 'catalog/deleteLinked',
+	CATALOGLISTLINKED: 'catalog/listLinked',
+	CATALOGLINKBIZID: 'catalog_waba/update/businessId',
+	CATALOGBIZINFO: 'catalog_waba/get/business_info',
+	CATALOGWHATSAPPSETUPLIST:"catalog_waba/get/phoneNumbers",
+	CATALOGWHATSAPPWEBHOOKLIST:"catalog_waba/get/configStatus",
+	CATALOGWHATSAPPHEALTHLIST:"catalog_waba/get/healthStatus",
+	CATALOGWHATSAPPTOKENINFO:"catalog_waba/get/tokenInfo",
+	CATALOGWHATSAPPINTEGRATIONSET:"catalog_waba/businessInfo/phoneNumbers",
+	CATALOGWHATSAPPTESTCONTACT:"catalog_waba/add/testContact",
+	CATALOGWHATSAPPHEALTHY:"catalog_waba/businessInfo/healthStatus",
+	CATALOGWHATSAPPBUSSINESSINFO:"catalog_waba/get/businessProfile",
+	CATALOGWHATSAPPINDUSTRYDROP:"catalog_waba/get/industryList",
+	CATALOGWHATSAPPBUSSINESSPROFILE:"catalog_waba/update/businessProfile",
+	CATALOGWHATSAPPIMGUPLOAD: 'whatsapp_template/uploadMedia',
+	
 	//Product 
 	PRODUCTLIST: 'catalog_products/list',
+	PRODUCTCREATE: 'catalog_products/create',
+	PRODUCTUPDATE:'catalog_products/uploadcatalog',
+	PRODUCTSYNC: 'catalog_products/sync',
+	PRODUCTSTATUSCHANGE: 'catalog_products/publishstatus/:id',
+	PRODUCTDELETE: 'catalog_products/delete/:id',
+	PRODUCTGET: 'catalog_products/get/:id',
+
+	//Order
+	ORDERLIST: '/order/orderlist',
+	ORDERSTATUSUPDATE: '/order/statusUpdate',
 }
 
 let API_EP_BOOK = {
@@ -493,7 +525,12 @@ let API_EP_BOOK = {
 	WHATSAPP_CONTACTSIDELIST: {
 		url: endpoints.CONTACTSIDELIST, method: 'POST', authorization: true
 	},
-
+	WHATSAPP_CONTACTUNREADSIDELIST: {
+		url: endpoints.CONTACTUNREADSIDELIST, method: 'POST', authorization: true
+	},
+	SIDE_LIST_WAPPCOUNT: {
+		url: endpoints.SIDELISTWAPPCOUNT, method: 'GET', authorization: true
+	},
 	//Bot Replies
 	BOT_REPLY_LIST: {
 		url: endpoints.BOTREPLYLIST, method: 'POST', authorization: true
@@ -789,11 +826,90 @@ let API_EP_BOOK = {
 	CREATE_CATALOG_API_EP: {
 		url: endpoints.CATALOGCREATE, method: 'POST', authorization: true
 	},
-	//Catalog
+	CATALOG_SYNC_API_EP: {
+		url: endpoints.CATALOGSYNC, method: 'POST', authorization: true
+	},
+	CATALOG_BUSSINESS_DROP_API_EP: {
+		url: endpoints.CATALOGBUSSINESSDROP, method: 'GET', authorization: true
+	},
+	CATALOG_LIST_LINKED_API_EP: {
+		url: endpoints.CATALOGLISTLINKED, method: 'GET', authorization: true
+	},
+	CATALOG_LINK_BIZID_API_EP: {
+		url: endpoints.CATALOGLINKBIZID, method: 'POST', authorization: true
+	},
+	CATALOG_BIZ_INFO_API_EP: {
+		url: endpoints.CATALOGBIZINFO, method: 'GET', authorization: true
+	},
+	CATALOG_LINK_API_EP: {
+		url: endpoints.CATALOGLINK, method: 'POST', authorization: true
+	},
+	CATALOG_DELETE_API_EP: {
+		url: endpoints.CATALOGDELETE, method: 'POST', authorization: true
+	},
+	CATALOG_WHATSAPP_SETUP_LIST: {
+		url: endpoints.CATALOGWHATSAPPSETUPLIST, method: 'GET', authorization: true
+	},
+	CATALOG_WHATSAPP_WEBHOOK_LIST: {
+		url: endpoints.CATALOGWHATSAPPWEBHOOKLIST, method: 'GET', authorization: true
+	},
+	CATALOG_WHATSAPP_HEALTH_LIST: {
+		url: endpoints.CATALOGWHATSAPPHEALTHLIST, method: 'GET', authorization: true
+	},
+	CATALOG_WHATSAPP_TOKEN_INFO: {
+		url: endpoints.CATALOGWHATSAPPTOKENINFO, method: 'GET', authorization: true
+	},
+	CATALOG_WHATSAPP_INTEGRATIONSET: {
+		url: endpoints.CATALOGWHATSAPPINTEGRATIONSET, method: 'POST', authorization: true
+	},
+	CATALOG_WHATSAPP_TEST_CONTACT: {
+		url: endpoints.CATALOGWHATSAPPTESTCONTACT, method: 'POST', authorization: true
+	},
+	CATALOG_WHATSAPP_HEALTHY: {
+		url: endpoints.CATALOGWHATSAPPHEALTHY, method: 'POST', authorization: true
+	},
+	CATALOG_WHATSAPP_BUSSINESS_INFO: {
+		url: endpoints.CATALOGWHATSAPPBUSSINESSINFO, method: 'GET', authorization: true
+	},
+	CATALOG_WHATSAPP_INDUSTRY_DROP: {
+		url: endpoints.CATALOGWHATSAPPINDUSTRYDROP, method: 'GET', authorization: true
+	},
+	CATALOG_WHATSAPP_BUSSINESS_PROFILE_UPDATE: {
+		url: endpoints.CATALOGWHATSAPPBUSSINESSPROFILE, method: 'POST', authorization: true
+	},
+	CATALOG_ADMIN_IMG_UPLOAD_API_EP: {
+		url: endpoints.CATALOGWHATSAPPIMGUPLOAD, method: 'POST', authorization: true
+	},
+	//Catalog Product
+	PRODUCT_CREATE_API_EP: {
+		url: endpoints.PRODUCTCREATE, method: 'POST', authorization: true
+	},
+	PRODUCT_UPDATE_API_EP: {
+        url: endpoints.PRODUCTUPDATE, method: 'POST', authorization: true
+    },
+	PRODUCT_DELETE_API_EP: {
+		url: endpoints.PRODUCTDELETE, method: 'DELETE', authorization: true
+	},
+	PRODUCT_GET_API_EP: {
+		url: endpoints.PRODUCTGET, method: 'GET', authorization: true
+	},
+	PRODUCT_STATUS_CHANGE_API_EP: {
+		url: endpoints.PRODUCTSTATUSCHANGE, method: 'GET', authorization: true
+	},
+	PRODUCT_SYNC_API_EP: {
+		url: endpoints.PRODUCTSYNC, method: 'POST', authorization: true
+	},
 	PRODUCT_LIST_API_EP: {
 		url: endpoints.PRODUCTLIST, method: 'POST', authorization: true
 	},
-	
+
+	//Order
+    ORDER_LIST_API_EP: {
+        url: endpoints.ORDERLIST, method: 'POST', authorization: true
+    },
+    ORDER_STATUS_UPDATE_API_EP: {
+        url: endpoints.ORDERSTATUSUPDATE, method: 'POST', authorization: true
+    },
 	//Rules
 	GET_RULES_METADATA_API_EP: {
 		url: endpoints.METADATA + '/Rules_Creation', method: 'GET', authorization: true

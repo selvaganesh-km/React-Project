@@ -176,20 +176,18 @@ function CustomCampaign() {
     <div className="col-md-6">
 			<nav aria-label="breadcrumb">
 				<ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-					<li className="breadcrumb-item text-sm">
-						<a className="opacity-5 tblName" href="#">Pages</a>
-					</li>
-					<li className="breadcrumb-item text-sm tblName active" aria-current="page">Settings</li>
+					 <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+					<li className="breadcrumb-item text-sm grayFont active" aria-current="page">Settings</li>
 				</ol>
-				<h6 className="font-weight-bolder text-start mb-0 tblName">Custom Campaign</h6>
+				<h6 className="font-weight-bolder text-start mb-0 grayFont">Custom Campaign</h6>
 			</nav>
 		</div>
   </div>
   </div>
 		<div className="dashboard-maincontent container-fluid py-4">
 			<div className="card p-3">
-				<h5 className="tblName">
-					<i className="fa-solid fa-gift text-primary "></i> Set It, Celebrate It <i className="fa-solid fa-cake-candles text-primary"></i>
+				<h5 className="grayFont">
+					<i className="fa-solid fa-gift text-dark "></i> Set It, Celebrate It <i className="fa-solid fa-cake-candles text-dark"></i>
 				</h5>
 				<div className="">
 					<div className="container-fluid py-4">
@@ -207,7 +205,7 @@ function CustomCampaign() {
 							  <div className="col-md-5 card p-0">
 									<div className="modal-content all-modal-content">
 										<div className="p-2">
-											<h1 className="modal-title fs-6 mb-3 text-start tblName" id="vendorviewLabel">
+											<h1 className="modal-title fs-6 mb-3 text-start grayFont" id="vendorviewLabel">
                         {listData?.name.charAt(0).toUpperCase() + listData?.name.slice(1)} Template
                       </h1>
 										</div>
@@ -276,7 +274,7 @@ function CustomCampaign() {
             <div className="modal-dialog modal-dialog-centered modal-lg">
                <div className="modal-content all-modal-content modal-container-size vendor-delete-content">
                   <div className="modal-header vendorcontact-modal-header border-0">
-                     <h5 className="modal-title vendorcontact-modal-title tblName" id="vendorcontactLabel">
+                     <h5 className="modal-title vendorcontact-modal-title grayFont" id="vendorcontactLabel">
                         {tempName==="birthday" ? "Birthday Template":"Anniversary Template"}
                      </h5>
                      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

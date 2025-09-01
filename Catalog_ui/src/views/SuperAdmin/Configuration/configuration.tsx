@@ -13,15 +13,15 @@ function Configuration() {
                     <div className="container-fluid py-1">
                         <nav aria-label="breadcrumb">
                             <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                <li className="breadcrumb-item text-sm"><a className="opacity-5 tblName" href="#">Pages</a></li>
-                                <li className="breadcrumb-item text-sm tblName active" aria-current="page">Settings</li>
+                                <li className="breadcrumb-item text-sm"><a className="opacity-5 grayFont" href="#">Pages</a></li>
+                                <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Settings</li>
                             </ol>
-                            <h6 className="font-weight-bolder text-start mb-0 tblName">Settings</h6>
+                            <h6 className="font-weight-bolder text-start mb-0 grayFont">Settings</h6>
                         </nav>
                     </div>
                     <div className="dashboard-maincontent container-fluid py-4">
                         <div className="card p-3">
-                            <h3 className="tblName">General Settings</h3>
+                            <h3 className="grayFont">General Settings</h3>
                             <p className="border"></p>
                             <div className="bg-secondary text-white general-heading-para">
                                 <p>Upload will be processed automatically on valid selection.</p>
@@ -85,7 +85,7 @@ function Configuration() {
                                 </div>
                             </div>
                             <div className="campaign-template mt-5">
-                                <h6 className="campaign-temp-head tblName">Contact Settings</h6>
+                                <h6 className="campaign-temp-head grayFont">Contact Settings</h6>
                                 <div className="row">
                                     <div className="col-md-12 login-input-group">
                                         <div className="col-md-12 login-input-group">
@@ -116,7 +116,7 @@ function Configuration() {
                                 </div>
                             </div>
                             <div className="campaign-template mt-5">
-                                <h6 className="campaign-temp-head tblName">Localization</h6>
+                                <h6 className="campaign-temp-head grayFont">Localization</h6>
                                 <div className="row">
                                     <div className="col-md-12 login-input-group">
                                         <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">

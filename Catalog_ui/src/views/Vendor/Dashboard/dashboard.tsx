@@ -52,10 +52,10 @@ function VendorDashboard() {
                <div className="container-fluid py-1">
                   <nav aria-label="breadcrumb">
                      <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li className="breadcrumb-item text-sm"><a className="opacity-5 tblName" href="#">Home</a></li>
-                        <li className="breadcrumb-item text-sm tblName active" aria-current="page">Vendor Dashboard</li>
+                        <li className="breadcrumb-item text-sm"><a className="opacity-5 grayFont" href="#">Home</a></li>
+                        <li className="breadcrumb-item text-sm grayFont active" aria-current="page"> Dashboard</li>
                      </ol>
-                     <h6 className="font-weight-bolder text-start mb-0 tblName">Vendor Dashboard</h6>
+                     <h6 className="font-weight-bolder text-start mb-0 grayFont"> Dashboard</h6>
                   </nav>
                </div>
                <div className="dashboard-maincontent container-fluid py-4">
@@ -81,7 +81,7 @@ function VendorDashboard() {
                                           <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
                                           <i className="fa-solid fa-store vendor-dashboard-icon"></i>        
                                           </div>
-                                          <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                              {vendorDashcount?.contactCount || 0}
                                           </h5>
                                           <span className="vendordash-total">Total Customer</span>
@@ -90,7 +90,7 @@ function VendorDashboard() {
                                        <div className="col-3">
                                           <div className="dropstart text-end mb-6">
                                              <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i className="fa fa-ellipsis-h tblName"></i>
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
                                              </a>
                                              <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
                                                 <li><Link className="dropdown-item border-radius-md" to={"/vendor/contacts"}>View all</Link></li>
@@ -110,7 +110,7 @@ function VendorDashboard() {
                                           <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
                                              <i className="fa-brands fa-whatsapp text-white"></i>
                                           </div>
-                                          <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                              {vendorDashcount?.WhatsappQueueCount || 0}
                                           </h5>
                                           <span className="vendordash-total">Queue Whatsapp</span>
@@ -119,7 +119,7 @@ function VendorDashboard() {
                                        <div className="col-3">
                                           <div className="dropstart text-end mb-6">
                                              <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i className="fa fa-ellipsis-h tblName"></i>
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
                                              </a>
                                              <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
                                                 <li><Link className="dropdown-item border-radius-md" to={"/vendor/campaign"}>View all</Link></li>
@@ -139,7 +139,7 @@ function VendorDashboard() {
                                           <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
                                              <i className="fa-solid fa-message text-white"></i>
                                           </div>
-                                          <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                             0
                                           </h5>
                                           <span className="vendordash-total">Messages in Queue SMS</span>
@@ -148,7 +148,7 @@ function VendorDashboard() {
                                        <div className="col-3">
                                           <div className="dropstart text-end mb-6">
                                              <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i className="fa fa-ellipsis-h tblName"></i>
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
                                              </a>
                                              <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
                                                 <li><Link className="dropdown-item border-radius-md" to={"/vendor/sms/campaign"}>View all</Link></li>
@@ -168,7 +168,7 @@ function VendorDashboard() {
                                           <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
                                              <i className="fa-solid fa-comments text-white"></i>
                                           </div>
-                                          <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                              0
                                           </h5>
                                           <span className="vendordash-total">Total SMS Balance </span>
@@ -177,7 +177,7 @@ function VendorDashboard() {
                                        <div className="col-3">
                                           <div className="dropstart text-end mb-6">
                                              <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i className="fa fa-ellipsis-h tblName"></i>
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
                                              </a>
                                              <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
                                                 <li><Link className="dropdown-item border-radius-md" to={"/vendor/sms/campaign"}>View all</Link></li>

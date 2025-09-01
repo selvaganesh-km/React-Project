@@ -95,7 +95,7 @@
 
 .exportwithData-btn {
     border: 0px;
-    background: linear-gradient(310deg, var(--bs-gray-dark), #df0d0d);
+    background: linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%);
     color: white;
     border-radius: 5px;
     padding: 4px 10px;

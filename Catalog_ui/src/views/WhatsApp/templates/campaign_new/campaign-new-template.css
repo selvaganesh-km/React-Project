@@ -33,3 +33,8 @@
     scrollbar-color: #888 #f1f1f1;
     /* thumb and track color */
 }
+
+.wrapper {
+    overflow: hidden;
+    will-change: transform;
+}

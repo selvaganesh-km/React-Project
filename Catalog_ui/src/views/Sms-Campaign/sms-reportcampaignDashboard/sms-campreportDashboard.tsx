@@ -167,10 +167,10 @@ function PromotionmanagementSmsCreate() {
                   <div className="col-md-6">
                      <nav aria-label="breadcrumb">
                         <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                           <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/vendor/dashboard"}>Dashboard</Link></li>
-                           <li className="breadcrumb-item text-sm tblName active" aria-current="page">SMS</li>
+                           <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                           <li className="breadcrumb-item text-sm grayFont active" aria-current="page">SMS</li>
                         </ol>
-                        <h6 className="text-start font-weight-bolder mb-0 tblName">SMS</h6>
+                        <h6 className="text-start font-weight-bolder mb-0 grayFont">SMS</h6>
                      </nav>
                   </div>
                   <div className="col-md-6 text-end">

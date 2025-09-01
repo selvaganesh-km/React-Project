@@ -383,10 +383,10 @@ function CampaignDashboard() {
                         <div className="col-md-6">
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                    <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/vendor/create-campaign"}>Create Campaign</Link></li>
-                                    <li className="breadcrumb-item text-sm tblName active" aria-current="page">Campaign Dashboard</li>
+                                    <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/create-campaign"}>Create Campaign</Link></li>
+                                    <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Campaign Dashboard</li>
                                 </ol>
-                                <h6 className="text-start font-weight-bolder mb-0 tblName">Campaign Dashboard</h6>
+                                <h6 className="text-start font-weight-bolder mb-0 grayFont">Campaign Dashboard</h6>
                             </nav>
                         </div>
                         <div className="col-md-6 text-end">
@@ -414,21 +414,21 @@ function CampaignDashboard() {
                                     <div className="row">
                                     <div className="col-md-6">
                                     <div className="campaign-dash-fonts">Campaign Name</div>
-                                    <h6 className="tblName campaign-dash-fonts">{campaigndetails?.campaignName}</h6>
+                                    <h6 className="grayFont campaign-dash-fonts">{campaigndetails?.campaignName}</h6>
                                     </div>
 
                                     <div className="col-md-6">
                                     <div className="campaign-dash-fonts">Template Name</div>
-                                    <h6 className="tblName campaign-dash-fonts">{campaigndetails?.templateName}</h6>
+                                    <h6 className="grayFont campaign-dash-fonts">{campaigndetails?.templateName}</h6>
                                     </div>
 
                                     <div className="col-md-6">
                                     <div className="campaign-dash-fonts">Template Language</div>
-                                    <h6 className="tblName campaign-dash-fonts">{campaigndetails?.tempalte_language}</h6>
+                                    <h6 className="grayFont campaign-dash-fonts">{campaigndetails?.tempalte_language}</h6>
                                     </div>
                                     <div className="col-md-6">
                                     <div className="campaign-dash-fonts">Created at</div>
-                                    <h6 className="tblName campaign-dash-fonts">
+                                    <h6 className="grayFont campaign-dash-fonts">
                                     {new Date(campaigndetails?.createdAt).toLocaleString('en-US', {
                                         year: 'numeric',
                                         month: 'short',
@@ -493,7 +493,7 @@ function CampaignDashboard() {
                                                                 <div className="icon camp-icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                                                     <i className="fa-solid fa-store text-white"></i>
                                                                 </div>
-                                                                <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                                                <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                                                     {campDashcount?.TotalContacts}
                                                                 </h5>
                                                                 <span className=" text-sm">Total Contacts</span>
@@ -525,7 +525,7 @@ function CampaignDashboard() {
                                                                 <div className="icon camp-icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                                                     <i className="fa-solid fa-check text-white"></i>
                                                                 </div>
-                                                                <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                                                <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                                                     {campDashcount?.TotalDelivered}
                                                                 </h5>
                                                                 <span className=" text-sm">Total Delivered</span>
@@ -556,7 +556,7 @@ function CampaignDashboard() {
                                                                 <div className="icon camp-icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                                                     <i className="fa-solid fa-list-check text-white"></i>
                                                                 </div>
-                                                                <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                                                <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                                                     {campDashcount?.TotalRead}
                                                                 </h5>
                                                                 <span className=" text-sm">Total Read</span>
@@ -587,7 +587,7 @@ function CampaignDashboard() {
                                                                 <div className="icon camp-icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                                                     <i className="fa-solid fa-circle-exclamation text-white"></i>
                                                                 </div>
-                                                                <h5 className="tblName font-weight-bolder mb-0 mt-3">
+                                                                <h5 className="grayFont font-weight-bolder mb-0 mt-3">
                                                                     {campDashcount?.TotalFailed}
                                                                 </h5>
                                                                 <span className=" text-sm">Total Failed</span>
@@ -618,7 +618,7 @@ function CampaignDashboard() {
                                                     <ul className="campaign-tabs nav nav-tabs">
                                                         <li className="nav-item">
                                                             <button
-                                                                style={tab ? { background: "#014aac", color: "white", border: "0px" } : {}}
+                                                                style={tab ? { background: "linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%)", color: "white", border: "0px" } : {}}
                                                                 className="nav-link active"
                                                                 aria-current="page"
                                                                 onClick={handleQuene}
@@ -628,7 +628,7 @@ function CampaignDashboard() {
                                                         </li>
                                                         <li className="nav-item">
                                                             <button
-                                                                style={!tab ? { background: "#014aac", color: "white", border: "0px" } : {}}
+                                                                style={!tab ? { background: "linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%)", color: "white", border: "0px" } : {}}
                                                                 className="nav-link active"
                                                                 aria-current="page"
                                                                 onClick={handleExecuted}

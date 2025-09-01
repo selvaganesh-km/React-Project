@@ -432,10 +432,10 @@ useEffect(() => {
                <div className="col-md-6">
                   <nav aria-label="breadcrumb">
                      <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/super-admin/dashboard"}>Dashboard</Link></li>
-                        <li className="breadcrumb-item text-sm tblName active" aria-current="page">Vendor Management</li>
+                        <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/super-admin/dashboard"}>Dashboard</Link></li>
+                        <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Vendor Management</li>
                      </ol>
-                     <h6 className="text-start font-weight-bolder mb-0 tblName">Vendor Management</h6>
+                     <h6 className="text-start font-weight-bolder mb-0 grayFont">Vendor Management</h6>
                   </nav>
                </div>
                <div className="col-md-6 text-end">
@@ -484,7 +484,7 @@ useEffect(() => {
                                                          <img src={vendorItem.UserProfileImage ? baseURL + vendorItem.UserProfileImage : noImage} className="avatar avatar-sm me-2" alt="spotify" />
                                                       </div>
                                                       <div className="my-auto">
-                                                         <h6 className="tblName mb-0 text-sm ps-3">{vendorItem?.VendorName}</h6>
+                                                         <h6 className="grayFont mb-0 text-sm ps-3">{vendorItem?.VendorName}</h6>
                                                       </div>
                                                    </div>
                                                 </td>

@@ -863,15 +863,15 @@ useEffect(() => {
                   <nav aria-label="breadcrumb">
                      <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li className="breadcrumb-item text-sm">
-                           <Link className="opacity-5 tblName" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                           <Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
                         <li
-                           className="breadcrumb-item text-sm tblName active"
+                           className="breadcrumb-item text-sm grayFont active"
                            aria-current="page"
                         >
                            {gpStatus ? gpName + " Group Contacts" : "Customer Details"}
                         </li>
                      </ol>
-                     <h6 className="text-start font-weight-bolder mb-0 tblName">
+                     <h6 className="text-start font-weight-bolder mb-0 grayFont">
                         {gpStatus ? gpName + " Group Contacts" : "Customer Details"}
                      </h6>
                   </nav>
@@ -969,7 +969,7 @@ useEffect(() => {
                                                 </label>
                                              </div>
                                              </div>
-                                          <div className='d-flex show-entries-main mt-5'>
+                                          <div className='d-flex show-entries-main mt-6 px-1'>
                                              <span className='show-entries-cnt'>Show</span> 
                                                    <div className="dropdown">
                                                       <button className="btn show-entries-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -1564,6 +1564,7 @@ useEffect(() => {
                                     else{
                                     setcampaignOpt(true)}
                                  }}
+                                 checked={campaignOpt===true}
                               /> <span className="text-xs">Opt out Marketing Messages</span>
                            </div>
                         </div>
@@ -1949,10 +1950,10 @@ useEffect(() => {
                      <div className="upload-files-container" onDragOver={(e) => e.preventDefault()} onDrop={handleFileDrop}>
                            <div className="drag-file-area">
                               <i className="fa-solid fa-cloud-arrow-up import-staff-icon"></i>
-                              <h5 className="dynamic-message mt-2 mb-n1">
+                              <h5 className="dynamic-message mt-2 mb-n1 grayFont">
                                  Drop Anywhere to Import
                               </h5>
-                              <label className="label">
+                              <label className="label grayFont">
                                  or{" "}
                                  <span className="browse-files">
                                     <input
@@ -1960,10 +1961,10 @@ useEffect(() => {
                                        className="default-file-input"
                                        onChange={handleFileChange} ref={fileInputRef}
                                     />
-                                    <span className="browse-files-text text-primary">
+                                    <span className="browse-files-text text-dark">
                                        browse file
                                     </span>{" "}
-                                    <span>from device</span>
+                                    <span className="grayFont">from device</span>
                                  </span>
                               </label>
                            </div>

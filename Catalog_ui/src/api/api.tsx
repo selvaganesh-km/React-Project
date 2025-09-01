@@ -1,5 +1,6 @@
-export const baseURL = "https://90a8627add33.ngrok-free.app/catalog_management/api/";
-// export const baseURL = "https://crm.bizconvo.in/be/api/";
+// export const baseURL = "https://0ebacc43de4d.ngrok-free.app/catalog_management/api/";
+export const baseURL = "https://50d20fa3c4f1.ngrok-free.app/catalog_management/api/";
+// export const baseURL = "https://whatsappcart.yalli.in/be/api/";
 
 
 const API: any = async (requestURL: any, requestAPIData: any) => {

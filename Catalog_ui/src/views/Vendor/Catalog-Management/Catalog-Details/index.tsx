@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../../../shared/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TopNav from "../../../../shared/TopNav";
 import DashboardLayout from "../../../../layouts/DashboardLayout";
 import { Pagination } from "react-bootstrap";
 import VendorAPI from "../../../../api/services/vendorLogin/vendorApi";
 import { toast } from "react-toastify";
 import { FadeLoader } from "react-spinners";
-
+import "./index.css";
 function CatalogDetails() {
   const [modalMode, setModalMode] = useState("create");
   const [submit, setSubmit] = useState(false);
@@ -15,25 +15,34 @@ function CatalogDetails() {
   const [recordsPerPage, setrecordsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [btnloading, setbtnLoading] = useState(false);
   const [active, setActive] = useState(true);
   const [catalogName, setcatalogName] = useState("");
   const [catalogType, setcatalogType] = useState<string>("");
   const [bussinessId, setbussinessId] = useState("");
   const [catalogList, setcatalogList] = useState<any>([]);
   const [catalogTypeDrop] = useState([
-    { label: "Online products", icon: <i className="fa-solid fa-shirt"></i> },
-    {
-      label: "Local products or services",
-      icon: <i className="fa-solid fa-house-laptop"></i>,
-    },
-    { label: "Travel", icon: <i className="fa-solid fa-plane-departure"></i> },
-    {
-      label: "Real estate",
-      icon: <i className="fa-solid fa-hand-holding-dollar"></i>,
-    },
-    { label: "Auto", icon: <i className="fa-solid fa-truck-pickup"></i> },
+{ label: "Adoptable pets", icon: <i className="fa-solid fa-paw"></i> },
+{ label: "Automotive models", icon: <i className="fa-solid fa-motorcycle"></i> },
+{ label: "Avatar", icon: <i className="fa-solid fa-user-tie"></i> },
+{ label: "Commerce", icon: <i className="fa-solid fa-dumpster"></i> },
+{ label: "Destinations", icon: <i className="fa-solid fa-map-location-dot"></i> },
+{ label: "Flights", icon: <i className="fa-solid fa-plane-departure"></i> },
+{ label: "Generic", icon: <i className="fa-solid fa-recycle"></i> },
+{ label: "Home listings", icon: <i className="fa-solid fa-house-chimney"></i> },
+{ label: "Hotels", icon: <i className="fa-solid fa-hotel"></i> },
+{ label: "Jobs", icon: <i className="fa-solid fa-street-view"></i> },
+{ label: "Local service businesses", icon: <i className="fa-solid fa-business-time"></i> },
+{ label: "Location based items", icon: <i className="fa-solid fa-location-crosshairs"></i> },
+{ label: "Media titles", icon: <i className="fa-solid fa-photo-film"></i> },
+{ label: "Offer items", icon: <i className="fa-solid fa-tags"></i> },
+{ label: "Offline commerce", icon: <i className="fa-solid fa-toggle-off"></i> },
+{ label: "Test vertical", icon: <i className="fa-solid fa-vial"></i> },
+{ label: "Transactable items", icon: <i className="fa-solid fa-globe"></i> },
+{ label: "Vehicle offers", icon: <i className="fa-solid fa-car-rear"></i> },
+{ label: "Vehicles", icon: <i className="fa-solid fa-truck-moving"></i> }
   ]);
-
+  const navigate=useNavigate();
   // Pagination Method
 
   const totalPages = Math.ceil(totalRecords / recordsPerPage);
@@ -132,20 +141,48 @@ function CatalogDetails() {
               toast.error("An error occurred during login.");
           });
   }
-   const resetForm = () => {
-        setcatalogName("");
-        setcatalogType("");
-        setbussinessId("");
-        setSubmit(false)
-    }
+  const resetForm = () => {
+      setcatalogName("");
+      setcatalogType("");
+      setSubmit(false);
+      setbtnLoading(false);
+  }
+
+  const handlelogBizinfo = () => {
+    VendorAPI.catalogBizInfoAPI()
+        .then((responseData: any) => {
+            if (responseData.apiStatus.code === '200') {
+              setbussinessId(responseData?.responseData[0]?.id);
+            } else if(responseData.apiStatus.code==="404"){
+                setbussinessId("");
+            } else if(responseData.apiStatus.code==="401"){
+                const message = responseData?.apiStatus?.message;
+                if (message === 'Catalog credentials not configured!') {
+                  const modalElement = document.getElementById('webhookconfigure');
+                  if (modalElement) {
+                    const modal = new window.bootstrap.Modal(modalElement);
+                    modal.show();
+                  }
+                } 
+            }
+        })
+        .catch((error: any) => {
+            setLoading(false)
+            console.error("Error during login:", error);
+            toast.error("An error occurred during login.");
+        });
+  };
+
   const handlecreatCatalog = () => {
     setSubmit(true);
+    
     if (!catalogName || !catalogType || !bussinessId) {
       return;
     }
+    setbtnLoading(true);
     const apiData = {
       name: catalogName,
-      vertical: catalogType,
+      vertical: catalogType.toLowerCase().replace(/\s+/g, "_"),
       business_id: bussinessId,
     };
     VendorAPI.catalogCreateAPI(apiData)
@@ -154,6 +191,7 @@ function CatalogDetails() {
           // resetForm();
           handlecatalogListAPI(currentPage)
           setSubmit(false);
+          setbtnLoading(false);
           toast.success(responseData.apiStatus.message);
           const closeButton = document.getElementById("closeModal");
           if (closeButton) {
@@ -161,15 +199,43 @@ function CatalogDetails() {
           }
         } else {
           toast.error(responseData.apiStatus.message);
+          setbtnLoading(false);
         }
       })
       .catch((error: any) => {
+        setbtnLoading(false);
+        console.error("Error during login:", error);
+        toast.error("An error occurred during login.");
+      });
+  };
+  const handleSyncCatalog = () => {
+    setLoading(true)
+    const apiData = {
+      limit:"100",
+      business_id: bussinessId,
+    };
+    VendorAPI.catalogSyncAPI(apiData)
+      .then((responseData: any) => {
+        if (responseData.apiStatus.code === "200") {
+          handlecatalogListAPI(currentPage)
+          setLoading(false)
+          // toast.success(responseData.apiStatus.message);
+        } else {
+          toast.error(responseData.apiStatus.message);
+          setLoading(false)
+        }
+      })
+      .catch((error: any) => {
+        setLoading(false)
         console.error("Error during login:", error);
         toast.error("An error occurred during login.");
       });
   };
   useEffect(()=>{
     handlecatalogListAPI(currentPage)
+  },[currentPage])
+  useEffect(()=>{
+    handlelogBizinfo()
   },[])
   return (
     <>
@@ -182,25 +248,31 @@ function CatalogDetails() {
                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                   <li className="breadcrumb-item text-sm">
                     <Link
-                      className="opacity-5 tblName"
+                      className="opacity-5 grayFont"
                       to={"/vendor/dashboard"}
                     >
                       Dashboard
                     </Link>
                   </li>
                   <li
-                    className="breadcrumb-item text-sm tblName active"
+                    className="breadcrumb-item text-sm grayFont active"
                     aria-current="page"
                   >
                     Catalog
                   </li>
                 </ol>
-                <h6 className="text-start font-weight-bolder mb-0 tblName">
+                <h6 className="text-start font-weight-bolder mb-0 grayFont">
                   Catalog Management
                 </h6>
               </nav>
             </div>
-            <div className="col-md-6 text-end dropdown">
+            <div className="col-md-6 text-end position-relative d-flex justify-content-end align-items-center">
+               <div className = 'search-box2'>
+                  <input className = "search-text2" type="text" placeholder = "Search Catalog..."/>
+                      <a href="#" className = "search-btn2">
+                          <i className="fas fa-search"></i>
+                      </a>
+                  </div>
               <button
                 className="vendor-crt-btn"
                 data-bs-toggle="modal"
@@ -208,6 +280,12 @@ function CatalogDetails() {
                 // onClick={() => openModal("create")}
               >
                 <span>Create Catalog</span>
+              </button>&nbsp;
+              <button
+                className="vendor-crt-btn"
+                onClick={() => handleSyncCatalog()}
+              >
+                <span>Sync Catalog</span>
               </button>
             </div>
           </div>
@@ -288,7 +366,7 @@ function CatalogDetails() {
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
         >
-          <div className="modal-dialog">
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content all-modal-content">
               <div className="modal-header border-0">
                 <h5
@@ -395,12 +473,13 @@ function CatalogDetails() {
                       <></>
                     )}
                   </div>
-                  <div className="col-md-12 login-input-group">
+                  {/* <div className="col-md-12 login-input-group">
                     <div className="vendor-create-container">
                       <input
                         autoComplete="off"
                         type="text"
                         id="vendor-crt-input"
+                        disabled
                         style={
                           submit && bussinessId.length == 0
                             ? { borderColor: "red" }
@@ -432,7 +511,7 @@ function CatalogDetails() {
                     ) : (
                       <></>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="modal-footer border-0 vendorcreate-modal-footer">
@@ -449,12 +528,37 @@ function CatalogDetails() {
                   onClick={handlecreatCatalog}
                   type="button"
                   className="btn btn-primary"
+                  disabled={btnloading}
+                  style={{color:"white"}}
                 >
-                  Submit
+                  {btnloading ? "Submit..." : "Submit"}
                 </button>
               </div>
             </div>
           </div>
+        </div>
+        
+        {/* Webhook Configure Modal*/}
+        <div className="modal fade" id="webhookconfigure" tab-index="-1" aria-labelledby="webhookconfigureLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content all-modal-content vendor-delete-content">
+                <div className=" vendor-delete-header">
+                </div>
+                <div className="modal-body vendor-delete-body">
+                    <div className="row">
+                        <div className="vendor-delete-icon">
+                        <i className="fa-solid fa-triangle-exclamation text-warning danger-iconz "></i>
+                        </div>
+                        <h5 className="modal-confirm-head">No Catalog Configured <i className="fa-solid fa-gears"></i></h5>
+                        <h6 className="modal-confirm-subhead">Please set up a catalog credentials to enable this feature !</h6>
+                        <div></div>
+                    </div>
+                </div>
+                <div className="modal-footer text-center vendor-delete-footer">
+                    <button type="button" className="btn btn-primary" onClick={()=>navigate('/vendor/settings/catalog')} data-bs-dismiss="modal">Set Up Catalog</button>
+                </div>
+            </div>
+            </div>
         </div>
       </DashboardLayout>
     </>

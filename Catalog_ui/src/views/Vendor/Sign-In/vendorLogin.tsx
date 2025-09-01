@@ -96,20 +96,20 @@ function VendorLogin() {
                         </div>
                         <div className="text-center pt-0 px-lg-2 px-1">
                           <p className="text-sm mx-auto m-0 text-end text-small">
-                            <Link to={"/super-admin/forgot-password"} className="text-info text-gradient"> Forgot Password</Link>
+                            {/* <Link to={"/super-admin/forgot-password"} className="text-info text-gradient"> Forgot Password</Link> */}
                           </p>
                         </div>
                         <div className="text-center">
 
                           {loading ? (
-                            <button className="btn bg-gradient-info w-100 mt-2 mb-0" type="submit" disabled>
+                            <button className="btn bg-gradient-info w-100 mt-4 mb-0" type="submit" disabled>
                               <div className="spinner-loading">
                                 <Spinner as="span" animation="grow" size="sm" role="status" aria-hidden="true" />
                                 Loading...
                               </div>
                             </button>
                           ) : (
-                            <button className="btn bg-gradient-info w-100 mt-2 mb-0" type="submit" onClick={handleVendorLogin}>
+                            <button className="btn bg-gradient-info w-100 mt-4 mb-0" type="submit" onClick={handleVendorLogin}>
                               Login
                             </button>
                           )}

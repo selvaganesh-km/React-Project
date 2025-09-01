@@ -47,3 +47,7 @@
     background: #fff;
     z-index: 9;
 }
+
+.modal-slider-nav-buttons {
+    padding: 0 12px 0 6px !important;
+}

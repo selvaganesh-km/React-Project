@@ -53,7 +53,9 @@ function Chatbot() {
   const [imgUrl,setImgUrl]=useState('')
   const [caption,setCaption]=useState('')
   const [response,setResponse] = useState('')
+  //Simple CkEditor
   const [responseText,setResponseText]=useState('');
+  //Interactive CkEditor
   const [responseText1,setResponseText1]=useState('');
   const [interactiveType, setInteractiveType] = useState("");
   const [resType, setresType] = useState("");
@@ -71,11 +73,17 @@ const [mediaText,setMediaText]=useState("")
   const isDisabled = ["image", "video", "document"].includes(selectedOption);
   const [isEditBot,setisEditBot]=useState(0)
   const [editId,setEditId]=useState("")
-  const handleChange = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setSelectedOption(e.target.value);
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  setSelectedOption(value);
+
+  if (["image", "video", "document"].includes(value)) {
+    if (interactiveType === "list") {
+      setInteractiveType("");
+    }
+  }
+};
+
 console.log(selectedOption,"option")
   const handleChangeResponce = (e: {
     target: { value: React.SetStateAction<string> };
@@ -283,7 +291,7 @@ console.log(selectedOption,"option")
    }
   }, [showEmojiPicker1]);
   
-  
+  //Interactive CkEditor
   const handleEditorChange1 = (event: any) => {
     if (!event.editor) return;
     const editorData = event.editor.getData();
@@ -579,19 +587,7 @@ useEffect(() => {
   };
 
   const addRow = (sectionId: string) => {
-    // const newRow: Row = {
-    //   id: "",
-    //   title: '',
-    //   description: '',
-    // };
 
-    // setListSections(prev =>
-    //   prev.map(section =>
-    //     section.id === sectionId
-    //       ? { ...section, rows: [...section.rows, newRow] }
-    //       : section
-    //   )
-    // );
     setListSections((prevSections) =>
       prevSections.map((section) =>
         section.id === sectionId
@@ -751,18 +747,18 @@ useEffect(() => {
                   {
                     type: resType,
                     media_type:selectedOption,
-                    header_text: selectedOption==="image" ? "" : mediaText,
-                    sub_type:interactiveType,
+...(["image"].includes(selectedOption) && mediaText
+            ? { header_text: mediaText }
+            : {}),                    sub_type:interactiveType,
                     url: selectedOption === "text" ? "" : imgUrl,
                     caption:responseText1,
                     footer:footerText,
-                    buttons:[{
-                      title:replyTextInput1
-                    },{
-                      title:replyTextInput2
-                    },{
-                      title:replyTextInput3
-                    }]
+                    buttons: [
+  replyTextInput1 && { title: replyTextInput1 },
+  replyTextInput2 && { title: replyTextInput2 },
+  replyTextInput3 && { title: replyTextInput3 },
+].filter(Boolean)
+
                   }
                 ]
             }
@@ -779,8 +775,9 @@ useEffect(() => {
                   {
                     type: resType,
                     media_type:selectedOption,
-                    header_text: ["image", "video", "document"].includes(selectedOption) ? "" : mediaText,
-                    sub_type:interactiveType,
+...(["image", "video", "document"].includes(selectedOption) && mediaText
+            ? { header_text: mediaText }
+            : {}),                    sub_type:interactiveType,
                     url: selectedOption === "text" ? "" : imgUrl,
                     caption:responseText1,
                     buttonLabel:buttonLabel,
@@ -802,8 +799,9 @@ useEffect(() => {
                   {
                     type: resType,
                     media_type:selectedOption,
-                    header_text: ["image", "video", "document"].includes(selectedOption) ? "" : mediaText,
-                    sub_type: interactiveType,
+...(["image", "video", "document"].includes(selectedOption) && mediaText
+            ? { header_text: mediaText }
+            : {}),                    sub_type: interactiveType,
                     url: selectedOption === "text" ? "" : imgUrl,
                     caption:responseText1,
                     footer:footerText,
@@ -879,7 +877,7 @@ useEffect(() => {
                 responses: [
                   {
                     type: resType,
-                    text: responseText
+                    text: revertFormattedText(responseText)
                   }
                 ]
               }}}      
@@ -901,14 +899,13 @@ useEffect(() => {
                     header_text:selectedOption ==="image" || selectedOption ==="video"|| selectedOption ==="document" ? "":mediaText,
                     sub_type:interactiveType,
                     url: selectedOption === "text" ? "" : imgUrl,
-                    caption:responseText1,
-                    buttons:[{
-                      title:replyTextInput1
-                    },{
-                      title:replyTextInput2
-                    },{
-                      title:replyTextInput3
-                    }]
+                    caption:revertFormattedText(responseText1),
+                    buttons: [
+  replyTextInput1 && { title: replyTextInput1 },
+  replyTextInput2 && { title: replyTextInput2 },
+  replyTextInput3 && { title: replyTextInput3 },
+].filter(Boolean)
+
                   }
                 ]
             }
@@ -931,7 +928,7 @@ useEffect(() => {
                 header_text:selectedOption ==="image" || selectedOption ==="video"|| selectedOption ==="document" ? "":mediaText,
                 sub_type:interactiveType,
                 url: selectedOption === "text" ? "" : imgUrl,
-                caption:responseText1,
+                caption:revertFormattedText(responseText1),
                 buttonLabel:buttonLabel,
                 listSections:listSections
               }
@@ -956,7 +953,7 @@ useEffect(() => {
                     header_text:selectedOption ==="image" || selectedOption ==="video"|| selectedOption ==="document" ? "":mediaText,
                     sub_type: interactiveType,
                     url: selectedOption === "text" ? "" : imgUrl,
-                    caption: responseText1,
+                    caption: revertFormattedText(responseText1),
                     buttons: [
                       {
                         title:ctaTextInput,
@@ -1173,8 +1170,28 @@ useEffect(() => {
       return null;
     };
     const mediatype = getMediaType(imgUrl);
-
+  useEffect(() => {
+      setResponseText(responseText);
+      setResponseText1(responseText1);
+  }, [responseText, responseText1]);
 // Handle Edit - Populate
+function renderFormattedText(rawText: string): string {
+  let output = rawText;
+  output = output.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+  output = output.replace(/_(.*?)_/g, '<em>$1</em>');
+  output = output.replace(/~(.*?)~/g, '<strike>$1</strike>');
+  output = output.replace(/\n/g, '<br>');
+  return output;
+}
+function revertFormattedText(htmlText: string): string {
+  let output = htmlText;
+  output = output.replace(/<strong>(.*?)<\/strong>/g, '*$1*');
+  output = output.replace(/<em>(.*?)<\/em>/g, '_$1_');
+  output = output.replace(/<strike>(.*?)<\/strike>/g, '~$1~');
+  output = output.replace(/<br\s*\/?>/g, '\n');
+  return output;
+}
+
 const handleEditPopulate=(value: any,listData:any)=>{
   const messageBody=listData.message_body?.[0]
   setEditId(listData.id)
@@ -1200,48 +1217,36 @@ const handleEditPopulate=(value: any,listData:any)=>{
       setSelectedOption("document")
     }
 
-   if(listData.message_type=="text"){
-    if(messageBody){
-      let output = messageBody.text;
+   if (listData.message_body[0].type === "text") {
+  if (messageBody) {
+    const formatted = renderFormattedText(messageBody.text);
+    setResponseText(formatted); // For display
+  }
+}
 
-      // Convert text to <strong>text</strong>
-      output = output.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-    
-      // Convert text to <em>text</em>
-      output = output.replace(/_(.*?)_/g, '<em>$1</em>');
-      setResponseText(output)
-  
-      }
-   }
-   if(listData.message_body[0].type=="interactive"){
-    if(messageBody){
-      let output = messageBody.caption;
+if (listData.message_body[0].type === "interactive") {
+  if (messageBody) {
+    const formatted = renderFormattedText(messageBody.caption);
+    setResponseText1(formatted); // For CKEditor
+  }
+}
 
-      // Convert text to <strong>text</strong>
-      output = output.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-    
-      // Convert text to <em>text</em>
-      output = output.replace(/_(.*?)_/g, '<em>$1</em>');
-      setResponseText1(output)
-  
-      }
-   }
 
-   if((listData.message_type=="interactive_list" && messageBody.header_text) || (listData.message_type=="interactive_reply" && messageBody.header_text) || (listData.message_type=="interactive_cta" && messageBody.header_text)){
+   if((listData.message_type=="interactive_list" && messageBody.media_type==="text") || (listData.message_type=="interactive_reply" && messageBody.media_type==="text") || (listData.message_type=="interactive_cta" && messageBody.media_type==="text")){
     setresType("interactive");
     setSelectedOption("text");
     setMediaText(messageBody.header_text);
    }
-   if(listData.message_type=="image"){
+   if(listData.message_type==="image"){
     console.log("first",listData.message_type)
     setresType("media")
     setSelectedOption("image")
    }
-   if(messageBody.type=="video"){
+   if(messageBody.type==="video"){
     setSelectedOption(messageBody.type)
     setresType("media")
    }
-   if(messageBody.type=="document"){
+   if(messageBody.type==="document"){
     setSelectedOption(messageBody.type)
     setresType("media")
    }
@@ -1281,7 +1286,7 @@ const handleEditPopulate=(value: any,listData:any)=>{
      setisEditBot(1)
 }
 
-
+//Simple CkEditor
 const handleEditorChange = (event: any) => {
   if (!event.editor) return;
   const editorData = event.editor.getData();
@@ -1362,11 +1367,13 @@ const validateListSectionWithStructure = (
   if (!resType) {
     return;
   }
-  if (resType === "text" && !responseText) {
+  if ((resType === "text" && !responseText) || (resType === "interactive" && !responseText1)) {
     return;
   }
-  
-  if (selectedOption === "text" &&  !mediaText) {
+  // if (selectedOption === "text" &&  !mediaText) {
+  //   return;
+  // }
+  if ((resType === "interactive" && !selectedOption)) {
     return;
   }
   if (resType === "interactive" && !interactiveType) {
@@ -1460,20 +1467,20 @@ const validateListSectionWithStructure = (
               <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                 <li className="breadcrumb-item text-sm">
                   <Link
-                    className="opacity-5 tblName"
+                    className="opacity-5 grayFont"
                     to={"/vendor/dashboard"}
                   >
                     Dashboard
                   </Link>
                 </li>
                 <li
-                  className="breadcrumb-item text-sm tblName active"
+                  className="breadcrumb-item text-sm grayFont active"
                   aria-current="page"
                 >
                   Chat Bots
                 </li>
               </ol>
-              <h6 className="text-start font-weight-bolder mb-0 tblName">Chat Bots</h6>
+              <h6 className="text-start font-weight-bolder mb-0 grayFont">Chat Bots</h6>
             </nav>
           </div>
           <div className="col-md-6 text-end dropdown">
@@ -1493,6 +1500,7 @@ const validateListSectionWithStructure = (
               id="createModel"
               tab-Index="-1"
               aria-labelledby="exampleModalLabel"
+              data-bs-backdrop="static" data-bs-keyboard="false"
               aria-hidden="true"
             >
               <div className="modal-dialog modal-lg">
@@ -1503,98 +1511,98 @@ const validateListSectionWithStructure = (
               className={`vendor-crt-input loginfilled-frame-username  ${submit && botName.length==0 ? 'error' : ''}`} placeholder=" " required />
               <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-headset"></i> Bot Name</label>
               </div>
-              {submit && botName.length == 0 ? <div className='text-start text-danger error-message-required'>Bot name is required</div> : <></>}
+              {submit && botName?.length == 0 ? <div className='text-start text-danger error-message-required'>Bot name is required</div> : <></>}
 
               </div>
 
-  <div className="col-md-12 login-input-group modal-body pt-0 pb-0">
-  <div className="vendor-create-container">
-  <input autoComplete="off"value={inputValue}
-      onChange={(e) => {
-        setInputValue(e.target.value);
-        setShowSuggestions(true);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          handleAddKeyword(inputValue);
-        }
-      }} type="text" id="vendor-crt-input" 
-      className={`vendor-crt-input loginfilled-frame-username  ${submit && keywords.length==0 ? 'error' : ''}`} placeholder=" " required />
-      <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-keyboard"></i> Add Keywords</label>
-      {showSuggestions && inputValue && (
-      <div
-        className="text-start dropdown-suggestion bg-white border rounded mt-1 px-2 py-1"
-        style={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          zIndex: 10,
-          width: "100%",
-          cursor: "pointer",
-        }}
-        onClick={() => handleAddKeyword(inputValue)}
-      >
-        Add "{inputValue}"
-      </div>
-    )}
-    
-    </div>
-    <div className="text-start px-3 ">
-        {keywords.map((keyword) => (
-          <div
-            key={keyword}
-            className="chip d-inline-flex align-items-center px-2 me-2 border rounded-pill"
-            style={{ width: "auto", maxWidth: "100%",fontSize:"12px" }}
-          >
-            <span className="me-1">{keyword}</span>
-            <span
-              className="close-icon ms-1 text-danger"
-              style={{ cursor: "pointer", fontWeight: "bold",border:"0.5px solid red",background:"transparent" }}
-              onClick={() => handleRemove(keyword)}
-            >
-              ×
-            </span>
-          </div>
-        ))}
-      </div>
-      {submit && keywords.length == 0 ? <div className='text-start text-danger error-message-required'>Keyword is required</div> : <></>}
-      
-    </div>
-
-      <div className="col-md-12 px-3 login-input-group">
-        <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <input
-              autoComplete="off"
-              type="text"
-            //  onClick={handleTriggerDrop}
-              id="vendor-crt-input"
-              className={`vendor-crt-input loginfilled-frame-username  ${submit && triggerName.length==0 ? 'error' : ''}`}
-              value={triggerName}
-              placeholder=" "
-              required
-              onChange={(e)=>settriggerName(e.target.value)}
-          />
-          <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-id-card-clip"></i> Trigger Type</label>
-          <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
-          <ul className="dropdown-menu template-dropdown storename-dropdown-menu">
-          {triggerDrop.length === 0 ? (
-                <li className="dropdown-nodata-found">No data found</li>
-              ) : (
-                triggerDrop.map((dropdownValue, id) => (                                                            
-                <li key={id}>
-                    <a
-                      className="dropdown-item"
-                      href="#"
-                      onClick={() => { settriggerId(dropdownValue.id); settriggerName(dropdownValue.name) }}
+            <div className="col-md-12 login-input-group modal-body pt-0 pb-0">
+            <div className="vendor-create-container">
+            <input autoComplete="off"value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleAddKeyword(inputValue);
+                  }
+                }} type="text" id="vendor-crt-input" 
+                className={`vendor-crt-input loginfilled-frame-username  ${submit && keywords.length==0 ? 'error' : ''}`} placeholder=" " required />
+                <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-keyboard"></i> Add Keywords</label>
+                {showSuggestions && inputValue && (
+                <div
+                  className="text-start dropdown-suggestion bg-white border rounded mt-1 px-2 py-1"
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 10,
+                    width: "100%",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => handleAddKeyword(inputValue)}
+                >
+                  Add "{inputValue}"
+                </div>
+              )}
+              
+              </div>
+              <div className="text-start px-3 ">
+                  {keywords.map((keyword) => (
+                    <div
+                      key={keyword}
+                      className="chip d-inline-flex align-items-center px-2 me-2 border rounded-pill"
+                      style={{ width: "auto", maxWidth: "100%",fontSize:"12px" }}
                     >
-                      {dropdownValue.name}
-                    </a>
-                </li>
-              )))}
-          </ul>
-        </div>
-        {submit && triggerName?.length == 0 ? <div className='text-start text-danger error-message-required'>Trigger type is required</div> : <></>}                                                   
-    </div>
+                      <span className="me-1">{keyword}</span>
+                      <span
+                        className="close-icon ms-1 text-danger"
+                        style={{ cursor: "pointer", fontWeight: "bold",border:"0.5px solid red",background:"transparent" }}
+                        onClick={() => handleRemove(keyword)}
+                      >
+                        ×
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {submit && keywords?.length == 0 ? <div className='text-start text-danger error-message-required'>Keyword is required</div> : <></>}
+                
+              </div>
+
+                <div className="col-md-12 px-3 login-input-group">
+                  <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <input
+                        autoComplete="off"
+                        type="text"
+                      //  onClick={handleTriggerDrop}
+                        id="vendor-crt-input"
+                        className={`vendor-crt-input loginfilled-frame-username  ${submit && triggerName.length==0 ? 'error' : ''}`}
+                        value={triggerName}
+                        placeholder=" "
+                        required
+                        onChange={(e)=>settriggerName(e.target.value)}
+                    />
+                    <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-id-card-clip"></i> Trigger Type</label>
+                    <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
+                    <ul className="dropdown-menu template-dropdown storename-dropdown-menu">
+                    {triggerDrop.length === 0 ? (
+                          <li className="dropdown-nodata-found">No data found</li>
+                        ) : (
+                          triggerDrop.map((dropdownValue, id) => (                                                            
+                          <li key={id}>
+                              <a
+                                className="dropdown-item"
+                                href="#"
+                                onClick={() => { settriggerId(dropdownValue.id); settriggerName(dropdownValue.name) }}
+                              >
+                                {dropdownValue.name}
+                              </a>
+                          </li>
+                        )))}
+                    </ul>
+                  </div>
+                  {submit && triggerName?.length == 0 ? <div className='text-start text-danger error-message-required'>Trigger type is required</div> : <></>}                                                   
+              </div>
                   <div className="card card-details shadow-sm rounded border chat-form-card p-3 border mt-5">
                     <div className="modal-header  border-0">
                       <h1
@@ -1618,7 +1626,7 @@ const validateListSectionWithStructure = (
                             
 
                           />
-                          <span>Simple</span>
+                          <span className="grayFont">Simple</span>
                         </label>
                       </div>
                       <div className="col-md-3 four-input-sec">
@@ -1633,7 +1641,7 @@ const validateListSectionWithStructure = (
                             onChange={handleChangeType}
 
                           />
-                          <span>Media</span>
+                          <span className="grayFont">Media</span>
                         </label>
                       </div>
                       <div className="col-md-3 four-input-sec">
@@ -1647,7 +1655,7 @@ const validateListSectionWithStructure = (
                             onChange={handleChangeType}
 
                           />
-                          <span>Interactive</span>
+                          <span className="grayFont">Interactive</span>
                         </label>
                       </div>
                       {submit && resType?.length===0 ? <div className='text-start text-danger error-message-required'>Bot reply type field is required</div> : <></> }
@@ -1805,7 +1813,7 @@ const validateListSectionWithStructure = (
                         htmlFor={`option-${item.value}`}
                         >
                           <div>
-                            <i className={`${item.icon} chatbox-icon-size`}></i>
+                            <i className={`${item.icon} chatbox-icon-size grayFont`}></i>
                           </div>
                           <input
                             type="radio"
@@ -1851,17 +1859,18 @@ const validateListSectionWithStructure = (
                           type="text"
                           placeholder=""
                           id="vendor-crt-input"
-                          className={`vendor-crt-input loginfilled-frame-username ${submit && mediaText?.length==0 ? 'error' : ''}`}
+                          className={`vendor-crt-input loginfilled-frame-username`}
+                          // ${submit && mediaText?.length==0 ? 'error' : ''}
                           value={mediaText}
                           onChange={(e)=>setMediaText(e.target.value)}
                         />
                         <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-pen-to-square"></i> Header Text</label>
                         </div>
-                        {submit && mediaText.length === 0 && (
+                        {/* {submit && mediaText.length === 0 && (
                         <div className="text-start text-danger error-message-required mt-1">
                           Header text is required
                         </div>
-                        )}
+                        )} */}
                       </div>)}
                       {(resType === "media" || resType === "interactive") && selectedOption === "image" && (
                       <div>
@@ -2037,7 +2046,7 @@ const validateListSectionWithStructure = (
                               name="interactive"
                               checked={interactiveType === "reply"}
                             />
-                            <span>Reply Buttons</span>
+                            <span className="grayFont">Reply Buttons</span>
                           </label>
                         </div>
                         <div className="col-md-3 four-input-sec">
@@ -2051,7 +2060,7 @@ const validateListSectionWithStructure = (
                               checked={interactiveType === "cta"}
 
                             />
-                            <span>CTA URL Button</span>
+                            <span className="grayFont">CTA URL Button</span>
                           </label>
                         </div>
                         <div className="col-md-3 four-input-sec">
@@ -2070,7 +2079,7 @@ const validateListSectionWithStructure = (
                               checked={interactiveType === "list"}
                               disabled={isDisabled}
                             />
-                            <span>List Message</span>
+                            <span className="grayFont">List Message</span>
                           </label>
                         </div>
                       </div>
@@ -2082,10 +2091,10 @@ const validateListSectionWithStructure = (
                         <div className="vendor-create-container">
                            <input autoComplete="off" type="text" id="vendor-crt-input"  value={replyTextInput1}
                               onChange={(e)=>setreplyTextInput1(e.target.value)}
-                            className={`vendor-crt-input loginfilled-frame-username  ${submit && replyTextInput1.length==0 ? 'error' : ''}`} placeholder=" " required />
+                            className={`vendor-crt-input loginfilled-frame-username  ${submit && replyTextInput1?.length==0 ? 'error' : ''}`} placeholder=" " required />
                            <label htmlFor="vendor-crt-input" className="vendor-crt-label"> Button 1 Label</label>
                         </div>
-                        {submit && replyTextInput1.length == 0 ? <div className='text-start text-danger error-message-required'>Button 1 is required</div> : <></>}
+                        {submit && replyTextInput1?.length == 0 ? <div className='text-start text-danger error-message-required'>Button 1 is required</div> : <></>}
 
                      </div>
                           <div className="col-md-4 login-input-group">
@@ -2114,20 +2123,20 @@ const validateListSectionWithStructure = (
                         <div className="vendor-create-container">
                            <input autoComplete="off" type="text" id="vendor-crt-input"  value={ctaTextInput}
                                 onChange={(e) => setCtaTextInput(e.target.value)}     
-                            className={`vendor-crt-input loginfilled-frame-username  ${submit && ctaTextInput.length==0 ? 'error' : ''}`} placeholder=" " required />
+                            className={`vendor-crt-input loginfilled-frame-username  ${submit && ctaTextInput?.length==0 ? 'error' : ''}`} placeholder=" " required />
                            <label htmlFor="vendor-crt-input" className="vendor-crt-label">CTA Button Display Text<span className="required-star">*</span></label>
                         </div>
-                        {submit && ctaTextInput.length == 0 ? <div className='text-start text-danger error-message-required'>CTA text is required</div> : <></>}
+                        {submit && ctaTextInput?.length == 0 ? <div className='text-start text-danger error-message-required'>CTA text is required</div> : <></>}
 
                      </div>
                             <div className="col-md-6 login-input-group">
                         <div className="vendor-create-container">
                            <input autoComplete="off" type="text" id="vendor-crt-input"   value={ctaURLInput}
                                   onChange={(e) => setCtaURLInput(e.target.value)}     
-                            className={`vendor-crt-input loginfilled-frame-username  ${submit && ctaURLInput.length==0 ? 'error' : ''}`} placeholder=" " required />
+                            className={`vendor-crt-input loginfilled-frame-username  ${submit && ctaURLInput?.length==0 ? 'error' : ''}`} placeholder=" " required />
                            <label htmlFor="vendor-crt-input" className="vendor-crt-label">CTA Button URL<span className="required-star">*</span></label>
                         </div>
-                        {submit && ctaURLInput.length == 0 ? <div className='text-start text-danger error-message-required'>CTA URL is required</div> : <></>}
+                        {submit && ctaURLInput?.length == 0 ? <div className='text-start text-danger error-message-required'>CTA URL is required</div> : <></>}
 
                      </div>
                             <div className="col-md-4"></div>
@@ -2158,7 +2167,7 @@ const validateListSectionWithStructure = (
                             Button Label
                           </label>
                         </div>
-                        {submit && buttonLabel.length == 0 ? <div className='text-start text-danger error-message-required'>Button label is required</div> : <></>}
+                        {submit && buttonLabel?.length == 0 ? <div className='text-start text-danger error-message-required'>Button label is required</div> : <></>}
 
                       </div>
 

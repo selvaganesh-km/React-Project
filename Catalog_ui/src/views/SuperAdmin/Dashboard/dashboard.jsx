@@ -180,10 +180,10 @@ function Dashboard() {
                <div class="container-fluid py-1">
                   <nav aria-label="breadcrumb">
                      <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm tblName"><a class="opacity-5 tblName" href="#">Home</a></li>
-                        <li class="breadcrumb-item text-sm tblName active tblName" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 grayFont" href="#">Home</a></li>
+                        <li class="breadcrumb-item text-sm grayFont active" aria-current="page">Dashboard</li>
                      </ol>
-                     <h6 class="font-weight-bolder text-start mb-0 tblName">Dashboard</h6>
+                     <h6 class="font-weight-bolder text-start mb-0 grayFont">Dashboard</h6>
                   </nav>
                </div>
                <div class="dashboard-maincontent container-fluid py-4">
@@ -209,7 +209,7 @@ function Dashboard() {
                                           <div class="icon icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                           <i class="fa-solid fa-store text-white"></i>
                                           </div>
-                                          <h5 class="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 class="grayFont font-weight-bolder mb-0 mt-3">
                                              {sadminDashcount?.TotalVendors || 0}
                                           </h5>
                                           <span class=" text-sm">Total Vendors</span>
@@ -238,7 +238,7 @@ function Dashboard() {
                                           <div class="icon icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                           <i class="fa-solid fa-chart-line text-white"></i>
                                           </div>
-                                          <h5 class="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 class="grayFont font-weight-bolder mb-0 mt-3">
                                              {sadminDashcount?.TotalActiveVendors || 0}
                                           </h5>
                                           <span class=" text-sm">Total Active Vendors</span>
@@ -266,7 +266,7 @@ function Dashboard() {
                                           <div class="icon icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                           <i class="fa-brands fa-whatsapp text-white"></i>
                                           </div>
-                                          <h5 class="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 class="grayFont font-weight-bolder mb-0 mt-3">
                                              {sadminDashcount?.MessagesInQueue ||0}
                                           </h5>
                                           <span class=" text-sm">Messages in Queue Whatsapp</span>
@@ -294,7 +294,7 @@ function Dashboard() {
                                           <div class="icon icon-shape superadmin-dashboard-iconbg bg-white shadow text-center border-radius-2xl">
                                           <i class="fa-solid fa-message text-white"></i>
                                           </div>
-                                          <h5 class="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 class="grayFont font-weight-bolder mb-0 mt-3">
                                              0
                                           </h5>
                                           <span class=" text-sm">Messages in Queue SMS</span>
@@ -322,7 +322,7 @@ function Dashboard() {
                                           <div class="icon icon-shape superadmin-dashboard-iconbg bg-white shadow text-center border-radius-2xl">
                                           <i class="fa-solid fa-comments text-white"></i>
                                           </div>
-                                          <h5 class="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 class="grayFont font-weight-bolder mb-0 mt-3">
                                              0
                                           </h5>
                                           <span class=" text-sm">Total SMS Balance</span>
@@ -350,7 +350,7 @@ function Dashboard() {
                                           <div class="icon icon-shape superadmin-dashboard-iconbg bg-white shadow text-center border-radius-2xl">
                                           <i class="fa-solid fa-envelope-open text-white"></i>
                                           </div>
-                                          <h5 class="tblName font-weight-bolder mb-0 mt-3">
+                                          <h5 class="grayFont font-weight-bolder mb-0 mt-3">
                                              0
                                           </h5>
                                           <span class=" text-sm">Messages Processed</span>
@@ -378,8 +378,8 @@ function Dashboard() {
                         <div class="card">
                            <div class="card-header pb-0">
                               <div class="row">
-                                 <div class="tblName text-start col-lg-6 col-7">
-                                    <h6 className="tblName">Recent Vendor</h6>
+                                 <div class="grayFont text-start col-lg-6 col-7">
+                                    <h6 className="grayFont">Recent Vendor</h6>
                                  </div>
                                  <div class="col-lg-6 col-5 my-auto text-end">
                                     <div class="dropdown float-lg-end pe-4">
@@ -422,7 +422,7 @@ function Dashboard() {
                                                    <img src={SoftUI} class="avatar avatar-sm me-3" alt="xd" />
                                                 </div>
                                                 <div class="d-flex flex-column justify-content-center">
-                                                   <h6 class="mb-0 text-sm tblName">{vendorList?.VendorName}</h6>
+                                                   <h6 class="mb-0 text-sm grayFont">{vendorList?.VendorName}</h6>
                                                 </div>
                                              </div>
                                           </td>
@@ -432,7 +432,7 @@ function Dashboard() {
                                              {vendorList?.VendorPhone}
                                               </span>
                                           </td>
-                                          <td class="align-middle text-start text-sm">
+                                          <td class="align-middle text-start text-sm" style={{whiteSpace:"pre-wrap"}}>
                                           <span class="text-xs font-weight-bold">
                                              {vendorList?.VendorAddress}
                                               </span>
@@ -450,7 +450,7 @@ function Dashboard() {
                      <div class="col-lg-4 text-start col-md-6">
                         <div class="card h-100">
                            <div class="card-header pb-0">
-                              <h6 className="tblName">Vendor overview</h6>
+                              <h6 className="grayFont">Vendor overview</h6>
                               <p class="text-sm">
                                  <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
                                  <span class="font-weight-bold">24%</span> this month
@@ -463,7 +463,7 @@ function Dashboard() {
                                        <i class="fa-regular text-success fa-bell"></i>
                                     </span>
                                     <div class="timeline-content">
-                                       <h6 class=" text-sm font-weight-bold mb-0 tblName">$2400, Design changes</h6>
+                                       <h6 class=" text-sm font-weight-bold mb-0 grayFont">$2400, Design changes</h6>
                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
                                     </div>
                                  </div>
@@ -472,7 +472,7 @@ function Dashboard() {
                                        <i class="fa-solid fa-folder-open text-danger text-gradient"></i>
                                     </span>
                                     <div class="timeline-content">
-                                       <h6 class=" text-sm font-weight-bold mb-0 tblName">New order #1832412</h6>
+                                       <h6 class=" text-sm font-weight-bold mb-0 grayFont">New order #1832412</h6>
                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
                                     </div>
                                  </div>
@@ -481,7 +481,7 @@ function Dashboard() {
                                        <i class="fa-solid fa-cart-arrow-down text-info text-gradient"></i>
                                     </span>
                                     <div class="timeline-content">
-                                       <h6 class=" text-sm font-weight-bold mb-0 tblName">Server payments for April</h6>
+                                       <h6 class=" text-sm font-weight-bold mb-0 grayFont">Server payments for April</h6>
                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
                                     </div>
                                  </div>
@@ -490,7 +490,7 @@ function Dashboard() {
                                        <i class="fa-solid fa-address-card text-warning text-gradient"></i>
                                     </span>
                                     <div class="timeline-content">
-                                       <h6 class=" text-sm font-weight-bold mb-0 tblName">New card added for order #4395133</h6>
+                                       <h6 class=" text-sm font-weight-bold mb-0 grayFont">New card added for order #4395133</h6>
                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
                                     </div>
                                  </div>
@@ -499,7 +499,7 @@ function Dashboard() {
                                        <i class="fa-solid fa-key text-primary text-gradient"></i>
                                     </span>
                                     <div class="timeline-content">
-                                       <h6 class=" text-sm font-weight-bold mb-0 tblName">Unlock packages for development</h6>
+                                       <h6 class=" text-sm font-weight-bold mb-0 grayFont">Unlock packages for development</h6>
                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
                                     </div>
                                  </div>
@@ -508,7 +508,7 @@ function Dashboard() {
                                        <i class="fa-solid fa-circle-dollar-to-slot text-info text-gradient"></i>
                                     </span>
                                     <div class="timeline-content">
-                                       <h6 class=" text-sm font-weight-bold mb-0 tblName">New order #9583120</h6>
+                                       <h6 class=" text-sm font-weight-bold mb-0 grayFont">New order #9583120</h6>
                                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">17 DEC</p>
                                     </div>
                                  </div>
@@ -526,7 +526,7 @@ function Dashboard() {
                                     <Bar data={data} options={options} />
                                  </div>
                               </div>
-                              <h6 class="ms-2 mt-4 mb-0 tblName"> Active Users </h6>
+                              <h6 class="ms-2 mt-4 mb-0 grayFont"> Active Users </h6>
                               <p class="text-sm ms-2"> (<span class="font-weight-bolder">+23%</span>) than last week </p>
                               <div class="container border-radius-lg">
                                  <div class="row">
@@ -549,7 +549,7 @@ function Dashboard() {
                                           </div>
                                           <p class="text-xs mt-1 mb-0 font-weight-bold">Users</p>
                                        </div>
-                                       <h4 class="font-weight-bolder tblName">36K</h4>
+                                       <h4 class="font-weight-bolder grayFont">36K</h4>
                                        <div class="progress w-75">
                                           <div class="progress-bar bg-dark w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
                                        </div>
@@ -575,7 +575,7 @@ function Dashboard() {
                                           </div>
                                           <p class="text-xs mt-1 mb-0 font-weight-bold">Clicks</p>
                                        </div>
-                                       <h4 class="font-weight-bolder tblName">2m</h4>
+                                       <h4 class="font-weight-bolder grayFont">2m</h4>
                                        <div class="progress w-75">
                                           <div class="progress-bar bg-dark w-90" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
                                        </div>
@@ -599,7 +599,7 @@ function Dashboard() {
                                           </div>
                                           <p class="text-xs mt-1 mb-0 font-weight-bold">Sales</p>
                                        </div>
-                                       <h4 class="font-weight-bolder tblName">435$</h4>
+                                       <h4 class="font-weight-bolder grayFont">435$</h4>
                                        <div class="progress w-75">
                                           <div class="progress-bar bg-dark w-30" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
                                        </div>
@@ -624,7 +624,7 @@ function Dashboard() {
                                           </div>
                                           <p class="text-xs mt-1 mb-0 font-weight-bold">Items</p>
                                        </div>
-                                       <h4 class="font-weight-bolder tblName">43</h4>
+                                       <h4 class="font-weight-bolder grayFont">43</h4>
                                        <div class="progress w-75">
                                           <div class="progress-bar bg-dark w-50" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                        </div>
@@ -637,7 +637,7 @@ function Dashboard() {
                      <div class="col-lg-7 mb-lg-0 mb-4">
                         <div class="card z-index-2 h-100">
                            <div class="card-header pb-0 pt-3 bg-transparent text-start">
-                              <h6 class="text-capitalize tblName">Sales overview</h6>
+                              <h6 class="text-capitalize grayFont">Sales overview</h6>
                               <p class="text-sm mb-0">
                                  <i class="fa fa-arrow-up text-success"></i>
                                  <span class="font-weight-bold">4% more</span> in 2021

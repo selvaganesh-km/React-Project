@@ -60,7 +60,7 @@ function SuperAdminLogin() {
           <div className="page-header min-vh-75">
             <div className="container">
               <div className="row">
-                <div className="col-xl-4 col-lg-5 col-md-6 text-start d-flex flex-column mx-auto">
+                <div className="col-xl-4 col-lg-5 col-md-6 text-start mx-auto">
                   <div className="card card-plain mt-8">
                     <div className="card-header pb-0 bg-transparent">
                       <h3 className="font-weight-bolder text-info text-gradient">Welcome back</h3>
@@ -121,7 +121,8 @@ function SuperAdminLogin() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 bg-login-query">
+                <div className="col-md-6">
+                  <div className="bg-login-query">
                   <div className="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
                     <div className="oblique-image login-sadmin bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"></div>
                   </div>
@@ -133,20 +134,8 @@ function SuperAdminLogin() {
                       Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">YALLI</span> your comprehensive WhatsApp <br /> Marketing Platform.
                     </p>
                   </div>
-                </div>  <div className="col-md-6 bg-login-query">
-                  <div className="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                    <div className="oblique-image login-sadmin bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6"></div>
-                  </div>
-                  <div className="oblique position-absolute top-50 w-50 text-start">
-                    <h4 className="mt-5 text-white font-weight-bolder position-relative login-bg-text-go">
-                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">YALLI</span>
-                    </h4>
-                    <p className="login-bg-text-go position-relative">
-                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">YALLI</span> your comprehensive WhatsApp <br /> Marketing Platform.
-                    </p>
-                  </div>
+                </div> 
                 </div>
-
               </div>
             </div>
           </div>

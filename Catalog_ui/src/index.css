@@ -20470,7 +20470,7 @@ fieldset:disabled .btn {
     }
     .dropdown .dropdown-menu,
     .dropup .dropdown-menu {
-        transition: visibility 0.25s, opacity 0.25s, transform 0.25s;
+        /* transition: visibility 0.25s, opacity 0.25s, transform 0.25s; */
     }
     .dropdown .dropdown-toggle:after,
     .dropup .dropdown-toggle:after {
@@ -26269,7 +26269,7 @@ pre[class*=language-] {
     background: transparent;
     border: 0;
     font-size: 13px;
-    color: #ad0000;
+    color: #0cc0df;
 }
 
 .vendorbtn-view {
@@ -26891,6 +26891,51 @@ textarea {
     transform: rotateX(152deg);
 }
 
+
+/* Change Status */
+
+.actionChangeStatus-tooltip-container:hover .actionChangeStatus-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+.actionChangeStatus-tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.actionChangeStatus-tooltip-container .actionChangeStatus-tooltip-text {
+    visibility: hidden;
+    background-color: #9fa0a5;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    color: white;
+    text-align: center;
+    padding: 1px 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 30px;
+    transform: translateX(-23%);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.actionChangeStatus-tooltip-container .actionChangeStatus-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #9fa0a5;
+    transform: rotateX(152deg);
+}
+
 .actionCreateCampaign-tooltip-container .actionCreateCampaign-tooltip-text::after {
     content: "";
     position: absolute;
@@ -26910,7 +26955,7 @@ textarea {
     content: "";
     position: absolute;
     top: 16px;
-    left: 55px;
+    left: 57px;
     bottom: 0;
     width: 0;
     height: 0;
@@ -26934,6 +26979,7 @@ textarea {
     border-top: 10px solid transparent;
     border-bottom: 10px solid #014aac;
     transform: rotateX(152deg);
+    pointer-events: none;
 }
 
 .actionDelete-tooltip-container .actionDelete-tooltip-text::after {
@@ -26948,6 +26994,37 @@ textarea {
     border-right: 10px solid transparent;
     border-top: 10px solid transparent;
     border-bottom: 10px solid #ef5252;
+    transform: rotateX(152deg);
+    pointer-events: none;
+}
+
+.actionArchive-tooltip-container .actionArchive-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #0cc0df;
+    transform: rotateX(152deg);
+}
+
+.actionDuplicate-tooltip-container .actionDuplicate-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 26px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #71717a;
     transform: rotateX(152deg);
 }
 
@@ -26991,7 +27068,7 @@ textarea {
 
 .actionArchive-tooltip-container .actionArchive-tooltip-text {
     visibility: hidden;
-    background-color: #ad0000;
+    background-color: #0cc0df !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
     color: white;
     text-align: center;
@@ -27460,7 +27537,7 @@ textarea {
 }
 
 .show-entries-btn1 {
-    background: linear-gradient(310deg, #ad0000, #df0d0d);
+    background: linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%);
     color: white !important;
     border: 0px !important;
     padding: 3px 7px;
@@ -27491,7 +27568,7 @@ textarea {
 .bulk-select {
     padding: 1px 5px !important;
     border: 0px;
-    background: linear-gradient(310deg, #ad0000, #df0d0d);
+    background: linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%);
     color: white !important;
     height: 23px;
     border-radius: 5px;
@@ -27511,24 +27588,72 @@ textarea {
     border-radius: 5px !important;
 }
 
-.tblName {
+.grayFont {
     color: var(--bs-font-gray);
 }
 
-
-/* ::-webkit-scrollbar {
-    width: 5px;
+.whitespace-pre-line {
+    white-space: pre-line;
 }
 
- ::-webkit-scrollbar-track {
+.whitespace-pre-wrap {
+    white-space: pre-wrap;
+}
+
+.transparent {
+    color: transparent;
+    background: transparent;
+    border: transparent;
+}
+
+
+/* .cursor-content-menu {
+    cursor: context-menu;
+} */
+
+.input-disable {
+    color: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.whatschat-count {
+    position: absolute;
+    top: -3px;
+    left: 46px;
+    min-width: 20px;
+    height: 18px;
+    font-size: 10px;
+    background-image: linear-gradient(310deg, var(--bs-gray-dark) 0%, var(--bs-gray-light) 100%);
+    color: #ffffff;
+    padding: 0px 5px;
+    border-radius: 4px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+
+/* Vertical scrollbar */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
     background: #fff;
 }
 
- ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: #aaaaaa;
     border-radius: 10px;
 }
 
- ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
     background: #757575;
-} */
+}

@@ -140,16 +140,16 @@ function VendorProfile() {
                <div className="vendor-breadcrumbs container-fluid py-1 px-3">
                   <nav aria-label="breadcrumb">
                      <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/vendor/dashboard"}>Dashboard</Link></li>
-                        <li className="breadcrumb-item text-sm tblName active" aria-current="page">My Profile</li>
+                        <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                        <li className="breadcrumb-item text-sm grayFont active" aria-current="page">My Profile</li>
                      </ol>
-                     <h6 className="text-start font-weight-bolder mb-0 tblName">My Profile</h6>
+                     <h6 className="text-start font-weight-bolder mb-0 grayFont">My Profile</h6>
                   </nav>
                </div>
                <div className="myprofile-maincontent container-fluid py-4">
                   <div className="row myprofile-content">
                      <div className="col-md-6">
-                        <h5 className="text-start tblName"><img src={vendorLogo ? baseURL + vendorLogo : noImage} className="avatar avatar-sm me-2" alt="spotify" /> Vendor Edit Profile </h5>
+                        <h5 className="text-start"><img src={vendorLogo ? baseURL + vendorLogo : noImage} className="avatar avatar-sm me-2" alt="spotify" />Edit Profile </h5>
                         <div className="col-md-12 login-input-group">
                            <div className="edit-container">
                               <input type="text" id="vendor-crt-input" autoComplete="off" onChange={(e)=>setUsername(e.target.value)} value={username} className="vendor-crt-input" placeholder=" " required />
@@ -185,8 +185,8 @@ function VendorProfile() {
                         <div className="col-md-6 edit-name">
                           <div className="media-upload-container login-input-group">
                           <label htmlFor="vendor-crt-input-2" className="media-upload-label">
-                          <i className="fa-brands fa-vimeo icon-left mt-1" /> 
-                          <span className="mt-1 ">Vendor Logo</span>
+                          <i className="fa-solid fa-images icon-left mt-1" /> 
+                          <span className="mt-1 ">Upload Logo</span>
                           </label>
                           <input
                               type="file"
@@ -229,7 +229,7 @@ function VendorProfile() {
                         </div>
                      </div>
                      <div className="col-md-6">
-                        <h5 className="text-start mt-2 tblName">Password</h5>
+                        <h5 className="text-start mt-2">Password</h5>
                         <div className="col-md-12 login-input-group staff-passwordInput" style={{marginTop:"39px"}}>
                            <div className="edit-container">
                               <input type={showPassword ? 'text' : 'password'} id="vendor-crt-input" name="fake-lastname"
@@ -265,7 +265,8 @@ function VendorProfile() {
                             onClick={toggleConfPasswordVisibility}
                           ></i>
                         </div>
-                        <div className="col-md-12 edit-button text-end">
+                        <div className="col-md-12 edit-button py-2 login-input-group "></div>
+                        <div className="col-md-12 edit-button text-end mt-5">
                            <button onClick={handlechangePassword}>Change Password</button>
                         </div>
                      </div>

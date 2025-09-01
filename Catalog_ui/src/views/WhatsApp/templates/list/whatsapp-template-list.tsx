@@ -36,21 +36,31 @@ function WhatsappTemplate() {
    const [headerTextValues, setheaderTextValues] = useState('')
    const [bodyTextValues, setBodyTextValues] = useState('')
    const [footerTextValues, setfooterTextValues] = useState('')
-   const [getId, setGetId] = useState('')
+   const [carouselTyp, setCarouselTyp] = useState('')
    const [tempId, setTempId] = useState('')
    const [tempname, setTempName] = useState('')
    const [imgValue, setImgValue] = useState('')
    const [vdoValue, setVdoValue] = useState('')
    const [docValue, setDocValue] = useState('')
    const [loading, setLoading] = useState(false)
+   const [loadingbtn, setLoadingbtn] = useState(false)
    const [submit, setSubmit] = useState(false);
+   const [slides,setslides] = useState<any>([]);
    const [currentPage, setCurrentPage] = useState(1);
    const [recordsPerPage] = useState(10);
    const [totalRecords, setTotalRecords] = useState(0);
    const [beforeCursor, setBeforeCursor] = useState("");
    const [afterCursor, setAfterCursor] = useState("");
    const totalPages = Math.ceil(totalRecords / recordsPerPage);
+   const [currentIndex, setCurrentIndex] = useState(0);
    
+   const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
+  };
       const handlePageChange = (pageNumber: any) => {
          if (pageNumber < 1 || pageNumber > totalPages) return;
          setCurrentPage(pageNumber);
@@ -139,10 +149,11 @@ function WhatsappTemplate() {
    };
    const whatsappSyncAPI = () => {
       setLoading(true);
-      const apiData = {};
+      const apiData = {limit:"150"};
       VendorAPI.whatsappSyncAPI(apiData)
          .then((responceData: any) => {
             if (responceData.apiStatus.code === '200') {
+               whatsappTemplateList(currentPage);
                setLoading(false)
             } else {
                setLoading(false)
@@ -167,11 +178,19 @@ function WhatsappTemplate() {
    const [copybtn, setcopybtn] = useState('None')
    const [urlbtn, seturlbtn] = useState('None')
    const [dynamicurlbtn, setdynamicurlbtn] = useState('None')
+   const [hasClicked, setHasClicked] = useState(false);
+    const handleClick = (id:any) => {
+    if (!hasClicked) {
+      whatsappGetApi(id);
+      setHasClicked(true);
+    }
+  };
    //   Get By Id
    const whatsappGetApi = async (id: any) => {
       try {
          const responseData = await VendorAPI.whatsappGet(id);
          if (responseData.apiStatus.code === '200') {
+            setHasClicked(false);
             const data = responseData?.responseData;
             const modalElement = document.getElementById('whatsappTempview');
             if (modalElement) {
@@ -235,34 +254,85 @@ function WhatsappTemplate() {
                      }
                   });
                }
+               else if (component.type === "CAROUSEL") {
+                  const formattedSlides = component.cards.map((card: any, index: number) => {
+                  const header = card.components.find((c: any) => c.type === "HEADER");
+                  const body = card.components.find((c: any) => c.type === "BODY");
+                  const buttons = card.components.find((c: any) => c.type === "BUTTONS");
+
+                  // Replace placeholders with example values in body text
+                  let bodyText = body?.text || "";
+                  // const exampleValues = body?.example?.body_text?.[0] || [];
+                  // exampleValues.forEach((val: string, i: number) => {
+                  //    bodyText = bodyText.replace(`{{${i + 1}}}`, val);
+                  // });
+
+                  // Replace URL placeholders with example
+                  const formattedButtons = (buttons?.buttons || []).map((btn: any, btnIdx: number) => {
+                     let url = btn.url || "";
+                     if (btn.type === "URL" && btn.example?.length > 0) {
+                     url = url.replace(`{{1}}`, btn.example[0]);
+                     }
+                     return {
+                     type: btn.type.toLowerCase(),
+                     text: btn.text,
+                     url
+                     };
+                  });
+
+                  return {
+                     id: index,
+                     src: header?.example?.header_handle?.[0] || "",
+                     format: header?.format?.toLowerCase() || "image",
+                     title: `Slide ${index + 1}`,
+                     bodyText,
+                     buttons: formattedButtons
+                  };
+               });
+
+               setslides(formattedSlides);
+               setCarouselTyp(component.type);
+               }
+
             });
          } else {
+            setHasClicked(false);
             toast.error(`Get failed: ${responseData.apiStatus.message}`);
          }
       } catch (error) {
+         setHasClicked(false);
          console.error("Error during API call:", error);
       }
    };
 
    const handleDeletetemp = () => {
-      setLoading(true)
+      setLoadingbtn(true)
       VendorAPI.whatsappDeletetemp(tempId, tempname)
          .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
+               const newTotalRecords = totalRecords - 1;
+               setTotalRecords(newTotalRecords);
+               let totalPages = Math.ceil(newTotalRecords / recordsPerPage);
+               if (currentPage > totalPages) {
+                  setCurrentPage(totalPages || 1); 
+               }
+               else if (currentPage < 1) {
+                  setCurrentPage(1);
+               }
                const closeButton = document.getElementById("closedeleteModal");
                if (closeButton) {
                   whatsappTemplateList(currentPage);
                   closeButton.click();
                }
                toast.success(responseData.apiStatus.message)
-               setLoading(false)
+               setLoadingbtn(false)
             } else {
                toast.error(responseData.apiStatus.message);
-               setLoading(false)
+               setLoadingbtn(false)
             }
          })
          .catch((error: any) => {
-            setLoading(false)
+            setLoadingbtn(false)
             console.error("Error during login:", error);
             toast.error("An error occurred during login.");
          });
@@ -294,6 +364,9 @@ function WhatsappTemplate() {
       setImgValue('');
       setDocValue('');
       setVdoValue('');
+      setCarouselTyp('');
+      setslides([]);
+      setCurrentIndex(0)
    }
    if (redirect) {
       return <Navigate to={redirect} />;
@@ -309,10 +382,10 @@ function WhatsappTemplate() {
                   <div className="col-md-4">
                      <nav aria-label="breadcrumb">
                         <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                           <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/vendor/dashboard"}>Dashboard</Link></li>
-                           <li className="breadcrumb-item text-sm tblName active" aria-current="page">Whatsapp</li>
+                           <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                           <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Whatsapp</li>
                         </ol>
-                        <h6 className="text-start font-weight-bolder mb-0 tblName">Whatsapp <i className="fa-brands fa-whatsapp"></i></h6>
+                        <h6 className="text-start font-weight-bolder mb-0 grayFont">Whatsapp <i className="fa-brands fa-whatsapp"></i></h6>
                      </nav>
                   </div>
                   <div className="col-md-8 text-end whatsapp-three-btn">
@@ -421,20 +494,37 @@ function WhatsappTemplate() {
                                                          </div>
                                                       </div>
                                                       <div className="actionView-tooltip-container">
-                                                         <button className="btn-3 vendorbtn-view" type="button" onClick={() => { whatsappGetApi(list.id)}}>
+                                                         <button className="btn-3 vendorbtn-view" type="button" onClick={() => { handleClick(list.id)}}>
                                                             <span className="btn-inner--icon"><i className="fa-solid fa-eye"></i></span>
                                                          </button>&nbsp;
                                                          <div className="actionView-tooltip-text">
                                                             View
                                                          </div>
                                                       </div>
-                                                      <div className="actionEdit-tooltip-container">
-                                                         <button onClick={() => { navigate(`/vendor/edit-whatsapp-template/${list.id}`); }} className="btn-3 vendorbtn-edit" type="button">
-                                                            <span className="btn-inner--icon"><i className="fa-regular fa-pen-to-square"></i></span>
-                                                         </button>&nbsp;
+                                                     <div className="actionEdit-tooltip-container">
+                                                      <button
+                                                         onClick={() => {
+                                                            if (list?.template_type !== "carousel") {
+                                                            navigate(`/vendor/edit-whatsapp-template/${list.id}`);
+                                                            }
+                                                         }}
+                                                         className="btn-3 vendorbtn-edit"
+                                                         type="button"
+                                                         disabled={list?.template_type === "carousel"}
+                                                      style={{
+                                                         cursor: list?.template_type === "carousel" ? 'default' : 'pointer'
+                                                      }}
+                                                      >
+                                                         <span className="btn-inner--icon" style={{ visibility: list?.template_type === "carousel" ? 'hidden' : 'visible' }}>
+                                                            <i className="fa-regular fa-pen-to-square"></i>
+                                                         </span>
+                                                      </button>
+                                                      &nbsp;
+                                                      {list?.template_type !== "carousel" && (
                                                          <div className="actionEdit-tooltip-text">
                                                             Edit
                                                          </div>
+                                                      )}
                                                       </div>
                                                       <div className="actionDelete-tooltip-container">
                                                          <button className="btn-3 vendorbtn-danger" type="button" data-bs-toggle="modal" onClick={() => { setTempId(list?.id); setTempName(list?.name) }} data-bs-target="#vendordelete">
@@ -464,24 +554,28 @@ function WhatsappTemplate() {
                   </div>
                </div>
                {/* Whatsapp Templates View */}
-               <div className="modal fade" id="whatsappTempview" aria-labelledby="vendorviewLabel" aria-hidden="true">
+               <div className="modal fade" id="whatsappTempview" aria-labelledby="vendorviewLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                   <div className="modal-dialog modal-dialog-centered template-view-modal-dialog">
                      <div className="modal-content all-modal-content">
                         <div className="modal-header vendor-view-header">
                            <h1 className="modal-title fs-6 mb-3 text-center" id="vendorviewLabel">Template Preview</h1>
                         </div>
                         <div className="p-0 modal-body text-center ">
+                           
+
+ 
                            <div className="text-end">
                               <div className="template-preview template-preview-modal">
                                  <div className="conversation">
                                     <div className="conversation-container">
-                                       <div className="message received text-start">
+                                       <div className="message received text-start z-0">
                                           <div className='mt-2 text-sm temp-view-head'>
                                              <div className='ps-3 mt-2 template-previewModal-text temp-view-head'>
                                                 <strong> {headerTextValues}</strong>
                                              </div>
-                                             {imgValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}><img className="w-100" src={imgValue} alt="" /></div> : null}
-                                             {vdoValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '35px', background: 'gainsboro' }}><i className="fa fa-5x fa-play-circle"></i></div> : null}
+                                             {imgValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}><img className="w-100 rounded" src={imgValue} alt="" /></div> : null}
+                                             {vdoValue ? <div className='rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'gainsboro',pointerEvents: 'auto' }}><video className="w-100 rounded" controls autoPlay loop playsInline><source src={vdoValue} type="video/mp4" /> </video></div> : null}
+                                             {/* {vdoValue ? <div className='rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '35px', background: 'gainsboro' }}><i className="fa fa-5x fa-play-circle"></i></div> : null} */}
                                              {docValue ? <div className='ps-0 rounded' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '35px', background: 'gainsboro' }}><i className="fa fa-5x fa-file-alt text-white"></i></div> : null}
                                           </div>
                                           <div className='p-3 mt-1 template-previewModal-text temp-view-body'
@@ -513,6 +607,96 @@ function WhatsappTemplate() {
                                              )}
                                           </div>
                                        </div>
+                                       {carouselTyp &&(
+                                       <div className="main-container-carousels">
+                                          <div className="carousel-container">
+                                          <div className="wrapper conversation-container px-1 pb-0">
+                                          <div className="slider-wrapper">
+                                             <div
+                                                className="inner"
+                                                style={{
+                                                width: `${slides.length * 100}%`,
+                                                transform: `translateX(-${currentIndex * (100 / slides.length)}%)`
+                                                }}
+                                             >
+                                                {slides.map((slide:any, index:any) => (
+                                                <article key={index} style={{ width: `${100 / slides.length}%` }}>
+                                                   <div className={`info ${slide.position || ""}`}>
+                                                      {/* <h3>{slide.title}</h3> */}
+                                                   </div>
+                                                   {slide.format === 'video' ? (
+                                                      <video src={slide.src} controls />
+                                                   ) : (
+                                                      <img src={slide.src} alt={slide.title || `Slide ${index}`} />
+                                                   )}
+                                                </article>
+                                                ))}
+                                             </div>
+                                          </div>
+
+                                          {slides && slides.length >= 2 && (
+                                             <div className="slider-nav-buttons modal-slider-nav-buttons ">
+                                                <button onClick={(e) => { prevSlide(); e.preventDefault(); }}>❮</button>
+                                                <button onClick={(e) => { nextSlide(); e.preventDefault(); }}>❯</button>
+                                             </div>
+                                          )}
+
+                                          <div className="slider-dot-control">
+                                             {slides.map((_:any, index:any) => (
+                                                <span
+                                                key={index}
+                                                className={index === currentIndex ? 'active-dot' : ''}
+                                                onClick={() => setCurrentIndex(index)}
+                                                />
+                                             ))}
+                                          </div>
+
+                                          {/* Description and Buttons */}
+                                          
+                                          </div>
+                                          {slides[currentIndex] && slides[currentIndex].bodyText && (
+  <div key={slides[currentIndex].id}>
+    <p
+      style={{ textAlign: "justify", fontSize: "12px", padding: "0 5px" }}
+      dangerouslySetInnerHTML={{
+        __html: slides[currentIndex].bodyText
+          .replace(/\*(.*?)\*/g, "<b>$1</b>")
+          .replace(/_(.*?)_/g, "<i>$1</i>")
+          .replace(/~(.*?)~/g, "<strike>$1</strike>")
+          .replace(/\n/g, "<br>")
+      }}
+    ></p>
+  </div>
+)}
+
+{slides[currentIndex] && slides[currentIndex].buttons && (
+  <div className="template-buttontxt">
+    {slides[currentIndex].buttons.map((button: any, idx: any) => {
+      let icon = null;
+
+      if (button.type === "quick_reply") {
+        icon = <i className="fa-solid fa-reply bt-1"></i>;
+      } else if (button.type === "phone_number") {
+        icon = <i className="fa-solid fa-phone"></i>;
+      } else if (button.type === "url") {
+        icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
+      }
+
+      return (
+        <p
+          key={idx}
+          className="template-buttontxt button-option-style text-center"
+        >
+          {icon} {button.text}
+        </p>
+      );
+    })}
+  </div>
+)}
+
+                                          </div>
+
+                                          </div>)}
                                     </div>
                                  </div>
                               </div>
@@ -542,7 +726,7 @@ function WhatsappTemplate() {
                         </div>
                         <div className="modal-footer text-center vendor-delete-footer">
                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closedeleteModal">No</button>&nbsp;
-                           <button type="button" className="btn btn-primary" onClick={handleDeletetemp} disabled={loading}>  {loading ? "Yes...":"Yes"}</button>
+                           <button type="button" className="btn btn-primary" onClick={handleDeletetemp} disabled={loadingbtn}>  {loadingbtn ? "Yes...":"Yes"}</button>
                         </div>
                      </div>
                   </div>

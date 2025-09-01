@@ -121,7 +121,7 @@
 }
 
 .import-btn-bg {
-    background: linear-gradient(310deg, var(--bs-gray-dark), #df0d0d);
+    background: linear-gradient(310deg, var(--bs-gray-light) 0%, var(--bs-gray-dark) 100%);
 }
 
 .import-sample-filebtn {

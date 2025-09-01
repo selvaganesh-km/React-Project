@@ -5,7 +5,6 @@ import general_Logo from "../../../assets/img/bizconvo-logo.png";
 import Navlogo from "../../../assets/img/bizconvo-logo.png"
 import whaInte from "../../../assets/img/aeDwghR.png";
 import whaSetting from "../../../assets/img/G4fMiT9.png"
-import "./whatsapp-setup.css";
 import TopNav from "../../../shared/TopNav";
 import VendorAPI from "../../../api/services/vendorLogin/vendorApi";
 import { toast } from "react-toastify";
@@ -19,7 +18,7 @@ declare global {
     }
   }
   
-function Whatsapp_Settings() {
+function Catalog_Settings() {
     const [phoneInfo, setPhoneInfo] = useState<any[]>([]);
     const [displayPhone, setdisplayPhone] = useState("");
     const [health, setHealth] = useState<any>({});
@@ -37,6 +36,8 @@ function Whatsapp_Settings() {
     const [showbutton, SetShowButton] = useState(false);
     const [submit, setSubmit] = useState(false);
     const [showbutton1, SetShowButton1] = useState(false);
+    const [showbutton2, SetShowButton2] = useState(false);
+    const [showbutton3, SetShowButton3] = useState(false);
     const [showbuttons, SetShowButtons] = useState(false);
     const [address, setaddress] = useState("");
     const [vertical, setvertical] = useState("");
@@ -59,6 +60,20 @@ function Whatsapp_Settings() {
     const [loading, setLoading] = useState(false);
     const [profileupdLoading, setprofileupdLoading] = useState(false);
     const loginasSadmin=sessionStorage.getItem("loginAs");
+    const [catalogDropList, setcatalogDropList] = useState<any>([]);
+    const [catalogDltDropList, setcatalogDltDropList] = useState<any>([]);
+    const [catalogId, setcatalogId] = useState("");
+    const [bizId, setbizId] = useState("");
+    const [bizName, setbizName] = useState("");
+    const [catalogId1, setcatalogId1] = useState("");
+    const [catalogName, setcatalogName] = useState("");
+    const [catalogName1, setcatalogName1] = useState("");
+    const [catalogConfig, setcatalogConfig] = useState(false);
+    const [catalogBizConfig, setcatalogBizConfig] = useState(false);
+    const [showdata1, SetShowData1] = useState(false);
+    const [showdata2, SetShowData2] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [testsubmit, settestSubmit] = useState(false);
     const navigate=useNavigate();
     
     const ShowTernary = () => {
@@ -70,6 +85,34 @@ function Whatsapp_Settings() {
         }
         if(showbutton===true){
             SetShowButton(false);
+        }
+    };
+    const ShowTernary1 = () => {
+        if (showdata1 === true) {
+            SetShowData1(false)
+            SetShowButton2(false);
+            setSubmit(false);
+        }
+        else {
+            SetShowData1(true);
+        }
+        if(showbutton1===true){
+            SetShowButton2(false);
+            setSubmit(false);
+        }
+    };
+    const ShowTernary2 = () => {
+        if (showdata2 === true) {
+            SetShowData2(false)
+            SetShowButton3(false);
+            setSubmit(false);
+        }
+        else {
+            SetShowData2(true);
+        }
+        if(showbutton3===true){
+            SetShowButton3(false);
+            setSubmit(false);
         }
     };
     const QuickHelp = () => {
@@ -93,42 +136,30 @@ function Whatsapp_Settings() {
         }
        
     }
+    const ShowButtonData2 = () => {
+        
+        if(showbutton1===true){
+            SetShowButton2(false)
+        }else{
+            SetShowButton2(true);
+        }
+       
+    }
+    const ShowButtonData3 = () => {
+        if(showbutton3===true){
+            SetShowButton3(false)
+        }else{
+            SetShowButton3(true);
+        }
+       
+    }
     const ShowButtonDatas = () => {
         SetShowButtons(true);
         if(showbuttons===true){
             SetShowButtons(false);
         }
     }
-//facebook Config
-    const handleSubscription = () => {
-          setSubmit(true);
-          if (!appId || !appSecreteId ) {
-             return;
-          }
-          const apiData = {
-            appId: appId,
-            appSecret: appSecreteId,
-          };
-          const apiCall =  VendorAPI.whatsappSubscription(apiData);
-          apiCall
-             .then((responseData: any) => {
-                if (responseData.apiStatus.code === '200') {
-                    setSubscription(true)
-                    setSubmit(false);
-                    SetShowData(false)
-                   toast.success(responseData.apiStatus.message);
-                   setappId("");
-                   setappSecreteId("");
-                } else {
-                   toast.error(responseData.apiStatus.message);
-                }
-             })
-             .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
-             });
-    };
-    
+
     //Test contact Config
     const handleTestContact = () => {
           setSubmit(true);
@@ -164,9 +195,9 @@ function Whatsapp_Settings() {
           const apiData = {
             phone_number_id:phonenoId,
             wa_business_acc_id: bussinessId,
-            access_token: accesstoken,
+            access_token: accesstoken.trim(),
           };
-          const apiCall =  VendorAPI.whatsappIntegrationSet(apiData);
+          const apiCall =  VendorAPI.catalogwhatsappIntegrationSet(apiData);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
@@ -188,6 +219,7 @@ function Whatsapp_Settings() {
                     setdisplayPhone(formatedPhoneNumber);
                    setbussinessId("");
                    setaccesstoken("");
+                   setphonenoId("");
                 } else {
                    toast.error(responseData.apiStatus.message);
                 }
@@ -203,7 +235,7 @@ function Whatsapp_Settings() {
             wa_business_acc_id: bussinessId,
             access_token: accesstoken,
           };
-          const apiCall =  VendorAPI.whatsappHealthy(apiData);
+          const apiCall =  VendorAPI.catalogwhatsappHealthy(apiData);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
@@ -225,7 +257,7 @@ function Whatsapp_Settings() {
     //PhoneNumber List
     const handlewhatsappsetupList = () => {
         setLoading(true)
-          const apiCall =  VendorAPI.whatsappsetupList();
+          const apiCall =  VendorAPI.catalogwhatsappsetupList();
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
@@ -248,7 +280,7 @@ function Whatsapp_Settings() {
     };
     //configList
     const handlewhatsappwebhookList = () => {
-        const apiCall =  VendorAPI.whatsappwebhookList();
+        const apiCall =  VendorAPI.catalogwhatsappwebhookList();
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
@@ -268,7 +300,7 @@ function Whatsapp_Settings() {
         };
     //health List
     const handlewhatsapphealthList = () => {
-        const apiCall =  VendorAPI.whatsapphealthList();
+        const apiCall =  VendorAPI.catalogwhatsapphealthList();
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
@@ -288,7 +320,7 @@ function Whatsapp_Settings() {
         };
     //token Info    
     const handlewhatsapptokenInfo = () => {
-        const apiCall =  VendorAPI.whatsapptokenInfo();
+        const apiCall =  VendorAPI.catalogwhatsapptokenInfo();
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
@@ -306,7 +338,7 @@ function Whatsapp_Settings() {
     //Bussiness info    
     const handlewhatsappbussinessInfo = () => {
         setprofileupdLoading(true)
-        const apiCall =  VendorAPI.whatsappbussinessInfo();
+        const apiCall =  VendorAPI.catalogwhatsappbussinessInfo();
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
@@ -339,7 +371,7 @@ function Whatsapp_Settings() {
         }
     //IndustryDrop
         const handleIndustryDrop = () => {
-            VendorAPI.whatsappIndustryDrop()
+            VendorAPI.catalogwhatsappIndustryDrop()
                 .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
                     setindusType(responseData.responseData);
@@ -364,7 +396,7 @@ function Whatsapp_Settings() {
             websites:website,
             ...(imgValue && { profile_picture_handle: imgValue }) 
         };
-        const apiCall =  VendorAPI.whatsappbussinessProfileUpdate(apiData);
+        const apiCall =  VendorAPI.catalogwhatsappbussinessProfileUpdate(apiData);
         apiCall
            .then((responseData: any) => {
               if (responseData.apiStatus.code === '200') {
@@ -413,7 +445,7 @@ function Whatsapp_Settings() {
           const formData = new FormData();
           formData.append("media_file", file);
           try {
-              const response = await VendorAPI.whatsappImgUploadAPI(formData);
+              const response = await VendorAPI.catalogwhatsappImgUploadAPI(formData);
               if (response?.apiStatus?.code==="200") {
                   setImgValue(response?.responseData?.h)
                   setImgid(response?.responseData?.id)
@@ -426,23 +458,22 @@ function Whatsapp_Settings() {
               toast.error("An error occurred while importing the file.");
           }
       };
-    const handlewhatsappwebhookUnsub = () => {
-        const apiCall =  VendorAPI.whatsappwebhookUnsub();
-        apiCall
-            .then((responseData: any) => {
-            if (responseData.apiStatus.code === '200') {
-                handlewhatsappsetupList()
-                handlewhatsappwebhookList()
-                handlewhatsapphealthList()
-            } else {
-                // toast.error(responseData.apiStatus.message);
-            }
-            })
-            .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
-            });
-        };
+    // const handlewhatsappwebhookUnsub = () => {
+    //     const apiCall =  VendorAPI.whatsappwebhookUnsub();
+    //     apiCall
+    //         .then((responseData: any) => {
+    //         if (responseData.apiStatus.code === '200') {
+    //             handlewhatsappsetupList()
+    //             handlewhatsappwebhookList()
+    //             handlewhatsapphealthList()
+    //         } else {
+    //         }
+    //         })
+    //         .catch((error: any) => {
+    //         console.error("Error during login:", error);
+    //         toast.error("An error occurred during login.");
+    //         });
+    //     };
         const formatDate = (unixTimestamp:any) => {
             if (!unixTimestamp) return "N/A";
             
@@ -473,6 +504,162 @@ function Whatsapp_Settings() {
         
             return `${dayOfWeek} ${day}${suffix} ${month} ${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
         };
+        const handlecatalogListAPI = () => {
+        const apiData = {};
+        VendorAPI.catalogListAPI(apiData)
+            .then((responseData: any) => {
+                if (responseData.apiStatus.code === '200') {
+                    setLoading(false)
+                    setcatalogDropList(responseData.responseData.catalogData)
+                } else if(responseData?.apiStatus?.code==="404") {
+                    setcatalogDropList([]);
+                    
+                }
+            })
+            .catch((error: any) => {
+                console.error("Error during login:", error);
+                toast.error("An error occurred during login.");
+            });
+    }
+    const handleloglistLinked = () => {
+            VendorAPI.cataloglistLinkedAPI()
+                .then((responseData: any) => {
+                    if (responseData.apiStatus.code === '200') {
+                     setcatalogDltDropList(responseData?.responseData?.linkedCatalog)
+                     setcatalogConfig(responseData?.responseData?.linkedCatalog[0]?.id);
+                     setcatalogId1(responseData?.responseData?.linkedCatalog[0]?.id);
+                     setcatalogId(responseData?.responseData?.linkedCatalog[0]?.id);
+                     setcatalogName(responseData?.responseData?.linkedCatalog[0]?.name);
+                     setcatalogName1(responseData?.responseData?.linkedCatalog[0]?.name);
+                    } else if(responseData.apiStatus.code==="404"){
+                        setcatalogDltDropList([]);
+                        setcatalogConfig(false);
+                        setcatalogName("");
+                        setcatalogName1("");
+                        setcatalogId("");
+                        setcatalogId1("");
+                    }
+                })
+                .catch((error: any) => {
+                    setLoading(false)
+                    console.error("Error during login:", error);
+                    toast.error("An error occurred during login.");
+                });
+        };
+    const handlelogBizinfo = () => {
+            VendorAPI.catalogBizInfoAPI()
+                .then((responseData: any) => {
+                    if (responseData.apiStatus.code === '200') {
+                     setcatalogBizConfig(responseData?.responseData[0]?.id);
+                     setbizId(responseData?.responseData[0]?.id);
+                     setbizName(responseData?.responseData[0]?.name);
+                    } else if(responseData.apiStatus.code==="404"){
+                        setcatalogBizConfig(false);
+                        setbizId("");
+                        setbizName("");
+                    }
+                })
+                .catch((error: any) => {
+                    setLoading(false)
+                    console.error("Error during login:", error);
+                    toast.error("An error occurred during login.");
+                });
+        };
+    const handlecatalogLink = () => {
+        setSubmit(true);
+        if(catalogConfig){
+            toast.warn("Delete the existing catalog link before update");
+            return;
+        }
+        if (!catalogId) {
+           return;
+        }
+        const apiData = {
+            catalog_id: catalogId,
+        };
+        const apiCall= VendorAPI.catalogLinkAPI(apiData);
+        apiCall
+           .then((responseData: any) => {
+              if (responseData.apiStatus.code === '200') {
+                 setSubmit(false);
+                 SetShowData1(false)
+                 SetShowButton2(false);
+                 toast.success(responseData.apiStatus.message);
+                 handleloglistLinked();
+              } else {
+                 toast.error(responseData.apiStatus.message);
+              }
+           })
+           .catch((error: any) => {
+              console.error("Error during login:", error);
+              toast.error("An error occurred during login.");
+           });
+     };
+    const handlebizIdLink = () => {
+        setSubmit(true);
+        if (!bizId) {
+           return;
+        }
+        const apiData = {
+            business_id: bizId,
+        };
+        const apiCall= VendorAPI.catalogLinkBizIdAPI(apiData);
+        apiCall
+           .then((responseData: any) => {
+              if (responseData.apiStatus.code === '200') {
+                 setSubmit(false);
+                 SetShowData2(false)
+                 SetShowButton3(false);
+                 toast.success(responseData.apiStatus.message);
+                 handlelogBizinfo();
+              } else {
+                 toast.error(responseData.apiStatus.message);
+                 setSubmit(false);
+              }
+           })
+           .catch((error: any) => {
+              console.error("Error during login:", error);
+              setSubmit(false);
+              toast.error("An error occurred during login.");
+           });
+     };
+    const handlecatalogUnlink = () => {
+        setSubmit(true);
+        setIsLoading(true);
+        if (!catalogId1) {
+           return;
+        }
+        const apiData = {
+            catalog_id: catalogId1,
+        };
+        const apiCall= VendorAPI.catalogDeleteAPI(apiData);
+        apiCall
+           .then((responseData: any) => {
+              if (responseData.apiStatus.code === '200') {
+                 setSubmit(false);
+                 setIsLoading(false);
+                 SetShowData(false);
+                 SetShowButtons(false)
+                 toast.success(responseData.apiStatus.message);
+                 handleloglistLinked();
+              } else {
+                 toast.error(responseData.apiStatus.message);
+                 setIsLoading(false);
+
+              }
+           })
+           .catch((error: any) => {
+              setIsLoading(false);
+              console.error("Error during login:", error);
+              toast.error("An error occurred during login.");
+           });
+     };
+    useEffect(()=>{
+        // handlesmsSetupConfig();
+        handlecatalogListAPI();
+        handleloglistLinked();
+        handlelogBizinfo();
+    },[])
        useEffect(()=>{
         handlewhatsappsetupList()
         handlewhatsappwebhookList()
@@ -500,13 +687,13 @@ function Whatsapp_Settings() {
                                 <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
                                 <li className="breadcrumb-item text-sm active grayFont" aria-current="page">Settings</li>
                             </ol>
-                            <h6 className="font-weight-bolder text-start mb-0 grayFont">Whatsapp Settings</h6>
+                            <h6 className="font-weight-bolder text-start mb-0 grayFont">Catalog Settings</h6>
                         </nav>
                     </div>
 
                     <div className="dashboard-maincontent container-fluid py-4">
                         <div className="card p-3">
-                            <h4 className="grayFont">WhatsApp Cloud API Setup</h4>
+                            <h4 className="grayFont">Catalog API Setup</h4>
                             <div className="row">
                             {loading ? (
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
@@ -515,87 +702,9 @@ function Whatsapp_Settings() {
                                  ) : (
                                 <> 
                                 <div className="col-md-7">
-                                    <div className="campaign-template">
+                                    <div className="campaign-template border shadow-lg">
                                         <h6 className="campaign-temp-head">Connect WhatsApp Manually</h6>
-                                        <div className="campaign-template border mt-5  shadow-lg mb-5 ">
-                                            <h6 onClick={ShowTernary} className="campaign-temp-head">Facebook Developer Account & Facebook App <span className="setting-whatsapp-ternary" >Click to expand/collapse</span></h6>
-                                            <div className={`campaign-content-wrapper ${showdata ? 'show' : ''}`}>
-                                            {showdata && (
-                                                <>
-                                                    <div className="row">
-                                                        <div className="col-md-8">
-                                                            To get started you should have Facebook App, you mostly need to select Business as type of your app.
-                                                        </div>
-                                                        <div className="col-md-4 text-center">
-                                                            <h6 className="text-sm cursor-pointer" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <button className="mt-3 whatapp-button-settings"onClick={() => window.open("https://developers.facebook.com/apps/", "_blank")}>Create or Select Facebook App <i className="fa-solid fa-arrow-up-right-from-square"></i></button>
-                                                    </div>
-                                                    <div className="mt-3 mb-3">
-                                                        Once you have the Facebook app, add your App ID below, you will find it in App Settings <i className="fa-solid fa-angle-right"></i> Basic
-                                                    </div>
-                                                    <div className="mb-3">
-                                                        {showbutton === true ?
-                                                            ""
-                                                            :
-                                                            <p onClick={ShowButtonData} className="whatsapp-tem-setting-btn">Click Here To Update</p>}
-                                                        <div className={`campaign-clickbtn-wrapper ${showbutton ? 'show' : ''}`}>
-                                                        {showbutton && (
-                                                            <>
-                                                                <div className="mt-2">
-                                                                    <div className="vendor-create-container">
-                                                                        <input type="text" id="vendor-crt-input" 
-                                                                        autoComplete="off" onChange={(e) => setappId(e.target.value)} value={appId}
-                                                                        className={`vendor-crt-input loginfilled-frame-username ${submit && !appId ? 'error' : ''}`}
-                                                                        placeholder=" " required />
-                                                                        <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-book-open-reader"></i> Facebook App ID</label>
-                                                                    </div>
-                                                                    {submit && appId.length == 0 ? <div className='text-danger error-message-required'>App.Id is required</div> : <></>}
-                                                                    <div className="vendor-create-container mt-3">
-                                                                        <input type="text" id="vendor-crt-input" autoComplete="off" onChange={(e) => setappSecreteId(e.target.value)} value={appSecreteId}
-                                                                        className={`vendor-crt-input loginfilled-frame-username ${submit && !appSecreteId ? 'error' : ''}`}
-                                                                         placeholder=" " required />
-                                                                        <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-book-open-reader"></i> Facebook App Secret</label>
-                                                                    </div>
-                                                                    {submit && appSecreteId.length == 0 ? <div className='text-danger error-message-required'>Appsecrete.Id is required</div> : <></>}
-                                                                    <div className="text-end mt-1">
-                                                                        <button className="vendor-crt-btn" onClick={handleSubscription}>Save</button>
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                    </div>
-
-                                                </>
-                                            )}
-                                            </div>
-                                            <div className="mt-2">
-                                                {subscription?  <p className="setting-whatsapp-con-tic">
-                                                <i className="fa-solid fa-check setting-whatapp-tick"></i> CONFIGURED
-                                                </p>:
-                                                <p className="setting-whatsapp-con-notconf">
-                                                <i className="fa-solid fa-circle-exclamation"></i> NOT CONFIGURED
-                                                </p>}
-                                            </div>
-                                            <div className="mt-2 ">
-                                                {subscription ?  
-                                                <>
-                                                <p className="setting-whatsapp-con-tic">
-                                                <i className="fa-solid fa-check setting-whatapp-tick"></i> WEBHOOK CONFIGURED
-                                                </p>
-                                                <button className="settings-whats-btn-dis" onClick={handlewhatsappwebhookUnsub}>Disconnect Webhook</button>
-                                                </>
-                                                :
-                                                <p className="setting-whatsapp-con-notconf">
-                                                <i className="fa-solid fa-circle-exclamation"></i> NOT WEBHOOK CONFIGURED
-                                                </p>}
-                                                
-                                            </div>
-                                        </div>
-                                        <div className="campaign-template border mt-5  shadow-lg mb-5 ">
+                                        <div className="campaign-template border mt-5 shadow-lg mb-5 ">
                                             <h6 onClick={ShowButtonData1} className="campaign-temp-head">WhatsApp Integration Setup  <span className="setting-whatsapp-ternary" > Click to expand/collapse</span></h6>
                                             <div className={`campaign-content-wrapper ${showbutton1 ? 'show' : ''}`}>
                                             {showbutton1 && (
@@ -685,7 +794,7 @@ function Whatsapp_Settings() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="campaign-template mt-4">
+                                    <div className="campaign-template border shadow-lg mt-4">
                                         <h6 className="campaign-temp-head">Access Token Information</h6>
                                         <div>
                                             <h6 className="grayFont">Permission scopes</h6>
@@ -698,7 +807,183 @@ function Whatsapp_Settings() {
                                             <button className="setting-whats-share-debug">Debug Token <i className="fa-solid fa-arrow-up-right-from-square"></i></button>
                                         </div>
                                     </div>
-                                    <div className="campaign-template mt-4">
+                                    <div className="campaign-template border shadow-lg mb-5 mt-5">
+                                            <h6 onClick={ShowTernary2} className="campaign-temp-head">
+                                                Bussiness Id <span className="setting-whatsapp-ternary">Click to expand/collapse</span>
+                                            </h6>
+                                            <div className={`campaign-content-wrapper ${showdata2 ? 'show' : ''}`} style={{overflow:'visible'}}>
+                                                {showdata2 && (
+                                                    <>
+                                                        <div className="mb-3" style={{overflow:"visible"}}>
+                                                            {!showbutton3 && (
+                                                                <p onClick={ShowButtonData3} className="whatsapp-tem-setting-btn">Click Here To Update</p>
+                                                            )}
+                                                            <div className={`campaign-clickbtn-wrapper ${showbutton3 ? 'show' : ''}`} style={{overflow:'visible'}}>
+                                                                {showbutton3 && (
+                                                                    <>
+                                                                    <div className="mt-2">
+                                                                        <div className="vendor-create-container">
+                                                                        <input type="text" id="vendor-crt-input" 
+                                                                        autoComplete="off" onChange={(e) => setbizId(e.target.value)} value={bizId}
+                                                                        className={`vendor-crt-input loginfilled-frame-username ${submit && !bizId ? 'error' : ''}`}
+                                                                        placeholder=" " required />
+                                                                        <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-book-open-reader"></i> Bussiness Id</label>
+                                                                    </div>
+                                                                    {submit && bizId.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
+                                                                    </div>
+                                                                    <div className="text-end mt-1">
+                                                                        <button className="vendor-crt-btn" onClick={handlebizIdLink}>Save</button>
+                                                                    </div>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <div className="mt-2">
+                                                {catalogBizConfig ? (
+                                                    <p className="setting-whatsapp-con-tic">
+                                                        <i className="fa-solid fa-check setting-whatapp-tick"></i> CONFIGURED
+                                                    </p>
+                                                ) : (
+                                                    <p className="setting-whatsapp-con-notconf">
+                                                        <i className="fa-solid fa-circle-exclamation"></i> NOT CONFIGURED
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    <div className="campaign-template border shadow-lg mb-5 mt-5">
+                                            <h6 onClick={ShowTernary1} className="campaign-temp-head">
+                                                Link Catalog <span className="setting-whatsapp-ternary">Click to expand/collapse</span>
+                                            </h6>
+                                            <div className={`campaign-content-wrapper ${showdata1 ? 'show' : ''}`} style={{overflow:'visible'}}>
+                                                {showdata1 && (
+                                                    <>
+                                                        <div className="mb-3" style={{overflow:"visible"}}>
+                                                            {!showbutton2 && (
+                                                                <p onClick={ShowButtonData2} className="whatsapp-tem-setting-btn">Click Here To Update</p>
+                                                            )}
+                                                            <div className={`campaign-clickbtn-wrapper ${showbutton2 ? 'show' : ''}`} style={{overflow:'visible'}}>
+                                                                {showbutton2 && (
+                                                                    <div className="mt-2">
+                                                                        <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        <input
+                                                                            autoComplete="off"
+                                                                            type="text"
+                                                                            // onClick={handleGetStoreDrop}
+                                                                            id="vendor-crt-input"
+                                                                            className={`vendor-crt-input loginfilled-frame-username ${submit && !catalogId ? 'error' : ''}`}
+                                                                            value={catalogName}
+                                                                            placeholder=" "
+                                                                            required
+                                                                            onChange={(e)=>setcatalogId(e.target.value)}
+                                                                        />
+                                                                        <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-id-card-clip"></i> Catalog Name</label>
+                                                                        <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
+                                                                        <ul className="dropdown-menu template-dropdown storename-dropdown-menu">
+                                                                        {catalogDropList.length === 0 ? (
+                                                                                <li className="dropdown-nodata-found">No data found</li>
+                                                                            ) : (
+                                                                                catalogDropList.map((dropdownValue:any, id:any) => (                                                            
+                                                                                <li key={id}>
+                                                                                <a
+                                                                                    className="dropdown-item"
+                                                                                    href="#"
+                                                                                    onClick={() => { setcatalogId(dropdownValue.catalog_id);setcatalogName(dropdownValue?.name)}}
+                                                                                >
+                                                                                    {dropdownValue.name}
+                                                                                </a>
+                                                                                </li>
+                                                                            )))}
+                                                                        </ul>
+                                                                    </div>
+                                                                    {submit && catalogId.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
+                                                                    <div className="text-end mt-1">
+                                                                            <button className="vendor-crt-btn" onClick={handlecatalogLink}>Save</button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <div className="mt-2">
+                                                {catalogConfig ? (
+                                                    <p className="setting-whatsapp-con-tic">
+                                                        <i className="fa-solid fa-check setting-whatapp-tick"></i> LINKED
+                                                    </p>
+                                                ) : (
+                                                    <p className="setting-whatsapp-con-notconf">
+                                                        <i className="fa-solid fa-circle-exclamation"></i> NOT LINKED
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {catalogConfig ? 
+                                            <>
+                                        <div className="campaign-template border shadow-lg mb-5">
+                                            <h6 className="campaign-temp-head" onClick={ShowButtonDatas}>
+                                                Delete Catalog <span className="setting-whatsapp-ternary">Click to expand/collapse</span>
+                                            </h6>
+                                            <div className={`campaign-content-wrapper ${showbuttons ? 'show' : ''}`}>
+                                                {showbuttons && (
+                                                    <div className="row">
+                                                        <div className="col-md-12">
+                                                            <div className="mt-2">
+                                                                <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <input
+                                                                    autoComplete="off"
+                                                                    type="text"
+                                                                    // onClick={handleGetStoreDrop}
+                                                                    id="vendor-crt-input"
+                                                                    className={`vendor-crt-input loginfilled-frame-username ${submit && !catalogId1 ? 'error' : ''}`}
+                                                                    value={catalogName1}
+                                                                    placeholder=" "
+                                                                    required
+                                                                    onChange={(e)=>setcatalogId1(e.target.value)}
+                                                                />
+                                                                <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-id-card-clip"></i> Catalog Name</label>
+                                                                <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
+                                                                <ul className="dropdown-menu template-dropdown storename-dropdown-menu">
+                                                                {catalogDltDropList.length === 0 ? (
+                                                                        <li className="dropdown-nodata-found">No data found</li>
+                                                                    ) : (
+                                                                        catalogDltDropList.map((dropdownValue:any, id:any) => (                                                            
+                                                                        <li key={id}>
+                                                                        <a
+                                                                            className="dropdown-item"
+                                                                            href="#"
+                                                                            onClick={() => { setcatalogId1(dropdownValue.id);setcatalogName1(dropdownValue?.name)}}
+                                                                        >
+                                                                            {dropdownValue.name}
+                                                                        </a>
+                                                                        </li>
+                                                                    )))}
+                                                                </ul>
+                                                            </div>
+                                                            </div>
+                                                            <div className="text-end">
+                                                                 <button className="vendor-crt-btn" disabled={isLoading} onClick={handlecatalogUnlink}>{isLoading ? ("Save...") : ("Save")}</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="mt-2">
+                                            {catalogConfig ? (
+                                                    <p className="setting-whatsapp-con-tic">
+                                                        <i className="fa-solid fa-check setting-whatapp-tick"></i> LINKED
+                                                    </p>
+                                                ) : (
+                                                    <p className="setting-whatsapp-con-notconf">
+                                                        <i className="fa-solid fa-circle-exclamation"></i> NOT LINKED
+                                                    </p>
+                                                )}
+                                            </div>
+                                        </div></>:<></>}
+                                    <div className="campaign-template border shadow-lg mt-4">
                                         <h6 className="campaign-temp-head">Access Token Information</h6>
                                         <div>
                                             <div className="vendor-create-container dropdown mt-3" data-bs-toggle="dropdown" aria-expanded="false">
@@ -729,7 +1014,7 @@ function Whatsapp_Settings() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="campaign-template border mt-5 shadow-lg mb-5">
+                                    {/* <div className="campaign-template border mt-5 shadow-lg mb-5">
                                     <h6 className="campaign-temp-head" onClick={ShowButtonDatas}>
                                         Test Contact for Campaign  
                                         <span className="setting-whatsapp-ternary"> Click to expand/collapse</span>
@@ -744,7 +1029,6 @@ function Whatsapp_Settings() {
                                                         <i className="fa-solid fa-book-open-reader"></i> Test Contact Number
                                                     </label>
                                                 </div>
-                                                {/* {submit && testContact.length == 0 ? <div className='text-danger error-message-required'>Test contact.no is required</div> : <></>} */}
                                                 <small>WhatsApp number to test, It should be with country code without 0 or +</small>
                                                 <div className="text-end">
                                                     <button className="vendor-crt-btn" onClick={handleTestContact}>Save</button>
@@ -760,9 +1044,9 @@ function Whatsapp_Settings() {
                                         <i className="fa-solid fa-circle-exclamation"></i> NOT CONFIGURED
                                         </p>}
                                     </div>
-                                </div>
+                                </div> */}
 
-                                    <div className="m-3">
+                                    {/* <div className="m-3">
                                         <h4 className="grayFont">It's ready</h4>
                                         <p>In order to send template message you should have created and approved templates for WhatsApp Business.</p>
                                         <div className="d-flex gap-3">
@@ -771,10 +1055,10 @@ function Whatsapp_Settings() {
                                             <button className="whatspp-set-btn-3 bg-dark" onClick={() => window.open("/vendor/create-campaign", "_blank")}>Create New Campaign</button>
                                             <button className="whatspp-set-btn-4">Disconnect Account</button>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="col-md-5">
-                                    <div className="campaign-template">
+                                    <div className="campaign-template border shadow-lg">
                                         <h6 className="campaign-temp-head">Default Phone Number</h6>
                                         <div className="campaign-template border mt-5  shadow-lg mb-5 ">
                                             <h6 className="campaign-temp-head">Phone Numbers</h6>
@@ -802,7 +1086,6 @@ function Whatsapp_Settings() {
                                                 <button className="whatsapp-border-btn-2">Manage Phone Numbers <i className="fa-solid fa-arrow-up-right-from-square"></i></button>
                                             </div>
                                         </div>
-                                        {/* {loginasSadmin ? */}
                                         <>
                                         <div className="campaign-template border mt-5  shadow-lg mb-5 ">
                                             <h6 className="campaign-temp-head">Overall Health </h6>
@@ -811,7 +1094,6 @@ function Whatsapp_Settings() {
                                                 <p>{healthId?.id}</p>
                                                 <h6 className="grayFont">Status as at</h6>
                                                 <p>
-                                                    {/* {formatDate(healthId?.status_checked_at)} */}
                                                 {new Date(healthId?.status_checked_at).toLocaleString('en-US', {
                                                                year: 'numeric',
                                                                month: 'short',
@@ -841,7 +1123,6 @@ function Whatsapp_Settings() {
                                          ))}
                                         </>
                                         </>
-                                        {/* <></>} */}
                                         <div>
                                             <button className="whatsapp-border-btn-3" onClick={handlewhatsapptokenInfo}>Refresh Status</button>
                                         </div>
@@ -987,4 +1268,4 @@ function Whatsapp_Settings() {
         </>
     )
 }
-export default Whatsapp_Settings;
+export default Catalog_Settings;

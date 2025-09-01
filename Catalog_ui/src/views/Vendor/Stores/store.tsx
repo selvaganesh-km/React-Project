@@ -374,10 +374,10 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
                   <div className="col-md-6">
                      <nav aria-label="breadcrumb">
                         <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                           <li className="breadcrumb-item text-sm "><Link className="opacity-5 tblName" to={"/vendor/dashboard"}>Dashboard</Link></li>
-                           <li className="breadcrumb-item text-sm tblName active" aria-current="page">Stores</li>
+                           <li className="breadcrumb-item text-sm "><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                           <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Stores</li>
                         </ol>
-                        <h6 className="text-start font-weight-bolder mb-0 tblName">Stores</h6>
+                        <h6 className="text-start font-weight-bolder mb-0 grayFont">Stores</h6>
                      </nav>
                   </div>
                   <div className="col-md-6 text-end">
@@ -424,7 +424,7 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
                                                             <img src={Slack} className="avatar avatar-sm rounded-circle me-2" alt="spotify" />
                                                          </div>
                                                          <div className="my-auto">
-                                                            <h6 className="mb-0 text-sm tblName">{listData.storeName}</h6>
+                                                            <h6 className="mb-0 text-sm grayFont">{listData.storeName}</h6>
                                                          </div>
                                                       </div>
                                                    </td>
@@ -688,10 +688,10 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
                                              <div className="upload-files-container" onDragOver={(e) => e.preventDefault()} onDrop={handleFileDrop}>
                                                 <div className="drag-file-area">
                                                    <i className="fa-solid fa-cloud-arrow-up import-staff-icon"></i>
-                                                   <h5 className="dynamic-message mt-2 mb-n1">
+                                                   <h5 className="dynamic-message mt-2 mb-n1 grayFont">
                                                       Drop Anywhere to Import
                                                    </h5>
-                                                   <label className="label">
+                                                   <label className="label grayFont">
                                                       or{" "}
                                                       <span className="browse-files">
                                                          <input
@@ -699,10 +699,10 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
                                                             className="default-file-input"
                                                             autoComplete="off" onChange={handleFileChange} ref={fileInputRef}
                                                          />
-                                                         <span className="browse-files-text text-primary">
+                                                         <span className="browse-files-text text-dark">
                                                             browse file
                                                          </span>{" "}
-                                                         <span>from device</span>
+                                                         <span className="grayFont">from device</span>
                                                       </span>
                                                    </label>
                                                 </div>

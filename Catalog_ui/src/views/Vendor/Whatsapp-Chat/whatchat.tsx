@@ -10,6 +10,8 @@ import API_EP_BOOK from "../../../api/endpoints";
 import VendorAPI from "../../../api/services/vendorLogin/vendorApi";
 import { format } from "date-fns";
 import _ from "lodash";
+import { Pagination } from "react-bootstrap";
+import Footer from "../../../shared/Footer";
 
 
 interface Message {
@@ -44,9 +46,9 @@ const WhatsApp_Chat: React.FC = () => {
     const [ShowChat, setShowChat] = useState(true);
     const [ShowChat1, setShowChat1] = useState(false);
     const [activeTab, setActiveTab] = useState("all");
-    const[chatList,setChatListData]=useState([]);
-    const[contactSideList,setContactSideList]=useState([]);
-    const [recordsPerPage] = useState(10);
+    const[chatList,setChatListData]=useState<any>([]);
+    const[contactSideList,setContactSideList]=useState<any[]>([]);
+    const[contactunreadSideList,setContactunreadSideList]=useState<any[]>([]);
     const location = useLocation();
     const contactDetailsValue = location.state?.chatDetails || {};
     const ClickMe = () => {
@@ -65,11 +67,14 @@ const WhatsApp_Chat: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [message, setMessage] = useState("");
     const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [debouncedSearch1, setDebouncedSearch1] = useState('');
     const [to,setTo] = useState(contactDetailsValue.mobile);
+    const [unreadTo, setUnreadTo] = useState<string[]>([]);
     const [isMediaMessage,setisMediaMessage] = useState(false);
     const [mediaType,setmediaType] = useState("");
     const [caption,setcaption] = useState("");
-    const [contactName,setcontactName] = useState(contactDetailsValue.mobile);
+    const [contactName,setcontactName] = useState(contactDetailsValue.firstName);
     const [contactNumber,setcontactNumber] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [fileName, setFileName] = useState<string | null>(null);
@@ -98,11 +103,140 @@ const WhatsApp_Chat: React.FC = () => {
     const [langName, setLangName] = useState('')
     const [groupName, setGroupName] = useState<any[]>([]);
     const [groupId, setGroupId] = useState<string[]>([]);
-    const [id, setId] = useState('')
+    const [id, setId] = useState('');
+    const [parentWamId, setparentWamId] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [totalUnreadCount, setTotalUnreadCount] = useState(0);
+    const [recordsPerPage,setrecordsPerPage] = useState(20);
+    const [siderecordsPerPage,setsiderecordsPerPage] = useState(20);
+    const [showScrollTop, setShowScrollTop] = useState(false);
+    const [ListBot, setListBot] = useState(false);
+    const [sidecount, setSidecount] = useState(false);
+    const [hasMore, sethasMore] = useState();
+    const [sidehasMore, setsidehasMore] = useState();
+    const [showScrollBottom, setShowScrollBottom] = useState(true);
+    const [customCampaign, setcustomCampaign] = useState(false);
+    const [campaignOpt, setcampaignOpt] = useState(false);
+    const [readCount, setreadCount] = useState(false);
+    const chatBodyRef = useRef<HTMLDivElement>(null);
+
+    const scrollToTop = () => {
+        chatBodyRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const scrollToBottom = () => {
+        const el = chatBodyRef.current;
+        if (el) {
+            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+        }
+    };
+
+    useEffect(() => {
+    const chatDiv = chatBodyRef.current;
+
+    const handleScroll = () => {
+        if (chatDiv) {
+        const scrollTop = chatDiv.scrollTop;
+        const scrollHeight = chatDiv.scrollHeight - chatDiv.clientHeight;
+
+        setShowScrollTop(scrollTop > 100); // Show top button if scrolled down
+        setShowScrollBottom(scrollTop < scrollHeight - 100); // Show bottom button if not at bottom
+        }
+    };
+    
+    chatDiv?.addEventListener('scroll', handleScroll);
+    return () => chatDiv?.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const handleEmojiClick = (emojiObject: EmojiClickData) => {
         setMessage((prev) => prev + emojiObject.emoji);
         setShowPicker(false);
     };
+    const totalPages = Math.ceil(totalRecords / recordsPerPage);
+    const start = (currentPage - 1) * recordsPerPage + 1;
+  const end = Math.min(currentPage * recordsPerPage, totalRecords);
+    const handlePageChange = (pageNumber: any) => {
+        if (pageNumber < 1 || pageNumber > totalPages) return;
+        setCurrentPage(pageNumber);
+    };
+    const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 7;
+
+
+   
+
+    const isNearStart = currentPage <= 4;
+    const isNearEnd = currentPage >= totalPages - 3;
+
+    if (totalPages <= maxVisiblePages) {
+        // Show all pages
+        for (let i = 1; i <= totalPages; i++) {
+            items.push(
+                <Pagination.Item key={i} active={i === currentPage} onClick={() => handlePageChange(i)}>
+                    {i}
+                </Pagination.Item>
+            );
+        }
+    } else {
+        if (isNearStart) {
+            // Start part: 1 2 3 4 ... N
+            for (let i = 1; i <= 4; i++) {
+                items.push(
+                    <Pagination.Item key={i} active={i === currentPage} onClick={() => handlePageChange(i)}>
+                        {i}
+                    </Pagination.Item>
+                );
+            }
+            items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+            items.push(
+                <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => handlePageChange(totalPages)}>
+                    {totalPages}
+                </Pagination.Item>
+            );
+        } else if (isNearEnd) {
+            // End part: 1 ... N-3 N-2 N-1 N
+            items.push(
+                <Pagination.Item key={1} active={1 === currentPage} onClick={() => handlePageChange(1)}>
+                    1
+                </Pagination.Item>
+            );
+            items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+            for (let i = totalPages - 3; i <= totalPages; i++) {
+                items.push(
+                    <Pagination.Item key={i} active={i === currentPage} onClick={() => handlePageChange(i)}>
+                        {i}
+                    </Pagination.Item>
+                );
+            }
+        } else {
+            // Middle part: 1 ... C-1 C C+1 ... N
+            items.push(
+                <Pagination.Item key={1} active={1 === currentPage} onClick={() => handlePageChange(1)}>
+                    1
+                </Pagination.Item>
+            );
+            items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+            for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                items.push(
+                    <Pagination.Item key={i} active={i === currentPage} onClick={() => handlePageChange(i)}>
+                        {i}
+                    </Pagination.Item>
+                );
+            }
+            items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+            items.push(
+                <Pagination.Item key={totalPages} active={totalPages === currentPage} onClick={() => handlePageChange(totalPages)}>
+                    {totalPages}
+                </Pagination.Item>
+            );
+        }
+    }
+
+    return items;
+};
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0];
@@ -122,6 +256,8 @@ const WhatsApp_Chat: React.FC = () => {
                 setmediaType("image");
             } else if (mimeType.startsWith("video/")) {
                 setmediaType("video");
+            } else if (mimeType.startsWith("audio/")) {
+                setmediaType("audio");
             } else if (mimeType === "application/pdf") {
                 setmediaType("document");
             } else if (
@@ -203,31 +339,11 @@ const WhatsApp_Chat: React.FC = () => {
   //   Get By Id
 
   const contactListGet = async (id:any) => {
-    if (!id) {
-        // Clear all state when ID is null or undefined
-        setFName('');
-        setLName('');
-        setgenderDropDown('');
-        setcountryName('');
-        setStoreId('');
-        setStoreName('');
-        setDate('');
-        setsaleAmount('');
-        setMobNumber('');
-        setLangName('');
-        setLanguageCode('');
-        setEmail('');
-        setLoyality('');
-        setAnniversary('');
-        setAddress('');
-        setGroupName([]);
-        setGroupId([]);
-        return;
-    }
     try {
        const responseData = await VendorAPI.contactGetAPI(id);
        if (responseData.apiStatus.code === '200') {
           const data = responseData?.result
+          setId(data?.contactId)
           setFName(data?.firstName)
           setLName(data?.lastName)
           setgenderDropDown(data?.gender)
@@ -242,13 +358,34 @@ const WhatsApp_Chat: React.FC = () => {
           setEmail(data?.email)
           setLoyality(data?.otherInformation?.loyality)
           setAnniversary(data?.otherInformation?.anniversary)
-          setAddress(data?.otherInformation?.address)
+          setAddress(data?.otherInformation?.address);
+          const customCampaign=data?.send_custom_campaign;
+          setcustomCampaign(customCampaign==="1" ? true : false);
+          const campaignOpt=data?.campaign_opt_out;
+          setcampaignOpt(campaignOpt==="1" ? true : false);
           const groupNames = data?.groupDetails.map((group: any) => group.groupName);
           setGroupName(data?.groupDetails);
           const groupIds = data?.groupDetails.map((group: any) => group.groupId);
           setGroupId(groupIds);
-       } else {
-        //   toast.error(`get failed: ${responseData.apiStatus.message}`);
+       } else if(responseData?.apiStatus?.code==="404") {
+          setId("");
+          setFName("")
+          setLName("")
+          setgenderDropDown("")
+          setcountryName("")
+          setStoreId("")
+          setStoreName("")
+          setDate("")
+          setsaleAmount("")
+          setMobNumber("")
+          setLangName("")
+          setLanguageCode("")
+          setEmail("")
+          setLoyality("")
+          setAnniversary("")
+          setAddress("")
+          setGroupName([]);
+          setGroupId([]);
        }
     } catch (error) {
        console.error("Error during API call:", error);
@@ -267,62 +404,187 @@ const WhatsApp_Chat: React.FC = () => {
     navigate(`/vendor/contact/whatsapp/contact/send-template-message/${id}`, { state: { contactDetailsData } });
  };
 const previousChatRef = useRef<any[]>([]);
-const handleChatList = (to: any, isManual = false) => {
+const previousToRef = useRef<any>(null);
+const isFirstLoadRef = useRef(true);
+const [slides, setSlides] = useState<any[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const videoLoaded = useRef(false);
+const [slidesMap, setSlidesMap] = useState<Record<string, any[]>>({});
+const [indices, setIndices] = useState<Record<string, number>>({});
+ 
+console.log(slides,"slides")
+  // 🔁 Convert listData to slide format
+ useEffect(() => {
+  if (Array.isArray(chatList)) {
+    const carouselMessages = chatList.filter(
+      (msg) =>
+        msg.messageAgent === "bot" &&
+        msg.message_type === "carousel" &&
+        msg.messageBody?.templateText?.cards
+    );
+ 
+    const newSlidesMap: Record<string, any[]> = {};
+    carouselMessages.forEach((msg) => {
+      newSlidesMap[msg.time] = msg.messageBody.templateText.cards.map(
+        (card: any, idx: number) => {
+          const isVideo = card.header_image_link?.endsWith(".mp4");
+          return {
+            id: `${msg.time}-${idx}`,
+            src: card.header_image_link,
+            title: "",
+            format: isVideo ? "video" : "image",
+            bodyText: card.body_texts,
+            buttons:
+              card.buttons?.map((btn: any) => ({
+                text: btn.value,
+                type: btn.sub_type,
+              })) || [],
+          };
+        }
+      );
+    });
+ 
+    setSlidesMap(newSlidesMap);
+ 
+    // initialize indices for new messages if missing
+    setIndices((prev) => {
+      const updated = { ...prev };
+      Object.keys(newSlidesMap).forEach((key) => {
+        if (updated[key] === undefined) updated[key] = 0;
+      });
+      return updated;
+    });
+  }
+}, [chatList]);
+ 
+ 
+  // ⬅️ Previous Slide
+  const prevSlide = (msgTime: string) => {
+  setIndices((prev) => {
+    const slides = slidesMap[msgTime] || [];
+    const current = prev[msgTime] ?? 0;
+    return {
+      ...prev,
+      [msgTime]: current === 0 ? slides.length - 1 : current - 1,
+    };
+  });
+};
+ 
+  // ➡️ Next Slide
+  const nextSlide = (msgTime: string) => {
+  setIndices((prev) => {
+    const slides = slidesMap[msgTime] || [];
+    const current = prev[msgTime] ?? 0;
+    return {
+      ...prev,
+      [msgTime]: current === slides.length - 1 ? 0 : current + 1,
+    };
+  });
+};
+
+
+const handleChatList = (to: any, isManual = true) => {
     if (isManual) {
-      setchatLoading(true); // Only show loading if it's a manual fetch
+    setchatLoading(true);
+  }
+   
+    let updatedRecordsPerPage = recordsPerPage;
+
+    if (previousToRef.current !== to) {
+    updatedRecordsPerPage = 20;
+    setrecordsPerPage(20);
+    // window.scrollTo({
+    //   top: document.body.scrollHeight,
+    //   behavior: 'smooth',
+    // });
+    scrollToBottom();
     }
-  
-    const apiData = { filter: { to } };
-  
+
+    // Update previousToRef
+    previousToRef.current = to;
+
+    const apiData = { filter: 
+        { to },
+        pageIndex:"0",
+        dataLength: recordsPerPage
+    };
+
     VendorAPI.whatsappChatListAPI(apiData)
       .then((responseData: any) => {
         if (responseData.apiStatus.code === '200') {
+             window.dispatchEvent(new Event('triggerWappCount'));
           const newChatData = responseData.responseData.MessageData;
-  
           const isSame = _.isEqual(previousChatRef.current, newChatData);
-  
           if (!isSame) {
             setChatListData(newChatData);
+            sethasMore(responseData?.responseData?.hasMore);
             previousChatRef.current = _.cloneDeep(newChatData);
-            console.log("✅ Chat list updated.");
-            if (isManual) setchatLoading(false); // turn off loading after manual update
-          } else {
-            console.log("🔁 No change in chat data. Skipping state update.");
-            if (isManual) setchatLoading(false); // manual still needs to end loading
-          }
-  
+          } 
         } else if (responseData.apiStatus.code === '404') {
           setChatListData([]);
-          previousChatRef.current = [];
-          if (isManual) setchatLoading(false);
+          previousChatRef.current = []; 
         }
       })
       .catch((error: any) => {
-        console.error("Error during chat fetch:", error);
-        toast.error("An error occurred while fetching chat data.");
-        if (isManual) setchatLoading(false);
-      });
+        console.error("Error during chat fetch:", error);       
+      })
+      .finally(() => {
+      if (isManual) {
+       setchatLoading(false);
+      }
+    });
+      
 };
   
-const idSetRef = useRef(false);
-const handleContactSideList = (search:string) => {
-      setLoading(true)
-      const apiData = {filter:{search:search}};
-      VendorAPI.whatsappContactSideListAPI(apiData)
-         .then((responseData: any) => {
-            if (responseData.apiStatus.code === '200') {
-               setLoading(false)
-               const messageData = responseData.responseData.MessageData;
-                setContactSideList(messageData);
+    const idSetRef = useRef(false);
+    const handleContactSideList = (page:any,search:string) => {
+            setLoading(true)
+            const apiData = {
+                pageIndex:"0",
+                dataLength:siderecordsPerPage,
+                filter:{search:search},
+                unread:readCount};
+            VendorAPI.whatsappContactSideListAPI(apiData)
+            .then((responseData: any) => {
+                if (responseData.apiStatus.code === '200') {
+                setLoading(false)
+                const messageData = responseData.responseData.MessageData;
+                if (contactDetailsValue && Object.keys(contactDetailsValue).length > 0) {
+                const newContact = {
+                    contactNumber: contactDetailsValue.mobile,
+                    contactName: contactDetailsValue.firstName
+                };
 
-                if (
-                    location.pathname === "/vendor/whatapp-chat" &&
-                    !idSetRef.current &&
-                    messageData.length > 0
-                ) {
-                    setId(messageData[0].contactId);
-                    idSetRef.current = true; 
+                const isDuplicate = messageData.some(
+                    (item:any) => item.contactNumber === newContact.contactNumber
+                );
+
+                if (!isDuplicate) {
+                    const updatedData = [newContact, ...messageData];
+                    setContactSideList(updatedData);
+                } else {
+                    setContactSideList(messageData);
                 }
+                } else {
+                setContactSideList(messageData);
+                }
+ 
+            setTotalRecords(responseData?.responseData?.totalRecordCount);
+            setsidehasMore(responseData?.responseData?.hasMore);
+            setTotalUnreadCount(responseData?.responseData?.totalUnreadCount);
+            if (
+                location.pathname === "/vendor/whatapp-chat" &&
+                !idSetRef.current &&
+                messageData.length > 0
+            ) {
+                if(messageData[0].contactId){
+                    setId(messageData[0].contactId);
+                }
+                else{
+                    // setcontactNumber(messageData[0].contactNumber);
+                }
+                idSetRef.current = true; 
+            }
             } else {
                if (responseData.apiStatus.code == "404") {
                 setContactSideList([]);
@@ -337,13 +599,78 @@ const handleContactSideList = (search:string) => {
             toast.error("An error occurred during login.");
          });
    }
+    const handleContactUnreadSideList = (page:any,search:string) => {
+            setLoading(true)
+            const apiData = {
+                pageIndex:"0",
+                dataLength:siderecordsPerPage,
+                filter:{search:search},
+                };
+            VendorAPI.whatsappContactUnreadSideListAPI(apiData)
+            .then((responseData: any) => {
+                if (responseData.apiStatus.code === '200') {
+                setLoading(false)
+                const messageData = responseData.responseData.MessageData;
+                if (contactDetailsValue && Object.keys(contactDetailsValue).length > 0) {
+                const newContact = {
+                    contactNumber: contactDetailsValue.mobile,
+                    contactName: contactDetailsValue.firstName
+                };
+
+                const isDuplicate = messageData.some(
+                    (item:any) => item.contactNumber === newContact.contactNumber
+                );
+
+                if (!isDuplicate) {
+                    const updatedData = [newContact, ...messageData];
+                    setContactunreadSideList(updatedData);
+                } else {
+                    setContactunreadSideList(messageData);
+                }
+                } else {
+                setContactunreadSideList(messageData);
+                }
+ 
+            setTotalRecords(responseData?.responseData?.totalRecordCount);
+            setsidehasMore(responseData?.responseData?.hasMore);
+            setTotalUnreadCount(responseData?.responseData?.totalUnreadCount);
+            if (
+                location.pathname === "/vendor/whatapp-chat" &&
+                !idSetRef.current &&
+                messageData.length > 0
+            ) {
+                if(messageData[0].contactId){
+                    setId(messageData[0].contactId);
+                }
+                else{
+                    // setcontactNumber(messageData[0].contactNumber);
+                }
+                idSetRef.current = true; 
+            }
+            } else {
+               if (responseData.apiStatus.code == "404") {
+                setContactunreadSideList([]);
+               }
+            //    toast.error(responseData.apiStatus.message);
+               setLoading(false)
+            }
+         })
+         .catch((error: any) => {
+            setLoading(false)
+            console.error("Error during login:", error);
+            toast.error("An error occurred during login.");
+         });
+   }
+//    const visibleContacts = readCount
+//     ? contactSideList
+//     : contactSideList.filter((listData) => Number(listData.unreadCount) > 0);
 const handleChatClear = () => {
       const apiData = {contactNumber: to};
       VendorAPI.whatsappChatClearAPI(apiData)
          .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
                toast.success(responseData?.apiStatus?.message)
-               handleChatList(to);
+               handleChatList(to,true);
                const closeButton = document.getElementById("closedeleteModal");
                if (closeButton) {
                   closeButton.click();
@@ -383,7 +710,9 @@ const handleChatClear = () => {
                loyality: loyality,
                address: address,
             },
-            groupdetails: groupName
+            groupdetails: groupName,
+            send_custom_campaign:customCampaign===true ? "1" : "0",
+            campaign_opt_out:campaignOpt===true ? "1":"0"
          };
    
          const apiCall = VendorAPI.contactEditAPI(apiData);
@@ -393,8 +722,8 @@ const handleChatClear = () => {
                   setLoading(false)
                   toast.success(responseData.apiStatus.message);
                   const closeButton = document.getElementById("closeCreate");
-                  handleChatList(to);
-                  handleContactSideList(search)
+                  handleChatList(to,true);
+                  handleContactSideList(currentPage,search)
                   if (closeButton) {
                      closeButton.click();
                   }
@@ -577,6 +906,17 @@ const handleChatClear = () => {
         toast.error("An error occurred during login.");
         });
     };
+    const messageRefs = useRef<any>({});
+    useEffect(() => {
+    if (chatList.length > 0) {
+        setTimeout(() => {
+        if (recordsPerPage <= 20) {
+            scrollToBottom();
+        }
+        }, 100);
+    }
+    }, [chatList]);
+
     useEffect(() => {
         const modalElements = [
         document.getElementById('exampleModal')
@@ -592,21 +932,60 @@ const handleChatClear = () => {
     const myArray = queryParams.split("/");
     if (!id && myArray[3]) {
         setId(myArray[3]);
+        console.log(myArray[3],"ChatIdz")
       }
     })
     useEffect(()=>{
         handlewhatsappwebhookList();
     }, []);
-   useEffect(()=>{
-        handleContactSideList(search);
-    }, [search]);
-   useEffect(()=>{
-    const interval = setInterval(() => {
-        handleChatList(to);
-      }, 10000);
-      handleChatList(to);
-      return () => clearInterval(interval);
-    }, [to]);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+          
+          if (readCount === true) {
+          setDebouncedSearch1(search);
+          }
+          else{
+            setDebouncedSearch(search);
+          }
+          setCurrentPage(1);
+        }, 1000);
+    
+        return () => {
+          clearTimeout(handler);
+        };
+      }, [search]);
+    useEffect(() => {
+        if (to) {
+        const timer = setTimeout(() => {
+            handleContactSideList(siderecordsPerPage, debouncedSearch);
+        }, 100);
+        return () => clearTimeout(timer);
+        } else {
+            handleContactSideList(siderecordsPerPage, debouncedSearch);
+        }
+    }, [debouncedSearch, siderecordsPerPage, to]);
+    useEffect(() => {
+    const timer = setTimeout(() => {
+        if (readCount === true) {
+        // Only fetch unread contacts
+        handleContactUnreadSideList(siderecordsPerPage, debouncedSearch1);
+        } else {
+        // Only fetch all contacts
+        handleContactSideList(siderecordsPerPage, debouncedSearch1);
+        }
+    }, 100);
+
+    return () => clearTimeout(timer);
+    }, [debouncedSearch1, siderecordsPerPage, readCount]);
+
+    useEffect(() => {
+        // const interval = setInterval(() => {
+        //     handleChatList(to, false); 
+        //     handleContactSideList(siderecordsPerPage, debouncedSearch);
+        // }, 10000);
+        handleChatList(to, true); 
+        // return () => clearInterval(interval);
+    }, [to, recordsPerPage]);
 
     useEffect(()=>{
     if (id && id !== "undefined" && id !== "") {
@@ -614,20 +993,29 @@ const handleChatClear = () => {
         }
     }, [id]);
     const lastMessageRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (lastMessageRef.current) {
-        // Scroll instantly to the last message
-        lastMessageRef.current.scrollIntoView({ behavior: 'auto', block: 'start' });
-        } 
-    }, [chatList]);
     
     useEffect(() => {
-        if (contactSideList.length > 0) {
+        if(location.pathname==="/vendor/whatapp-chat" && contactSideList.length > 0) {
+            if (!sidecount) {
             setTo((contactSideList as any)[0]?.contactNumber);
-            setcontactName((contactSideList as any)[0]?.contactName);        
+            setcontactName((contactSideList as any)[0]?.contactName); 
+            }
+            else{
+                setTo(to);
+                setcontactName(contactName)
+            }       
         }
-    }, [contactSideList]);
+    }, [contactSideList,sidecount]);
+    
+    useEffect(() => {
+    if (parentWamId) {
+        const timeout = setTimeout(() => {
+        setparentWamId("");
+        }, 3000);
+        return () => clearTimeout(timeout);
+    }
+    }, [parentWamId]);
+
     return (
         <>
             <DashboardLayout>
@@ -638,21 +1026,22 @@ const handleChatClear = () => {
                             <div className="col-md-6">
                                 <nav aria-label="breadcrumb">
                                     <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                        <li className="breadcrumb-item text-sm"><Link className="opacity-5 tblName" to={"/vendor/dashboard"}>Dashboard</Link></li>
-                                        <li className="breadcrumb-item text-sm tblName active" aria-current="page">WhatsApp Chat</li>
+                                        <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                                        <li className="breadcrumb-item text-sm grayFont active" aria-current="page">WhatsApp Chat</li>
                                     </ol>
-                                    <h6 className="text-start font-weight-bolder mb-0 tblName">WhatsApp Chat</h6>
+                                    <h6 className="text-start font-weight-bolder mb-0 grayFont">WhatsApp Chat</h6>
                                 </nav>
                             </div>
                         </div>
                         <div className="card p-3 mt-4">
                             <div className="row">
                                 <div className="col-md-3">
-                                    <h4 className="tblName">WhatsApp Chat</h4>
+                                    <h4>WhatsApp Chat</h4>
                                     <p className="whatsapp-chat-hr"></p>
                                     <div className="form-check form-switch ms-1 is-filled">
                                         <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
-                                        /> <span>Show All</span>
+                                        onChange={()=>setreadCount((prev)=>!prev)}
+                                        /> <span>{readCount ?  "Show unread only" :"Show all"}</span>
                                         <span className="actionChathelp-tooltip-container">
                                         <p className="text-end whatsChat-help" style={{ cursor: 'help' }}>?</p>
                                         <div className="actionChathelp-tooltip-text">
@@ -665,13 +1054,13 @@ const handleChatClear = () => {
                                     <div className="mt-3">
                                         <ul className="nav nav-tabs custom-tabs">
                                             <li className="nav-item" onClick={ClickMe}>
-                                                <p className={`nav-link ${activeTab === "all" ? "active-tab" : ""}`}>All</p>
+                                                <p className={`nav-link ${activeTab === "all" ? "active-tab" : ""}`}>All {totalUnreadCount ? <span className="whatsChat-count">{totalUnreadCount}</span>:<></>}</p>
                                             </li>
-                                            <li className="nav-item" onClick={ClickMe1}>
-                                                <p className={`nav-link ${activeTab === "mine" ? "active-tab" : ""}`}>Mine</p>
+                                            <li className="nav-item ms-2 ps-1" onClick={ClickMe1}>
+                                                <p className={`nav-link ${activeTab === "mine" ? "active-tab" : ""}`}> Mine </p>
                                             </li>
                                         </ul>
-                                        {ShowChat && (   
+                                        {ShowChat && (
                                             <>
                                                 <div className="mt-3">
                                                     <div className="input-group">
@@ -680,40 +1069,87 @@ const handleChatClear = () => {
                                                     </div>
 
                                                     <div className="mt-2">
-                                                        <div className="card p-2 first-colm-scroll">
-                                                        {contactSideList.map((listData:any)=>(
-                                                            <div className={`d-flex flex-column gap-2 mb-1 ${id === listData?.contactId ? "active-contact" : ""}`}  onClick={()=>{setTo(listData?.contactNumber);setcontactName(listData?.contactName);setId(listData?.contactId)}}>
+                                                        <div className="card px-2 first-colm-scroll">
+                                                        {(readCount ? contactunreadSideList : contactSideList).length === 0 ? (
+                                                        <p
+                                                            className="table-list-nodata or-text"
+                                                            style={{ textAlign: "center", marginTop: "40px" }}
+                                                        >
+                                                            <span>No data found</span>
+                                                        </p>
+                                                        ) : (
+                                                        (readCount ? contactunreadSideList : contactSideList).map((listData: any) => (
+                                                            <div
+                                                            key={listData?.contactId}
+                                                            className={`d-flex flex-column gap-2 mb-1 ${
+                                                                to === listData?.contactNumber ? "active-contact" : ""
+                                                            }`}
+                                                            onClick={() => {
+                                                                setTo(listData?.contactNumber);
+                                                                setcontactName(listData?.contactName);
+                                                                setId(listData?.contactId);
+                                                                setSidecount(true);
+                                                                setUnreadTo(prev => 
+                                                                    prev.includes(listData?.contactNumber) 
+                                                                    ? prev 
+                                                                    : [...prev, listData?.contactNumber]
+                                                                );
+                                                            }}
+                                                            >
                                                             <div className="d-flex gap-2 align-items-center cursor-pointer">
                                                                 <div>
-                                                                    <h5 className="whatsapp-chat-profile-first mt-n4">
-                                                                        {listData?.contactName?.trim()
-                                                                            ? listData.contactName
-                                                                                .trim()
-                                                                                .split(' ')
-                                                                                .map((word: string) => Array.from(word)[0]?.toUpperCase())
-                                                                                .join('')
-                                                                            : listData?.contactNumber?.slice(0, 2)}
-                                                                    </h5>                                                                
-                                                                </div>  
-                                                                <div className="pt-2">
-                                                                    <h6 className="tblName">{listData?.contactName} {listData?.contactNumber}</h6>
-                                                                    <p className="whatsapp-chat-profile-first-p mt-n2">{listData?.lastMessageTime}</p>
+                                                                <h5 className="whatsapp-chat-profile-first mt-n1">
+                                                                    {listData?.contactName?.trim()
+                                                                    ? listData.contactName
+                                                                        .trim()
+                                                                        .split(" ")
+                                                                        .map((word: string) => Array.from(word)[0]?.toUpperCase())
+                                                                        .join("")
+                                                                    : listData?.contactNumber?.slice(0, 2)}
+                                                                </h5>
+                                                                </div>
+                                                                <div className="pt-3">
+                                                                <h6 className="whitespace-pre-wrap grayFont">
+                                                                    {listData?.contactName} {listData?.contactNumber}
+                                                                </h6>
+                                                                <p className="whatsapp-chat-profile-first-p mt-n2">
+                                                                    {listData?.lastMessageTime}{" "}
+                                                                    {!unreadTo.includes(listData?.contactNumber) && listData?.unreadCount ? (
+                                                                    <span className="whatsChatSide-Count">
+                                                                        {listData.unreadCount}
+                                                                    </span>
+                                                                    ) : null}
+                                                                </p>
                                                                 </div>
                                                             </div>
                                                             <hr className="whatsapp-chat-hr" />
+                                                            </div>
+                                                        ))
+                                                        )}
+
+                                                        {/* Show "Load more" only when readCount is false (i.e., showing all contacts) */}
+                                                        {!readCount && contactSideList.length > 0 && sidehasMore && (
+                                                        <div
+                                                            className="text-center bg-white text-sm rounded mb-1 mt-2 p-1 cursor-pointer"
+                                                            style={{
+                                                            boxShadow:
+                                                                "rgb(86 86 86 / 40%) 0px 2px 4px, rgb(223 223 223) 0px 7px 13px -3px, rgb(240 237 237 / 20%) 0px -3px 0px inset",
+                                                            }}
+                                                            onClick={() => setsiderecordsPerPage(siderecordsPerPage + 20)}
+                                                        >
+                                                            <i className="fa-solid fa-download"></i> Load more
                                                         </div>
-                                                        
-                                                        ))}
-                                                        </div>
+                                                        )}
                                                     </div>
                                                 </div>
-                                                <div className="bg-white card campaign-template mt-5">
-                                        <h6 className="campaign-temp-head tblName">Notes</h6>
-                                        <div className="tblName">
-                                            <h6>{contactName} - Task has been assigned</h6>
+                                            </div>
+                                        <div className="bg-white card campaign-template mt-5">
+                                        <h6 className="campaign-temp-head">Notes</h6>
+                                        <div>
+                                            <h6 className="grayFont">{contactName} - Task has been assigned</h6>
                                             <p>Status Updated</p>
                                         </div>
-                                    </div>
+                                        </div>
                                             </>
                                         )}
 
@@ -735,13 +1171,13 @@ const handleChatClear = () => {
                                             <div className="d-flex gap-2">
                                                 <div>
                                                     <h5 className="whatsapp-chat-profile-first">
-                                                        {contactName?.trim()
-                                                        ? contactName
-                                                            .trim()
-                                                            .split(' ')
-                                                            .map((word: string) => Array.from(word)[0]?.toUpperCase())
-                                                            .join('')
-                                                        : contactNumber?.slice(0, 2)}
+                                                    {contactName?.trim()
+                                                    ? contactName
+                                                        .trim()
+                                                        .split(' ')
+                                                        .map((word: string) => Array.from(word)[0]?.toUpperCase())
+                                                        .join('')
+                                                    : to?.slice(0, 2)}
                                                     </h5>
                                                 </div>
                                                 <div>
@@ -758,7 +1194,7 @@ const handleChatClear = () => {
                                             </div>
                                         </div>
 
-                                        <div className="chat-body">
+                                        <div className="chat-body" ref={chatBodyRef} >
                                         <div className="conversation whatsapp-chat-msg-design">
                                             <div className="conversation-container chat-message-new">
                                                  {
@@ -770,26 +1206,484 @@ const handleChatClear = () => {
                                                         <></>
                                                     ) : (
                                                         <>
+                                                {hasMore===false ?
+                                                <></>:<div className="text-center bg-white text-sm rounded mb-1 shadow p-1 cursor-pointer" onClick={()=>setrecordsPerPage(recordsPerPage+20)}>
+                                                    <i className="fa-solid fa-download"></i> Load earlier messages</div>}
                                                 {chatList.map((listData: any, id: number) => (
-                                                <div key={id} ref={id === chatList.length - 1 ? lastMessageRef : null}>
+                                                <div key={id} ref={id === chatList.length - 1 ? lastMessageRef : null} >
                                                     {listData?.messageAgent === "user" ? (
-                                                    <div className="p-2 received">
+                                                    <>
+                                                    {listData?.messageAgent === "user" ?
+                                                    // <div className="p-2 received val mb-1">
+                                                    <div ref={(el:any) => (messageRefs.current[listData.wam_id] = el)}
+                                                        className={`p-2 received val mb-1 ${
+                                                            parentWamId === listData.wam_id ? "highlighted-bot-msg" : ""
+                                                        }`}>
+                                                        <span className="position-relative d-inline-block">
+                                                            {listData.messageBody.MessageMedia?.match(/\.(webp)$/i) && listData?.message_type==="sticker" ?
+                                                            <>
+                                                                <img style={{width:"35%"}} src={listData.messageBody.MessageMedia} alt="media" />
+                                                            </>
+                                                            :<></>}
+                                                        </span>
+                                                        <span className="p-2 chat-msg-1 position-relative d-inline-block">
+                                                        
+                                                        {listData?.parent_wam_id ? 
+                                                        <div className="text-end text-xxs p-0 cursor-pointer"
+                                                        onClick={() => {
+                                                            setparentWamId(listData?.parent_wam_id||listData?.wam_id);
+                                                            setTimeout(() => {
+                                                                const target = messageRefs.current[listData?.parent_wam_id];
+                                                                if (target) {
+                                                                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                                                }
+                                                            }, 100);
+                                                            }}
+                                                            >
+                                                            <i className="fa-solid fa-link" style={{color:"#8a9aab"}}> <span className="bot-replyTo">Replied To</span></i>
+                                                        </div>:<></>}
+                                                        <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',background: "gainsboro",borderRadius:"5px" }} className="w-100">
+                                                        {(() => {
+                                                            const mediaUrl = listData.messageBody.MessageMedia;
+                                                            const message_type = listData.message_type;
+                                                            const isWhatsAppCDNImage = mediaUrl?.includes('scontent.whatsapp.net');
+
+                                                            if (mediaUrl?.match(/\.(mp4)$/i)) {
+                                                                return <video controls className="w-80" src={mediaUrl} />;
+                                                            }
+                                                            if (mediaUrl?.match(/\.(jpeg|jpg|png|gif)$/i) || isWhatsAppCDNImage) {
+                                                                return <img className="w-50" src={mediaUrl} alt="media" />;
+                                                            }
+                                                           if (message_type === "location") {
+                                                            const latLongMatch = listData.messageBody.messageText?.match(/Lat\s*([-\d.]+),\s*Long\s*([-\d.]+)/i);
+                                                            const latitude = latLongMatch?.[1];
+                                                            const longitude = latLongMatch?.[2];
+                                                            if (!latitude || !longitude) {
+                                                                return <p>Invalid location data</p>;
+                                                            }
+                                                            const dynamicMapUrl = `https://maps.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`;
+                                                            return (
+                                                                <iframe
+                                                                    src={dynamicMapUrl}
+                                                                    width="600"
+                                                                    height="250"
+                                                                    loading="lazy"
+                                                                    style={{ border: 0 }}
+                                                                    allowFullScreen
+                                                                    referrerPolicy="no-referrer-when-downgrade"
+                                                                ></iframe>
+                                                            ); }
+                                                            if (mediaUrl?.match(/\.(mp3|ogg|aac)$/i)) {
+                                                                return <audio controls src={mediaUrl} className="p-2"/>;
+                                                            }
+                                                            if (mediaUrl?.match(/\.(pdf|docx)$/i)) {
+                                                                return (
+                                                                <a
+                                                                    href={mediaUrl}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="w-50 text-center"
+                                                                    style={{ color: '#007bff', textDecoration: 'underline' }}
+                                                                >
+                                                                    <i className="fa fa-3x fa-file-alt text-white"></i>
+                                                                </a>
+                                                                );
+                                                            }
+
+                                                            return null;
+                                                            })()}
+
+                                                        </span>
+                                                        {listData?.message_type==="location" ? "": <>{listData?.messageBody.messageText}</>}
+                                                        
+                                                        
+                                                        <span className="time-footer text-xxs d-block text-end mt-1">{formatDate(listData?.time)}</span>
+                                                        
+                                                        </span>
+                                                        {listData?.reaction_emoji ?  <span className="chat-reactionEmoji-user">{listData?.reaction_emoji}</span>:<></>}
+                                                    </div>:
+                                                    <>
+                                                     <div className="p-2 received value">
                                                         <span className="p-2 chat-msg-1 position-relative d-inline-block">
                                                         <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',background: "gainsboro",borderRadius:"5px" }} className="w-100">
-                                                        <img className="w-50"  src={listData?.messageBody?.MessageMedia} alt="" />
+                                                        <img className="w-50"  src={listData?.messageBody?.templateText?.headerImage} alt="" />
                                                         </span>
-                                                        {listData?.messageBody.messageText}
+                                                        {listData?.messageBody?.templateText?.bodyText} 
+                                                       
                                                         <span className="time-footer text-xxs d-block text-end mt-1">{formatDate(listData?.time)}</span>
+                                                        
                                                         </span>
+                                                        {listData?.reaction_emoji ?  <span className="chat-reactionEmoji-user">{listData?.reaction_emoji}</span>:<></>}
                                                     </div>
+                                                    </>}
+                                                    </>
                                                     ) : (
-                                                    <div className="p-2 text-end position-relative">
+                                                     
+                                                    <div ref={(el:any) => (messageRefs.current[listData.wam_id] = el)}
+                                                        className={`p-2 text-end position-relative ${
+                                                            parentWamId === listData.wam_id ? "highlighted-bot-msg" : ""
+                                                        }`}>
+                                                        {listData?.messageBody?.templateText ? 
+                                                            <span className="p-2 chat-msg-2 position-relative d-inline-block text-start">
+                                                            <div className="text-end text-xxs p-0">
+                                                                <i className="fa-solid fa-bullhorn" style={{color:"#004aad"}}></i>
+                                                            </div>
+                                                            <span
+                                                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', background: "gainsboro", borderRadius:"5px" }}
+                                                                className="w-100">
+                                                                {(() => {
+                                                                    const mediaUrl = listData.messageBody.templateText.headerImage || listData.messageBody.MessageMedia;
+                                                                    const isWhatsAppCDNImage = mediaUrl?.includes('scontent.whatsapp.net') && mediaUrl.includes('.jpg');
+                                                                    if (mediaUrl?.match(/\.(mp4)$/i)|  mediaUrl?.includes('whatsapp.net')) {
+                                                                        return <video controls className="w-80" src={mediaUrl} />;
+                                                                    }
+                                                                    if (mediaUrl?.match(/\.(jpeg|jpg|png)$/i) || isWhatsAppCDNImage) {
+                                                                        return <img className="w-50" src={mediaUrl} alt="media" />;
+                                                                    }
+                                                                    if (mediaUrl?.match(/\.(pdf|docx)$/i)) {
+                                                                        return (
+                                                                        <a
+                                                                            href={mediaUrl}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="w-50 text-center"
+                                                                            style={{ color: '#007bff', textDecoration: 'underline' }}
+                                                                        >
+                                                                            <i className="fa fa-3x fa-file-alt text-white"></i>
+                                                                        </a>
+                                                                        );
+                                                                    }
+                                                                    return null;
+                                                                    })()}
+
+                                                            </span>
+                                                            <div className="px-2 pt-2 bg-whatsapp fw-bold">
+                                                                {typeof listData.messageBody.templateText.headerText === 'string'
+                                                                ? listData.messageBody.templateText.headerText
+                                                                : JSON.stringify(listData.messageBody.templateText.headerText)}
+                                                            </div>
+                                                            {/* <div className="px-2 pt-2 pb-2 bg-whatsapp whitespace-pre-line">
+                                                                {typeof listData.messageBody.templateText.bodyText === 'string'
+                                                                    ? listData.messageBody.templateText.bodyText
+                                                                    : JSON.stringify(listData.messageBody.templateText.bodyText)}
+                                                            </div> */}
+                                                            <div className="px-2 pt-2 pb-2 bg-whatsapp">
+                                                                {typeof listData?.messageBody?.templateText?.bodyText === 'string' ? (
+                                                                    <div
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: listData.messageBody.templateText.bodyText
+                                                                                .replace(/\*(.*?)\*/g, '<b>$1</b>')
+                                                                                .replace(/_(.*?)_/g, '<i>$1</i>')
+                                                                                .replace(/~(.*?)~/g, '<strike>$1</strike>')
+                                                                                .replace(/\n/g, '<br>'),
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    JSON.stringify(listData?.messageBody?.templateText?.bodyText)
+                                                                )}
+                                                            </div>
+
+                                                            <div className="time-footer px-2 pt-2 pb-2 text-xs fs-6 bg-whatsapp ">
+                                                                {typeof listData.messageBody.templateText.footerText === 'string'
+                                                                ? listData.messageBody.templateText.footerText
+                                                                : JSON.stringify(listData.messageBody.templateText.footerText)}
+                                                            </div>
+                                                            {listData?.message_type==="carousel" &&(
+                                                   <div className="main-container-carousels">
+                                                                <div className="carousel-container">
+                                                                <div className="wrapper conversation-container px-1 pb-0">
+                                                                    <div className="slider-wrapper">
+                                                                    <div
+                                                                        className="inner"
+                                                                        style={{
+                                                                        width: `${(slidesMap[listData.time]?.length || 0) * 100}%`,
+                                                                        transform: `translateX(-${
+                                                                            (indices[listData.time] ?? 0) *
+                                                                            (100 / (slidesMap[listData.time]?.length || 1))
+                                                                        }%)`,
+                                                                        transition: "transform 0.3s ease",
+                                                                        }}
+                                                                    >
+                                                                        {slidesMap[listData.time]?.map((slide, index) => (
+                                                                        <article
+                                                                            key={slide.id}
+                                                                            style={{
+                                                                            width: `${100 / (slidesMap[listData.time]?.length || 1)}%`,
+                                                                            }}
+                                                                        >
+                                                                            {slide.format === "video" ? (
+                                                                            <video
+                                                                                src={slide.src}
+                                                                                controls
+                                                                                onLoadedMetadata={() => {
+                                                                                videoLoaded.current = true;
+                                                                                requestAnimationFrame(() =>
+                                                                                    setIndices((prev) => ({ ...prev }))
+                                                                                );
+                                                                                }}
+                                                                            />
+                                                                            ) : (
+                                                                            <img src={slide.src} alt={slide.title || `Slide ${index}`} />
+                                                                            )}
+                                                                        </article>
+                                                                        ))}
+                                                                    </div>
+                                                                    </div>
+                                                            
+                                                                    {/* Nav buttons */}
+                                                                    {(slidesMap[listData.time]?.length || 0) >= 2 && (
+                                                                    <div className="slider-nav-buttons modal-slider-nav-buttons">
+                                                                        <button onClick={(e) => { e.preventDefault(); prevSlide(listData.time); }}>❮</button>
+                                                                        <button onClick={(e) => { e.preventDefault(); nextSlide(listData.time); }}>❯</button>
+                                                                    </div>
+                                                                    )}
+                                                            
+                                                                    {/* Dots */}
+                                                                    <div className="slider-dot-control">
+                                                                    {slidesMap[listData.time]?.map((_, index) => (
+                                                                        <span
+                                                                        key={index}
+                                                                        className={index === (indices[listData.time] ?? 0) ? "active-dot" : ""}
+                                                                        onClick={() =>
+                                                                            setIndices((prev) => ({ ...prev, [listData.time]: index }))
+                                                                        }
+                                                                        />
+                                                                    ))}
+                                                                    </div>
+                                                                </div>
+                                                                {/* Body text + buttons */}
+                                                                    {slidesMap[listData.time]?.[indices[listData.time] ?? 0]?.bodyText && (
+                                                                    <div key={slidesMap[listData.time][indices[listData.time]].id}>
+                                                                        <p
+                                                                        style={{ textAlign: "justify", fontSize: "13px", padding: "0 5px" }}
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: slidesMap[listData.time][indices[listData.time]].bodyText
+                                                                            .replace(/\*(.*?)\*/g, "<b>$1</b>")
+                                                                            .replace(/_(.*?)_/g, "<i>$1</i>")
+                                                                            .replace(/~(.*?)~/g, "<strike>$1</strike>")
+                                                                            .replace(/\n/g, "<br>"),
+                                                                        }}
+                                                                        ></p>
+                                                            
+                                                                        {slidesMap[listData.time][indices[listData.time]].buttons && (
+                                                                        <div className="template-buttontxt">
+                                                                            {slidesMap[listData.time][indices[listData.time]].buttons.map(
+                                                                            (button: any, idx: number) => {
+                                                                                let icon = null;
+                                                                                if (button.type === "quick_reply")
+                                                                                icon = <i className="fa-solid fa-reply bt-1"></i>;
+                                                                                else if (button.type === "phone_number")
+                                                                                icon = <i className="fa-solid fa-phone"></i>;
+                                                                                else if (button.type === "url")
+                                                                                icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
+                                                            
+                                                                                return (
+                                                                                <p
+                                                                                    key={idx}
+                                                                                    className="template-buttontxt button-option-style text-center"
+                                                                                >
+                                                                                    {icon} {button.text}
+                                                                                </p>
+                                                                                );
+                                                                            }
+                                                                            )}
+                                                                        </div>
+                                                                        )}
+                                                                    </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                            {listData.messageStatus === "failed" && (
+                                                                <span className="d-block template-failed-msg mt-0 pt-2 pb-2 px-2 text-danger bg-whatsapp mb-0">
+                                                                <i className="fa-solid fa-circle-exclamation failed-txt text-danger"></i>
+                                                                {listData?.error_message}
+                                                                </span>
+                                                            )}
+                                                            <div className="template-buttontxt bg-white">
+                                                                
+                                                                {listData.messageBody.templateText.buttons?.map((button:any, idx:any) => {
+                                                                let icon = null;
+                                                                let url = null;
+                                                                switch (button.type) {
+                                                                    case 'QUICK_REPLY':
+                                                                    icon = <i className="fa-solid fa-reply bt-1"></i>;
+                                                                    break;
+                                                                    case 'PHONE_NUMBER':
+                                                                    icon = <i className="fa-solid fa-phone"></i>;
+                                                                    break;
+                                                                    case 'COPY_CODE':
+                                                                    icon = <i className="fa-solid fa-copy"></i>;
+                                                                    break;
+                                                                    case 'URL':
+                                                                    icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
+                                                                    break;
+                                                                    default:
+                                                                    icon = null;
+                                                                }
+                                                                const text = typeof button.text === 'string' ? button.text : JSON.stringify(button.text);
+                                                                return (
+                                                                    <a key={idx} href={button.url} target="blank" className="border-top m-0 p-2 template-buttontxt button-option-style text-center d-block">
+                                                                    {icon} {text} 
+                                                                    </a>
+                                                                );
+                                                                })}
+                                                            </div>
+                                                            
+                                                            <span className="time-footer text-xxs d-block text-end mt-1">
+                                                                {typeof listData.time === 'string' ? formatDate(listData.time) : JSON.stringify(listData.time)}
+                                                                {listData?.messageStatus ==="sent" ?
+                                                                    <>
+                                                                    <svg className="tick-align" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13" height="13" viewBox="0 0 72 72"><path d="M57.658,12.643c1.854,1.201,2.384,3.678,1.183,5.532l-25.915,40c-0.682,1.051-1.815,1.723-3.064,1.814	C29.764,59.997,29.665,60,29.568,60c-1.146,0-2.241-0.491-3.003-1.358L13.514,43.807c-1.459-1.659-1.298-4.186,0.36-5.646	c1.662-1.46,4.188-1.296,5.646,0.361l9.563,10.87l23.043-35.567C53.329,11.971,55.806,11.442,57.658,12.643z" fill="#899499"></path></svg>                                                      
+                                                                    </>
+                                                                    :listData?.messageStatus ==="delivered" ?
+                                                                    <>
+                                                                    <svg className="tick-align" xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#899499"></path></svg>
+                                                                    </>
+                                                                    :listData?.messageStatus==="read"?
+                                                                    <>
+                                                                    <svg className="tick-align" xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#4fc3f7"></path></svg></>
+                                                                    :listData?.messageStatus==="failed"?
+                                                                    <>
+                                                                    <i className="fa-solid fa-circle-exclamation whachat-failed text-danger"></i></>
+                                                                    :""
+                                                                    }
+                                                                </span>
+                                                                {listData?.reaction_emoji ?  <span className="chat-reactionEmoji-bot">{listData?.reaction_emoji}</span>:<></>}
+                                                            </span> 
+                                                        
+                                                        :  
+                                                        listData?.messageBody?.botText ? 
+                                                            <span className="p-2 chat-msg-2 position-relative d-inline-block text-start">
+                                                            <div className="text-end text-xxs p-0">
+                                                                <i className="fa-solid fa-robot" style={{color:"#8a9aab"}}></i>
+                                                            </div>
+                                                            <span
+                                                                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', background: "gainsboro", borderRadius:"5px" }}
+                                                                className="w-100"
+                                                            >
+                                                                {listData.messageBody.botText.headerImage?.match(/\.(mp4)$/i) ? (
+                                                                <video controls className="w-80" src={listData.messageBody.botText.headerImage} />
+                                                                ) : listData.messageBody.botText.headerImage?.match(/\.(jpeg|jpg|png)$/i) ? (
+                                                                <img className="w-50" src={listData.messageBody.botText.headerImage} alt="" />
+                                                                ) : listData.messageBody.botText?.headerImage.match(/\.(pdf|docx)$/i) ? (
+                                                                <a
+                                                                    href={listData.messageBody.botText.headerImage}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="w-50 text-center"
+                                                                    style={{ color: '#007bff', textDecoration: 'underline' }}
+                                                                >
+                                                                    <i className="fa fa-3x fa-file-alt text-white"></i>
+                                                                </a>
+                                                                ) : null}
+                                                            </span>
+                                                            <div className="px-2 pt-2 pb-2 bg-whatsapp">
+                                                                {typeof listData?.messageBody?.botText?.bodyText === 'string' ? (
+                                                                    <div
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: listData.messageBody.botText.bodyText
+                                                                                .replace(/\*(.*?)\*/g, '<b>$1</b>')
+                                                                                .replace(/_(.*?)_/g, '<i>$1</i>')
+                                                                                .replace(/~(.*?)~/g, '<strike>$1</strike>')
+                                                                                .replace(/\n/g, '<br>'),
+                                                                        }}
+                                                                    />
+                                                                ) : (
+                                                                    JSON.stringify(listData?.messageBody?.botText?.bodyText)
+                                                                )}
+                                                            </div>
+
+                                                            <div className="time-footer px-2 pt-2 pb-2 text-xs fs-6 bg-whatsapp ">
+                                                                {typeof listData?.messageBody?.botText?.footerText === 'string'
+                                                                ? listData?.messageBody?.botText?.footerText
+                                                                : JSON.stringify(listData?.messageBody?.botText?.footerText)}
+                                                            </div>
+                                                            {listData.messageStatus === "failed" && (
+                                                                <span className="d-inline-block template-failed-msg mt-0 pt-2 pb-2 px-2 text-danger bg-whatsapp">
+                                                                <i className="fa-solid fa-circle-exclamation failed-txt text-danger"></i>
+                                                                Message failed to send because more than 24 hours have passed since the customer last replied to this number
+                                                                </span>
+                                                            )}
+                                                            <div className="template-buttontxt bg-white">
+                                                                {listData?.messageBody?.botText?.buttons?.menuButton ?
+                                                                <>
+                                                                {listData?.messageBody?.botText?.buttons?.sections?.length > 0 && (
+                                                                <>
+                                                                    <p className="cursor-pointer template-buttontxt text-center button-option-style px-6 border-top py-2 m-0" onClick={() => {setListBot(prev => !prev)}}>
+                                                                        <i className="fa-solid fa-list"></i> {listData?.messageBody?.botText?.buttons?.menuButton}
+                                                                    </p>
+                                                                   { ListBot && listData.messageBody.botText.buttons.sections.map((section: any, sectionIdx: number) =>
+                                                                    section?.rows?.length > 0 &&
+                                                                        section.rows.map((row: any, rowIdx: number) => (
+                                                                        <p
+                                                                            key={`${sectionIdx}-${rowIdx}`}
+                                                                            className="template-buttontxt button-option-style px-6 border-top py-2 m-0"
+                                                                        >
+                                                                            <strong className="text-sm text-capitalize" style={{color:"#32325c"}}>{section.title}</strong>
+                                                                            <p className="p-0 m-0" style={{color:"#000",fontSize:"14px"}}>{row.title}</p>
+                                                                            <p className="p-0 m-0" style={{color:"#000",fontSize:"14px"}}>{row.description}</p>
+                                                                        </p>
+                                                                        ))
+                                                                    )}
+                                                                </>
+                                                                )}
+                                                                </>:
+                                                                <>
+                                                                {Array.isArray(listData?.messageBody?.botText?.buttons) &&
+                                                                listData.messageBody.botText.buttons.map((button: any, idx: number) => {
+                                                                    let icon = null;
+
+                                                                    switch (button?.type) {
+                                                                    case 'reply':
+                                                                        icon = <i className="fa-solid fa-reply bt-1"></i>;
+                                                                        break;
+                                                                    default:
+                                                                        icon = null;
+                                                                    }
+
+                                                                    const text = typeof button?.reply?.title === 'string'
+                                                                    ? button.reply.title
+                                                                    : JSON.stringify(button?.reply?.title);
+
+                                                                    return (
+                                                                    <p key={idx} className="template-buttontxt align-center text-center button-option-style px-5 border-top py-2 m-0">
+                                                                        {icon} {text}
+                                                                    </p>
+                                                                    );
+                                                                })}
+                                                                </>}
+
+                                                            </div>
+                                                            <span className="time-footer text-xxs d-block text-end mt-1">
+                                                                {typeof listData.time === 'string' ? formatDate(listData.time) : JSON.stringify(listData.time)}
+                                                                {listData?.messageStatus ==="sent" ?
+                                                                    <>
+                                                                    <svg className="tick-align" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="13" height="13" viewBox="0 0 72 72"><path d="M57.658,12.643c1.854,1.201,2.384,3.678,1.183,5.532l-25.915,40c-0.682,1.051-1.815,1.723-3.064,1.814	C29.764,59.997,29.665,60,29.568,60c-1.146,0-2.241-0.491-3.003-1.358L13.514,43.807c-1.459-1.659-1.298-4.186,0.36-5.646	c1.662-1.46,4.188-1.296,5.646,0.361l9.563,10.87l23.043-35.567C53.329,11.971,55.806,11.442,57.658,12.643z" fill="#899499"></path></svg>                                                      
+                                                                    </>
+                                                                    :listData?.messageStatus ==="delivered" ?
+                                                                    <>
+                                                                    <svg className="tick-align" xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#899499"></path></svg>
+                                                                    </>
+                                                                    :listData?.messageStatus==="read"?
+                                                                    <>
+                                                                    <svg className="tick-align" xmlns="http://www.w3.org/2000/svg" width="16" height="15" id="msg-dblcheck-ack" x="2063" y="2076"><path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.88a.32.32 0 0 1-.484.032l-.358-.325a.32.32 0 0 0-.484.032l-.378.48a.418.418 0 0 0 .036.54l1.32 1.267a.32.32 0 0 0 .484-.034l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.88a.32.32 0 0 1-.484.032L1.892 7.77a.366.366 0 0 0-.516.005l-.423.433a.364.364 0 0 0 .006.514l3.255 3.185a.32.32 0 0 0 .484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="#4fc3f7"></path></svg></>
+                                                                    :listData?.messageStatus==="failed"?
+                                                                    <>
+                                                                    <i className="fa-solid fa-circle-exclamation whachat-failed text-danger"></i></>
+                                                                    :""
+                                                                    }
+                                                                </span>
+                                                                {listData?.reaction_emoji ?  <span className="chat-reactionEmoji-bot">{listData?.reaction_emoji}</span>:<></>}
+                                                            </span> :
                                                         <span className="p-2 chat-msg-2 position-relative d-inline-block text-start">
                                                         <span style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',background: "gainsboro",borderRadius:"5px" }} className="w-100">
                                                         {listData?.messageBody?.MessageMedia?.match(/\.(mp4)$/i) ? (
                                                             <video controls className="w-80" src={listData.messageBody.MessageMedia} />
-                                                        ) : listData?.messageBody?.MessageMedia?.match(/\.(jpeg|jpg|png)$/i) ? (
+                                                        ) : listData?.messageBody?.MessageMedia?.match(/\.(jpeg|jpg|png|gif)$/i) ? (
                                                             <img className="w-50" src={listData.messageBody.MessageMedia} alt="" />
+                                                        ) : listData?.messageBody?.MessageMedia?.match(/\.(mp3|ogg|aac)$/i) ? (
+                                                            <audio controls className="p-2" src={listData.messageBody.MessageMedia}/>
                                                         ) : listData?.messageBody?.MessageMedia?.match(/\.(pdf|docx)$/i) ? (
                                                             <a
                                                             href={listData.messageBody.MessageMedia}
@@ -798,7 +1692,7 @@ const handleChatClear = () => {
                                                             className="w-50 text-center"
                                                             style={{ color: '#007bff', textDecoration: 'underline' }}
                                                             >
-                                                            <i className="  fa fa-3x fa-file-alt text-white"></i>
+                                                            <i className="fa fa-3x fa-file-alt text-white"></i>
                                                             </a>
                                                         ) : null}
                                                         </span>
@@ -827,13 +1721,39 @@ const handleChatClear = () => {
                                                             :""
                                                             }
                                                             </span>
+                                                            {listData?.reaction_emoji ?  <span className="chat-reactionEmoji-bot">{listData?.reaction_emoji}</span>:<></>}
                                                         </span>
+                                                        }
                                                     </div>
                                                     )}
                                                 </div>
                                                 ))}
                                                 </>)}
                                             </div>
+                                            
+                                            {chatList.length === 0 ? 
+                                            <></>:
+                                            <>
+                                            {/* Scroll to Top Button */}
+                                            {showScrollTop && (
+                                                <button
+                                                onClick={scrollToTop}
+                                                className="scroll-btn scroll-btn-right scroll-top"
+                                                >
+                                                <i className="fa-solid fa-chevron-up"></i>
+                                                </button>
+                                            )}
+
+                                            {/* Scroll to Bottom Button */}
+                                            {showScrollBottom && (
+                                                <button
+                                                onClick={scrollToBottom}
+                                                className="scroll-btn scroll-btn-left scroll-bottom"
+                                                >
+                                                <i className="fa-solid fa-chevron-down"></i>
+                                                </button>
+                                            )}
+                                            </>}
                                             </div>
                                         </div>
 
@@ -917,10 +1837,12 @@ const handleChatClear = () => {
                                                 
                                                     <div className="col-md-12 px-3 login-input-group">
                                                 <div className="vendor-create-container">
+                                                    {chatPopup === 4 ? <></>:<>
                                                    <input autoComplete="off" onChange={(e)=>setcaption(e.target.value)} value={caption} type="text" id="vendor-crt-input" 
                                                    className={`vendor-crt-input loginfilled-frame-username`}
                                                    placeholder=" " required />
                                                    <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-mobile-button"></i> Caption/Text</label>
+                                                </>}
                                                 </div>
                                              </div>
                                                     <div className="modal-footer border-0">
@@ -934,20 +1856,20 @@ const handleChatClear = () => {
                                 </div>
                                 <div className="col-md-3">
                                     <div className="bg-white card campaign-template mt-5">
-                                        <h6 className="campaign-temp-head tblName">Contact Info</h6>
+                                        <h6 className="campaign-temp-head">Contact Info</h6>
                                         <div>
                                             <div className="text-end">
-                                                <button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal" data-bs-target="#vendorview" onClick={()=>contactListGet(id)}><i className="fa-solid fa-pen"></i>  Edit Contact</button>
+                                               {id ? <button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal" data-bs-target="#vendorview" onClick={()=>contactListGet(id)}><i className="fa-solid fa-pen"></i>  Edit Contact</button>:<></>}
                                             </div>
                                         </div>
                                         <div className="p-2">
-                                            <h6 className="mt-n2 tblName">Name</h6>
+                                            <h6 className="mt-n2">Name</h6>
                                             <p className="mt-n2">{contactName}</p>
-                                            <h6 className="mt-n2 tblName">Phone</h6>
+                                            <h6 className="mt-n2">Phone</h6>
                                             <p className="mt-n2">{mobNumber}</p>
-                                            <h6 className="mt-n2 tblName">Email</h6>
+                                            <h6 className="mt-n2">Email</h6>
                                             <p className="mt-n3">{email}</p>
-                                            <h6 className="mt-n2 tblName">Language</h6>
+                                            <h6 className="mt-n2">Language</h6>
                                             <p className="mt-n3">{languageCode}</p>
                                         </div>
                                     </div>
@@ -976,7 +1898,7 @@ const handleChatClear = () => {
                                                                 <input
                                                                     type="text"
                                                                     autoComplete="off"
-                                                                    //  onClick={handleGetStoreDrop}
+                                                                     onClick={handleGetStoreDrop}
                                                                     id="vendor-crt-input"
                                                                     className={`vendor-crt-input`}
                                                                     //  value={storeName}
@@ -1017,15 +1939,39 @@ const handleChatClear = () => {
                                                                 <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-envelope"></i>  Email</label>
                                                             </div>
                                                         </div>
-                                                        <div className="col-md-6 login-input-group">
-                                                            <div className="vendor-create-container">
-                                                                <input type="text" autoComplete="off" id="vendor-crt-input" className={`vendor-crt-input`} placeholder=" " required />
-                                                                <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-layer-group"></i> Groups</label>
-                                                            </div>
+                                                        <div className="col-md-6 mt-2">
+                                                        <div className="form-check form-switch ms-1 is-filled">
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                id="flexSwitchCheckDefault"
+                                                                onChange={()=>{
+                                                                    if(customCampaign===true){
+                                                                    setcustomCampaign(false)
+                                                                    }
+                                                                    else{
+                                                                    setcustomCampaign(true)}
+                                                                }}
+                                                                checked={customCampaign===true}
+                                                            /> <span className="text-xs">Custom Campaign</span>
                                                         </div>
-                                                        <div className="form-check form-switch ms-1 is-filled text-start">
-                                                            <input className="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                                        </div>
+                                                        <div className="col-md-6 mt-2">
+                                                        <div className="form-check form-switch ms-1 is-filled">
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                id="flexSwitchCheckDefault"
+                                                                onChange={()=>{
+                                                                    if(campaignOpt===true){
+                                                                    setcampaignOpt(false)
+                                                                    }
+                                                                    else{
+                                                                    setcampaignOpt(true)}
+                                                                }}
+                                                                checked={campaignOpt===true}
                                                             /> <span className="text-xs">Opt out Marketing Messages</span>
+                                                        </div>
                                                         </div>
                                                     </div>
                                                     <div className="campaign-template mt-5 mx-4">
@@ -1281,17 +2227,41 @@ const handleChatClear = () => {
                            ))}
                           
                         </div>
+                       <div className="col-md-6 mt-2">
+                        <div className="form-check form-switch ms-1 is-filled">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="flexSwitchCheckDefault"
+                                onChange={()=>{
+                                    if(customCampaign===true){
+                                    setcustomCampaign(false)
+                                    }
+                                    else{
+                                    setcustomCampaign(true)}
+                                }}
+                                checked={customCampaign===true}
+                            /> <span className="text-xs">Custom Campaign</span>
+                        </div>
+                        </div>
                         <div className="col-md-6 mt-2">
-                           <div className="form-check form-switch ms-1 is-filled">
-                              <input
-                                 className="form-check-input"
-                                 type="checkbox"
-                                 id="flexSwitchCheckDefault"
-                              /> <span className="text-xs">Opt out Marketing Messages</span>
-                           </div>
+                        <div className="form-check form-switch ms-1 is-filled">
+                            <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="flexSwitchCheckDefault"
+                                onChange={()=>{
+                                    if(campaignOpt===true){
+                                    setcampaignOpt(false)
+                                    }
+                                    else{
+                                    setcampaignOpt(true)}
+                                }}
+                            /> <span className="text-xs">Opt out Marketing Messages</span>
+                        </div>
                         </div>
                         <div className="campaign-template mt-5">
-                           <h6 className="campaign-temp-head tblName">Other Information</h6>
+                           <h6 className="campaign-temp-head">Other Information</h6>
                            <div className="row">
                            <div className="col-md-6 login-input-group">
                               <div className="vendor-contact-container" aria-expanded="false">
@@ -1358,7 +2328,7 @@ const handleChatClear = () => {
             </div>
          </div>
                                     <div className="bg-white card campaign-template mt-5">
-                                        <h6 className="campaign-temp-head tblName">Assign Team Member</h6>
+                                        <h6 className="campaign-temp-head">Assign Team Member</h6>
                                         <div>
                                             <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <input
@@ -1395,7 +2365,7 @@ const handleChatClear = () => {
                                         </div>
                                     </div>
                                     <div className="bg-white card campaign-template mt-5">
-                                        <h6 className="campaign-temp-head tblName">Priority / Task Status</h6>
+                                        <h6 className="campaign-temp-head">Priority / Task Status</h6>
                                         <div>
                                             <div className="vendor-create-container dropdown mt-3" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <input
@@ -1558,6 +2528,7 @@ const handleChatClear = () => {
                             </div>
                         </div>
                         </div>
+                        <Footer />
                     </div>
                 </main>
             </DashboardLayout>
