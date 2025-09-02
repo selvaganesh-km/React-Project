@@ -53,7 +53,7 @@ function Sidebar() {
   const isContactRoute = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"].includes(location.pathname);
   const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign", "/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
   const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/custom-campaign"].includes(location.pathname);
-  const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create"].includes(location.pathname);
+  const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].includes(location.pathname);
   const [isDropdownOpen, setDropdownOpen] = useState(isStoreRoute);
   const [isDropdownOpen1, setDropdownOpen1] = useState(isContentHubRoute);
   const [isDropdownOpen2, setDropdownOpen2] = useState(isContactRoute);
@@ -95,7 +95,7 @@ function Sidebar() {
     const validRoutes3 = ["/vendor/chat-bot", "/vendor/chat-bot/flow"];
     const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/custom-campaign"];
     const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"];
-    const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create"];
+    const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"];
     const allowedPaths = [
   "/vendor/catalog/product/create",
   "/vendor/catalog/product/details",
@@ -354,7 +354,7 @@ if (!isAllowed) {
               </li>
               <li className="nav-item">
                 <Link
-                  className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create"].includes(location.pathname)
+                  className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].includes(location.pathname) || location.pathname.startsWith("/vendor/catalog/product/edit")
                     ? "active"
                     : ""}`}
                   onClick={toggleDropdown6} to={''}              >
@@ -385,7 +385,7 @@ if (!isAllowed) {
                   </li>
                   <li className="nav-item">
                     <Link
-                      className={`mt-2 nav-link  ${["/vendor/catalog/product/details","/vendor/catalog/product/create"].includes(location.pathname) ? "active" : ""
+                      className={`mt-2 nav-link  ${["/vendor/catalog/product/details","/vendor/catalog/product/create"].includes(location.pathname) || location.pathname.startsWith("/vendor/catalog/product/edit") ? "active" : ""
                         }`}
                       to={"/vendor/catalog/product/details"}
                     >

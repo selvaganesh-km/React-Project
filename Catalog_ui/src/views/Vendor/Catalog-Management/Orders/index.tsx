@@ -26,6 +26,8 @@ function CatalogOrderList() {
     const [loading, setLoading] = useState(false);
     const [submit, setSubmit] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [recordsPerPage, setrecordsPerPage] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
     const [popupList, setPopuplist] = useState([]);
@@ -134,7 +136,7 @@ function CatalogOrderList() {
             // toast.warning("Please select a catalog first");
             return;
         }
-       handleOrderListAPI(1, selectedCatalogId);
+       handleOrderListAPI(1, selectedCatalogId,debouncedSearch);
        setSubmit(false);
         setCurrentPage(1);
         const modalEl = document.getElementById("defaultopenpopup");
@@ -171,15 +173,24 @@ function CatalogOrderList() {
     }
     useEffect(() => {
         handlecatalogListAPI();
-        handleOrderListAPI(1, carouselid || null); // Use carouselId if available, otherwise null
+        handleOrderListAPI(1, carouselid,debouncedSearch|| null); // Use carouselId if available, otherwise null
     }, []);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+          setDebouncedSearch(search);
+          setCurrentPage(1);
+        }, 1000);
+    
+        return () => {
+          clearTimeout(handler);
+        };
+      }, [search]);
 
-       const handleOrderListAPI = (page: any, catalogId: any) => {
+       const handleOrderListAPI = (page: any, catalogId: any,search:any) => {
           setLoading(true)
           const apiData = {
-           
-            //   catalogId: carouselid || null,
-                   pageIndex: page -1,
+           search:search,
+            pageIndex: page -1,
               dataLength: recordsPerPage
             
           };
@@ -208,7 +219,7 @@ function CatalogOrderList() {
         VendorAPI.OrderStatusUpdateAPI(apiData)
             .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
-            handleOrderListAPI(1, carouselid || null);setOpenDropdownId(null)
+            handleOrderListAPI(1, carouselid,debouncedSearch || null);setOpenDropdownId(null)
                 } else {
 
                 }
@@ -231,10 +242,10 @@ function CatalogOrderList() {
         setOpenDropdownId(prevId => (prevId === id ? null : id));
     };
     useEffect(() => {
-        if (selectedCatalogId) {
-            handleOrderListAPI(currentPage, selectedCatalogId)
-        }
-    }, [currentPage]);
+        // if (selectedCatalogId) {
+            handleOrderListAPI(currentPage, selectedCatalogId,debouncedSearch)
+        // }
+    }, [currentPage,debouncedSearch]);
     const [isActive, setIsActive] = useState(false);
     const [query, setQuery] = useState('');
      const inputRef = useRef(null);
@@ -275,12 +286,12 @@ function CatalogOrderList() {
                                 <h6 className="text-start font-weight-bolder mb-0 grayFont">Order Management</h6>
                             </nav>
                         </div>
-                        <div className="col-md-6 text-end position-relative">
-                            <div className = 'search-box1'>
-                            <input className = "search-text1" type="text" placeholder = "Search Catalog..."/>
-                                <a href="#" className = "search-btn1">
-                                    <i className="fas fa-search"></i>
-                                </a>
+                        <div className="col-md-6 text-end position-relative d-flex justify-content-end align-items-center">
+                            <div className={`search-box2 ${search ? 'active' : ''}`}>
+                                <input className = "search-text2" type="text" placeholder = "Search Order..." value={search} onChange={(e)=>setSearch(e.target.value)}/>
+                                    <a href="#" className = "search-btn2">
+                                        <i className="fas fa-search"></i>
+                                    </a>
                             </div>
                         </div>
                     </div>

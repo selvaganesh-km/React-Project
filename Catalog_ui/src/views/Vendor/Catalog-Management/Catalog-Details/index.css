@@ -56,3 +56,9 @@
 .search-btn2 i {
     font-size: 16px;
 }
+
+.search-box2.active .search-text2 {
+    width: 260px;
+    padding: 0 20px;
+    opacity: 1;
+}

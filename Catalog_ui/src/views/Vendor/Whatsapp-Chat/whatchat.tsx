@@ -1871,6 +1871,8 @@ const handleChatClear = () => {
                                             <p className="mt-n3">{email}</p>
                                             <h6 className="mt-n2">Language</h6>
                                             <p className="mt-n3">{languageCode}</p>
+                                            <h6 className="mt-n2">Group Name</h6>
+                                            <p className="mt-n2">{groupName?.map((group: any) => group.groupName).join(", ")}</p>
                                         </div>
                                     </div>
                                     <div className="modal fade" id="vendorviews" aria-labelledby="vendorviewLabel" aria-hidden="true">

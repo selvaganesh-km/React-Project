@@ -12,6 +12,8 @@ function CatalogDetails() {
   const [modalMode, setModalMode] = useState("create");
   const [submit, setSubmit] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [recordsPerPage, setrecordsPerPage] = useState(10);
   const [totalRecords, setTotalRecords] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -118,9 +120,20 @@ function CatalogDetails() {
   const openModal = (mode: any) => {
     setModalMode(mode);
   };
-   const handlecatalogListAPI = (page: any) => {
+  useEffect(() => {
+          const handler = setTimeout(() => {
+            setDebouncedSearch(search);
+            setCurrentPage(1);
+          }, 1000);
+      
+          return () => {
+            clearTimeout(handler);
+          };
+        }, [search]);
+   const handlecatalogListAPI = (page: any,search:any) => {
       setLoading(true)
       const apiData = {
+          search:search,
           pageIndex: page - 1,
           dataLength: recordsPerPage
       };
@@ -189,7 +202,7 @@ function CatalogDetails() {
       .then((responseData: any) => {
         if (responseData.apiStatus.code === "200") {
           // resetForm();
-          handlecatalogListAPI(currentPage)
+          handlecatalogListAPI(currentPage,debouncedSearch)
           setSubmit(false);
           setbtnLoading(false);
           toast.success(responseData.apiStatus.message);
@@ -217,7 +230,7 @@ function CatalogDetails() {
     VendorAPI.catalogSyncAPI(apiData)
       .then((responseData: any) => {
         if (responseData.apiStatus.code === "200") {
-          handlecatalogListAPI(currentPage)
+          handlecatalogListAPI(currentPage,debouncedSearch)
           setLoading(false)
           // toast.success(responseData.apiStatus.message);
         } else {
@@ -232,8 +245,8 @@ function CatalogDetails() {
       });
   };
   useEffect(()=>{
-    handlecatalogListAPI(currentPage)
-  },[currentPage])
+    handlecatalogListAPI(currentPage,debouncedSearch)
+  },[currentPage,debouncedSearch])
   useEffect(()=>{
     handlelogBizinfo()
   },[])
@@ -267,12 +280,12 @@ function CatalogDetails() {
               </nav>
             </div>
             <div className="col-md-6 text-end position-relative d-flex justify-content-end align-items-center">
-               <div className = 'search-box2'>
-                  <input className = "search-text2" type="text" placeholder = "Search Catalog..."/>
-                      <a href="#" className = "search-btn2">
-                          <i className="fas fa-search"></i>
-                      </a>
-                  </div>
+               <div className={`search-box2 ${search ? 'active' : ''}`}>
+                    <input className = "search-text2" type="text" placeholder = "Search Catalog..." value={search} onChange={(e)=>setSearch(e.target.value)}/>
+                        <a href="#" className = "search-btn2">
+                            <i className="fas fa-search"></i>
+                        </a>
+                </div>
               <button
                 className="vendor-crt-btn"
                 data-bs-toggle="modal"

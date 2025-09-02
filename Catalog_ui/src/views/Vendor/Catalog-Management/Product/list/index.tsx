@@ -26,6 +26,8 @@ function CatalogProductList() {
     const [loading, setLoading] = useState(false);
     const [submit, setSubmit] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [recordsPerPage, setrecordsPerPage] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
     const [popupList, setPopuplist] = useState([]);
@@ -81,13 +83,23 @@ function CatalogProductList() {
     useEffect(() => {
         handlecatalogListAPI()
     }, [])
-
-    const handleProductList = (page: any, catalogId: any) => {
+useEffect(() => {
+        const handler = setTimeout(() => {
+          setDebouncedSearch(search);
+          setCurrentPage(1);
+        }, 1000);
+    
+        return () => {
+          clearTimeout(handler);
+        };
+      }, [search]);
+    const handleProductList = (page: any, catalogId: any,search:any) => {
         setLoading(true)
         const apiData = {
             pageIndex: page - 1,
             dataLength: recordsPerPage,
-            catalog_id: catalogId
+            catalog_id: catalogId,
+            search:search
         };
         VendorAPI.productListAPI(apiData)
             .then((responseData: any) => {
@@ -116,7 +128,7 @@ function CatalogProductList() {
          .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
                 setLoading(false)
-                handleProductList(currentPage, selectedCatalogId)
+                handleProductList(currentPage, selectedCatalogId,debouncedSearch)
             } else {
                toast.error(responseData.apiStatus.message);
                setLoading(false)
@@ -130,9 +142,9 @@ function CatalogProductList() {
    };
     useEffect(() => {
         if (selectedCatalogId) {
-            handleProductList(currentPage, selectedCatalogId)
+            handleProductList(currentPage, selectedCatalogId,debouncedSearch)
         }
-    }, [currentPage]);
+    }, [currentPage,debouncedSearch]);
 
     const totalPages = Math.ceil(totalRecords / recordsPerPage);
 
@@ -219,7 +231,7 @@ function CatalogProductList() {
                }
                const closeButton = document.getElementById("closedeleteModal");
                if (closeButton) {
-                  handleProductList(currentPage,selectedCatalogId);
+                  handleProductList(currentPage,selectedCatalogId,debouncedSearch);
                   closeButton.click();
                }
                toast.success(responseData.apiStatus.message);
@@ -239,7 +251,7 @@ function CatalogProductList() {
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
                 toast.success(responseData.apiStatus.message);
-                handleProductList(currentPage,selectedCatalogId);
+                handleProductList(currentPage,selectedCatalogId,debouncedSearch);
                 const closeButton = document.getElementById("closeBotModal");
                 if (closeButton) {
                     closeButton.click();
@@ -260,7 +272,7 @@ function CatalogProductList() {
             // toast.warning("Please select a catalog first");
             return;
         }
-        handleProductList(1, selectedCatalogId);
+        handleProductList(1, selectedCatalogId,debouncedSearch);
         setSubmit(false);
         setCurrentPage(1);
         const modalEl = document.getElementById("defaultopenpopup");
@@ -294,8 +306,8 @@ function CatalogProductList() {
                             </nav>
                         </div>
                         <div className="col-md-6 text-end position-relative d-flex justify-content-end align-items-center">
-                            <div className = 'search-box2'>
-                                <input className = "search-text2" type="text" placeholder = "Search Product..."/>
+                            <div className={`search-box2 ${search ? 'active' : ''}`}>
+                                <input className = "search-text2" type="text" placeholder = "Search Product..." value={search} onChange={(e)=>setSearch(e.target.value)}/>
                                     <a href="#" className = "search-btn2">
                                         <i className="fas fa-search"></i>
                                     </a>
