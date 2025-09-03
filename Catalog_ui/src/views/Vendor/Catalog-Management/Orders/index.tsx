@@ -798,8 +798,8 @@ function CatalogOrderList() {
                             <div className="modal-content">
                             <div className="modal-header d-flex justify-content-between border-0">
                                 <h5 className="modal-title" id="exampleModalLabel">Order View</h5>
-                                <button type="button" className="close border-0 bg-white" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true" className='fs-4'>x</span>
+                                <button type="button" className="close modal-Xbutton" data-bs-dismiss="modal" aria-label="Close">
+                                    <span></span>
                                 </button>
                             </div>
                             <div className="modal-body">

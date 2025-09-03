@@ -573,10 +573,15 @@ setCarouselVariables((prev) => {
                   case "CAROUSEL":
                      setCarouselTyp(component.type);
                      setCarousels(component?.cards);
-                     const carouselMedia = responseData?.responseData?.carousel_media || [];
+                     const carouselMedia = responseData?.responseData?.carousel_media || responseData?.responseData?.media_id;
                      const filledMedia = component?.cards?.map((_: any, index: number) => {
-                        const match = carouselMedia.find((item: any) => +item.card_index === index + 1);
-                        return match?.media_url || null;
+                     const match = carouselMedia.find((item: any) => +item.card_index === index + 1);
+
+                     if (!match) return null;
+
+                     return match.media_url && match.media_url.trim() !== "" 
+                        ? match.media_url 
+                        : match.media_id;
                      });
                      setCarouselMediaIds(filledMedia);
                      const formattedSlides = component.cards.map((card: any, index: number) => {
@@ -1606,44 +1611,44 @@ console.log(slides,"Slidezzzz")
                                           
                                           </div>
                                           {slides[currentIndex] && slides[currentIndex].bodyText && (
-  <div key={slides[currentIndex].id}>
-    <p
-      style={{ textAlign: "justify", fontSize: "12px", padding: "0 5px" }}
-      dangerouslySetInnerHTML={{
-        __html: slides[currentIndex].bodyText
-          .replace(/\*(.*?)\*/g, "<b>$1</b>")
-          .replace(/_(.*?)_/g, "<i>$1</i>")
-          .replace(/~(.*?)~/g, "<strike>$1</strike>")
-          .replace(/\n/g, "<br>")
-      }}
-    ></p>
-  </div>
-)}
+                                          <div key={slides[currentIndex].id}>
+                                             <p
+                                                style={{ textAlign: "justify", fontSize: "12px", padding: "0 5px" }}
+                                                dangerouslySetInnerHTML={{
+                                                __html: slides[currentIndex].bodyText
+                                                   .replace(/\*(.*?)\*/g, "<b>$1</b>")
+                                                   .replace(/_(.*?)_/g, "<i>$1</i>")
+                                                   .replace(/~(.*?)~/g, "<strike>$1</strike>")
+                                                   .replace(/\n/g, "<br>")
+                                                }}
+                                             ></p>
+                                          </div>
+                                          )}
 
-{slides[currentIndex] && slides[currentIndex].buttons && (
-  <div className="template-buttontxt">
-    {slides[currentIndex].buttons.map((button: any, idx: any) => {
-      let icon = null;
+                                          {slides[currentIndex] && slides[currentIndex].buttons && (
+                                          <div className="template-buttontxt">
+                                             {slides[currentIndex].buttons.map((button: any, idx: any) => {
+                                                let icon = null;
 
-      if (button.type === "quick_reply") {
-        icon = <i className="fa-solid fa-reply bt-1"></i>;
-      } else if (button.type === "phone_number") {
-        icon = <i className="fa-solid fa-phone"></i>;
-      } else if (button.type === "url") {
-        icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
-      }
+                                                if (button.type === "quick_reply") {
+                                                icon = <i className="fa-solid fa-reply bt-1"></i>;
+                                                } else if (button.type === "phone_number") {
+                                                icon = <i className="fa-solid fa-phone"></i>;
+                                                } else if (button.type === "url") {
+                                                icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
+                                                }
 
-      return (
-        <p
-          key={idx}
-          className="template-buttontxt button-option-style text-center"
-        >
-          {icon} {button.text}
-        </p>
-      );
-    })}
-  </div>
-)}
+                                                return (
+                                                <p
+                                                   key={idx}
+                                                   className="template-buttontxt button-option-style text-center"
+                                                >
+                                                   {icon} {button.text}
+                                                </p>
+                                                );
+                                             })}
+                                          </div>
+                                          )}
 
                                           </div>
 

@@ -198,3 +198,84 @@
     z-index: 1;
     margin-left: -3px;
 }
+
+.modal-Xbutton {
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    border: 2px solid #ad0303;
+    background: transparent;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    /* important for hiding fill overflow */
+    transition: border-color 0.2s;
+    box-shadow: 1px 1px 1.5px 1px rgb(185 181 181);
+}
+
+.modal-Xbutton:hover {
+    border-color: #ad0303;
+}
+
+
+/* The water fill effect */
+
+.modal-Xbutton::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: #ad0303;
+    border-radius: 50% 50% 0 0;
+    /* rounded top corners for a wave look */
+    transition: height 0.5s ease-in-out;
+    z-index: 0;
+}
+
+.modal-Xbutton:hover::before {
+    height: 100%;
+    border-radius: 50%;
+    /* full circle fill on hover */
+}
+
+
+/* The X lines */
+
+.modal-Xbutton::after,
+.modal-Xbutton span {
+    position: absolute;
+    width: 13px;
+    height: 2px;
+    background-color: #ad0303;
+    transition: background-color 0.3s;
+    z-index: 1;
+    /* above the fill */
+}
+
+.modal-Xbutton::after {
+    content: "";
+    transform: rotate(45deg);
+    top: 50%;
+    left: 50%;
+    margin-left: -6.5px;
+    margin-top: -1px;
+}
+
+.modal-Xbutton span {
+    content: "";
+    transform: rotate(-45deg);
+    top: 50%;
+    left: 50%;
+    margin-left: -6.5px;
+    margin-top: -1px;
+}
+
+.modal-Xbutton:hover::after,
+.modal-Xbutton:hover span {
+    background-color: white;
+}

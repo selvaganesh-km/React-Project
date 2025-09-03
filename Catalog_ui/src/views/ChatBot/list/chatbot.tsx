@@ -630,18 +630,18 @@ useEffect(() => {
     );
   };
 
-  const deleteRow = (sectionId: string, rowId: string) => {
-    setListSections((prev) =>
-      prev.map((section) =>
-        section.id === sectionId
-          ? {
-              ...section,
-              rows: section.rows.filter((row) => row.id !== rowId),
-            }
-          : section
-      )
-    );
-  };
+  const deleteRow = (sectionId: string, rowIndex: any) => {
+  setListSections((prev) =>
+    prev.map((section) =>
+      section.id === sectionId
+        ? {
+            ...section,
+            rows: section.rows.filter((_, index) => index !== rowIndex),
+          }
+        : section
+    )
+  );
+};
   
 
   const handleChangeInteractive = (e: {
@@ -2218,7 +2218,7 @@ const validateListSectionWithStructure = (
                                   </div>
                                   {/* {submit && (!section.title || section.title.trim() === "") ? (<div className="text-start text-danger error-message-required">Section Title is required</div>) : null} */}
                                   </div>
-                                  {showRow && section.rows.map((row) => (
+                                  {showRow && section.rows.map((row,rowIndex) => (
                                   <div
                                     className="card card-details shadow-sm rounded border chat-form-card p-3 border mt-5"
                                     key={row.uId}
@@ -2230,7 +2230,7 @@ const validateListSectionWithStructure = (
                                     </div>
                                     <div
                                       className="col-md-12 text-end text-xs mt-n4"
-                                      onClick={() => deleteRow(section.id, row.id)}
+                                      onClick={() => deleteRow(section.id, rowIndex)}
                                     >
                                       <i className="fa fa-times text-danger"></i>
                                     </div>
