@@ -142,6 +142,7 @@ let endpoints = {
 	WHATSAPPBUSSINESSPROFILE:"waba/update/businessProfile",
 	WHATSAPPINDUSTRYDROP:"waba/get/industryList",
 	WHATSAPPTESTCONTACT:"waba/add/testContact",
+	WHATSAPPADDPHONENO: 'waba/add/defaultPhoneNo',
 
 	//Send Message 
 	SENDMSG: 'contactgroup/payloadStructure',
@@ -237,7 +238,8 @@ let endpoints = {
 	CATALOGWHATSAPPINDUSTRYDROP:"catalog_waba/get/industryList",
 	CATALOGWHATSAPPBUSSINESSPROFILE:"catalog_waba/update/businessProfile",
 	CATALOGWHATSAPPIMGUPLOAD: 'whatsapp_template/uploadMedia',
-	
+	CATALOGWHATSAPPADDPHONENO:"catalog_waba/add/defaultPhoneNo",
+
 	//Product 
 	PRODUCTLIST: 'catalog_products/list',
 	PRODUCTCREATE: 'catalog_products/create',
@@ -628,6 +630,9 @@ let API_EP_BOOK = {
 	WHATSAPP_TEST_CONTACT: {
 		url: endpoints.WHATSAPPTESTCONTACT, method: 'POST', authorization: true
 	},
+	WHATSAPP_ADD_PHONENO: {
+		url: endpoints.WHATSAPPADDPHONENO, method: 'POST', authorization: true
+	},
 
 	// Sms Setup
 
@@ -879,6 +884,9 @@ let API_EP_BOOK = {
 	},
 	CATALOG_ADMIN_IMG_UPLOAD_API_EP: {
 		url: endpoints.CATALOGWHATSAPPIMGUPLOAD, method: 'POST', authorization: true
+	},
+	CATALOG_WHATSAPP_ADD_PHONENO: {
+		url: endpoints.CATALOGWHATSAPPADDPHONENO, method: 'POST', authorization: true
 	},
 	//Catalog Product
 	PRODUCT_CREATE_API_EP: {

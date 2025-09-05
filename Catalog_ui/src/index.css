@@ -26800,6 +26800,9 @@ textarea {
     opacity: 1;
 }
 
+
+/* Duplicate hover tooltip */
+
 .actionDuplicate-tooltip-container {
     position: relative;
     display: inline-block;
@@ -26825,6 +26828,21 @@ textarea {
 .actionDuplicate-tooltip-container:hover .actionDuplicate-tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+.actionDuplicate-tooltip-container .actionDuplicate-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 26px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #71717a;
+    transform: rotateX(152deg);
 }
 
 .actionCreateCampaign-tooltip-container {
@@ -26853,6 +26871,9 @@ textarea {
     visibility: visible;
     opacity: 1;
 }
+
+
+/* View hover tooltip */
 
 .actionView-tooltip-container {
     position: relative;
@@ -26889,6 +26910,11 @@ textarea {
     border-top: 10px solid transparent;
     border-bottom: 10px solid #f1c40f;
     transform: rotateX(152deg);
+}
+
+.actionView-tooltip-container:hover .actionView-tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 
@@ -26966,67 +26992,8 @@ textarea {
     transform: rotateX(152deg);
 }
 
-.actionEdit-tooltip-container .actionEdit-tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 16px;
-    left: 10px;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid #014aac;
-    transform: rotateX(152deg);
-    pointer-events: none;
-}
 
-.actionDelete-tooltip-container .actionDelete-tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid #ef5252;
-    transform: rotateX(152deg);
-    pointer-events: none;
-}
-
-.actionArchive-tooltip-container .actionArchive-tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 16px;
-    left: 20px;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid #0cc0df;
-    transform: rotateX(152deg);
-}
-
-.actionDuplicate-tooltip-container .actionDuplicate-tooltip-text::after {
-    content: "";
-    position: absolute;
-    top: 16px;
-    left: 26px;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid #71717a;
-    transform: rotateX(152deg);
-}
+/* Help hover tooltip */
 
 .actionChathelp-tooltip-container {
     position: relative;
@@ -27056,14 +27023,27 @@ textarea {
     opacity: 1;
 }
 
-.actionView-tooltip-container:hover .actionView-tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
+
+/* Archive hover tooltip */
 
 .actionArchive-tooltip-container {
     position: relative;
     display: inline-block;
+}
+
+.actionArchive-tooltip-container .actionArchive-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #0cc0df;
+    transform: rotateX(152deg);
 }
 
 .actionArchive-tooltip-container .actionArchive-tooltip-text {
@@ -27088,9 +27068,28 @@ textarea {
     opacity: 1;
 }
 
+
+/* Edit hover tooltip */
+
 .actionEdit-tooltip-container {
     position: relative;
     display: inline-block;
+}
+
+.actionEdit-tooltip-container .actionEdit-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 10px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #014aac;
+    transform: rotateX(152deg);
+    pointer-events: none;
 }
 
 .actionEdit-tooltip-container .actionEdit-tooltip-text {
@@ -27115,10 +27114,8 @@ textarea {
     opacity: 1;
 }
 
-.actionCamp-tooltip-container:hover .actionCamp-tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
+
+/* Campaign hover tooltip */
 
 .actionCamp-tooltip-container {
     position: relative;
@@ -27147,9 +27144,28 @@ textarea {
     opacity: 1;
 }
 
+
+/* Delete hover tooltip */
+
 .actionDelete-tooltip-container {
     position: relative;
     display: inline-block;
+}
+
+.actionDelete-tooltip-container .actionDelete-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid #ef5252;
+    transform: rotateX(152deg);
+    pointer-events: none;
 }
 
 .actionDelete-tooltip-container .actionDelete-tooltip-text {
@@ -27172,6 +27188,24 @@ textarea {
 .actionDelete-tooltip-container:hover .actionDelete-tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+
+/* Chat hover tooltip */
+
+.actionChat-tooltip-container .actionChat-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid green;
+    transform: rotateX(152deg);
 }
 
 .actionChat-tooltip-container {
@@ -27197,6 +27231,51 @@ textarea {
 }
 
 .actionChat-tooltip-container:hover .actionChat-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* Send Template hover tooltip */
+
+.actionSendTemp-tooltip-container .actionSendTemp-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 41px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid green;
+    transform: rotateX(152deg);
+}
+
+.actionSendTemp-tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.actionSendTemp-tooltip-container .actionSendTemp-tooltip-text {
+    visibility: hidden;
+    background-color: green;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    color: white;
+    text-align: center;
+    padding: 1px 10px;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 100%;
+    transform: translateX(-25%);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.actionSendTemp-tooltip-container:hover .actionSendTemp-tooltip-text {
     visibility: visible;
     opacity: 1;
 }

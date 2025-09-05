@@ -1100,7 +1100,7 @@ useEffect(() => {
                                                             Edit
                                                          </div>
                                                       </div>
-                                                      <div className="actionChat-tooltip-container">
+                                                      <div className="actionSendTemp-tooltip-container">
                                                          <button className="btn-3 vendorbtn-whatsapp"
                                                             type="button"
                                                             onClick={() => handleNavigate(contactList)}
@@ -1109,7 +1109,7 @@ useEffect(() => {
                                                                <i className="fa-regular fa-comment-dots"></i>
                                                             </span>
                                                          </button>
-                                                         <div className="actionChat-tooltip-text">
+                                                         <div className="actionSendTemp-tooltip-text">
                                                             Send Template Message
                                                          </div>
                                                       </div>
@@ -1220,7 +1220,7 @@ useEffect(() => {
                                                             Edit
                                                          </div>
                                                       </div>
-                                                      <div className="actionChat-tooltip-container">
+                                                      <div className="actionSendTemp-tooltip-container">
                                                          <button className="btn-3 vendorbtn-whatsapp"
                                                             type="button"
                                                             onClick={() => handleNavigate(contactList)}
@@ -1229,7 +1229,7 @@ useEffect(() => {
                                                                <i className="fa-regular fa-comment-dots"></i>
                                                             </span>
                                                          </button>
-                                                         <div className="actionChat-tooltip-text">
+                                                         <div className="actionSendTemp-tooltip-text">
                                                             Send Template Message
                                                          </div>
                                                       </div>

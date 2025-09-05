@@ -644,7 +644,14 @@ useEffect(() => {
 };
   
 
-  const handleChangeInteractive = (e: {
+  // const handleChangeInteractive = (e: React.MouseEvent<HTMLInputElement>) => {
+  // const clickedValue = (e.target as HTMLInputElement).value;
+
+  // setInteractiveType(prev =>
+  //   prev === clickedValue ? "" : clickedValue
+  // );
+  // };
+const handleChangeInteractive = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setInteractiveType(e.target.value);
@@ -1194,9 +1201,9 @@ function revertFormattedText(htmlText: string): string {
 
 const handleEditPopulate=(value: any,listData:any)=>{
   const messageBody=listData.message_body?.[0]
-  setEditId(listData.id)
-  setbotName(listData.name)
-    setKeywords(listData.intent)
+  setEditId(listData?.id)
+  setbotName(listData?.name)
+    setKeywords(Array.isArray(listData?.intent) ? listData.intent : []);
     setInteractiveType(messageBody?.sub_type)
     setresType(messageBody?.type)
     setImgUrl(messageBody?.url)
@@ -1213,7 +1220,7 @@ const handleEditPopulate=(value: any,listData:any)=>{
     else if(messageBody?.url && messageBody.media_type==="video"){
       setSelectedOption("video")
     }
-    else{
+    else if(messageBody?.url && messageBody.media_type==="document"){
       setSelectedOption("document")
     }
 
@@ -1373,9 +1380,9 @@ const validateListSectionWithStructure = (
   // if (selectedOption === "text" &&  !mediaText) {
   //   return;
   // }
-  if ((resType === "interactive" && !selectedOption)) {
-    return;
-  }
+  // if ((resType === "interactive" && !selectedOption)) {
+  //   return;
+  // }
   if (resType === "interactive" && !interactiveType) {
     return;
   }
@@ -1829,7 +1836,7 @@ const validateListSectionWithStructure = (
                       </div>
                       
                     ))}
-                  {submit && selectedOption?.length===0 ? <div className='text-start text-danger error-message-required'>Media type is required</div> : <></> }
+                  {/* {submit && selectedOption?.length===0 ? <div className='text-start text-danger error-message-required'>Media type is required</div> : <></> } */}
 
                   </div>
                         </div>
@@ -2489,7 +2496,7 @@ const validateListSectionWithStructure = (
                                   <span>{listData?.trigger?.name}</span>
                                 </td>
                                 <td className="align-middle text-start text-sm">
-                                  <span>{listData?.intent.join(",")}</span>
+                                  <span>{Array.isArray(listData?.intent) ? listData.intent.join(", ") : ""}</span>
                                 </td>
                                 <td>
                                   <div className="form-check form-switch ms-1 is-filled">

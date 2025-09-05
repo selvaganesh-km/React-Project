@@ -106,6 +106,7 @@ const whatsappbussinessInfo = API_EP_BOOK.WHATSAPP_BUSSINESS_INFO;
 const whatsappbussinessProfileUpdate = API_EP_BOOK.WHATSAPP_BUSSINESS_PROFILE_UPDATE;
 const whatsappIndustryDrop = API_EP_BOOK.WHATSAPP_INDUSTRY_DROP;
 const whatsapptestContact = API_EP_BOOK.WHATSAPP_TEST_CONTACT;
+const whatsappaddPhoneno = API_EP_BOOK.WHATSAPP_ADD_PHONENO;
 
 // Sms setup
 const smssetupConfig = API_EP_BOOK.SMS_SETUP_CONFIG;
@@ -204,6 +205,8 @@ const catalogwhatsappbussinessInfo = API_EP_BOOK.CATALOG_WHATSAPP_BUSSINESS_INFO
 const catalogwhatsappIndustryDrop = API_EP_BOOK.CATALOG_WHATSAPP_INDUSTRY_DROP;
 const catalogwhatsappbussinessProfileUpdate = API_EP_BOOK.CATALOG_WHATSAPP_BUSSINESS_PROFILE_UPDATE;
 const catalogwhatsappImgUploadAPI = API_EP_BOOK.CATALOG_ADMIN_IMG_UPLOAD_API_EP;
+const catalogwhatsappaddPhoneno = API_EP_BOOK.CATALOG_WHATSAPP_ADD_PHONENO;
+
 //Product
 const productListAPI = API_EP_BOOK.PRODUCT_LIST_API_EP;
 const productCreateAPI = API_EP_BOOK.PRODUCT_CREATE_API_EP;
@@ -672,6 +675,13 @@ const VendorAPI = {
             bodyData: apiData
         };
         const getResponse = API(whatsapptestContact, requestAPIData);
+        return getResponse;
+    },
+    whatsappaddPhoneno: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(whatsappaddPhoneno, requestAPIData);
         return getResponse;
     },
     whatsappIndustryDrop: function () {
@@ -1538,6 +1548,13 @@ const VendorAPI = {
         const requestAPIData = {
             bodyData: apiData
         }; const getResponse = API(catalogwhatsappImgUploadAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogwhatsappaddPhoneno: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(catalogwhatsappaddPhoneno, requestAPIData);
         return getResponse;
     },
     // CATALOG API'S END

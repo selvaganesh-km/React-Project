@@ -21,7 +21,7 @@ declare global {
   
 function Whatsapp_Settings() {
     const [phoneInfo, setPhoneInfo] = useState<any[]>([]);
-    const [displayPhone, setdisplayPhone] = useState("");
+    const [displayPhone, setdisplayPhone] = useState<any>([]);
     const [health, setHealth] = useState<any>({});
     const [healthId, setHealthId] = useState<any>({});
     const [entities, setentities] = useState<any[]>([]);
@@ -51,6 +51,7 @@ function Whatsapp_Settings() {
     const [appSecreteId, setappSecreteId] = useState("");
     const [bussinessId, setbussinessId] = useState("");
     const [phonenoId, setphonenoId] = useState("");
+    const [phoneno, setphoneno] = useState("");
     const [accesstoken, setaccesstoken] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [imgValue, setImgValue] = useState("")
@@ -99,7 +100,7 @@ function Whatsapp_Settings() {
             SetShowButtons(false);
         }
     }
-//facebook Config
+    //Facebook Config
     const handleSubscription = () => {
           setSubmit(true);
           if (!appId || !appSecreteId ) {
@@ -155,14 +156,37 @@ function Whatsapp_Settings() {
                 toast.error("An error occurred during login.");
              });
     };
-//Whatsapp Config
+    //Phone.No Config
+    const handlewhatsappaddPhoneno = () => {
+          setSubmit(true);
+          if (!phoneno) {
+             return;
+          }
+          const apiData = {phone_no_id: phonenoId,display_phone_no:phoneno};
+          const apiCall =  VendorAPI.whatsappaddPhoneno(apiData);
+          apiCall
+             .then((responseData: any) => {
+                if (responseData.apiStatus.code === '200') {
+                    setSubmit(false);
+                    handlewhatsappsetupList();
+                    toast.success(responseData.apiStatus.message);
+                } else {
+                   toast.error(responseData.apiStatus.message);
+                }
+             })
+             .catch((error: any) => {
+                console.error("Error during login:", error);
+                toast.error("An error occurred during login.");
+             });
+    };
+    //Whatsapp Config
     const handleSetup = () => {
           setintegrationSubmit(true);
-          if (!bussinessId || !accesstoken || !phonenoId ) {
+          if (!bussinessId || !accesstoken ) {
              return;
           }
           const apiData = {
-            phone_number_id:phonenoId,
+            // phone_number_id:phonenoId,
             wa_business_acc_id: bussinessId,
             access_token: accesstoken,
           };
@@ -176,16 +200,7 @@ function Whatsapp_Settings() {
                     setintegrationSubmit(false);
                     SetShowButton1(false);
                     setPhoneInfo(responseData.responseData)
-                    const formatPhoneNumber = (raw?: string | null): string => {
-                        if (!raw || typeof raw !== 'string') return '';
-                        return raw.startsWith('+')
-                           ? raw
-                           : raw.length === 11 && raw.startsWith('1')
-                              ? `+${raw[0]} ${raw.slice(1, 4)} ${raw.slice(4, 7)} ${raw.slice(7)}`
-                              : raw;
-                     };
-                     const formatedPhoneNumber = formatPhoneNumber(responseData.responseData[0]?.display_phone_number)
-                    setdisplayPhone(formatedPhoneNumber);
+                    setdisplayPhone(responseData.responseData);
                    setbussinessId("");
                    setaccesstoken("");
                 } else {
@@ -222,30 +237,44 @@ function Whatsapp_Settings() {
                 toast.error("An error occurred during login.");
              });
     };
+    const formatPhoneNumber = (raw: string) => {
+        if (!raw || typeof raw !== 'string') return '';
+        return raw.startsWith('+')
+            ? raw
+            : raw.length === 11 && raw.startsWith('1')
+                ? `+${raw[0]} ${raw.slice(1, 4)} ${raw.slice(4, 7)} ${raw.slice(7)}`
+                : raw;
+    };
     //PhoneNumber List
     const handlewhatsappsetupList = () => {
-        setLoading(true)
-          const apiCall =  VendorAPI.whatsappsetupList();
-          apiCall
-             .then((responseData: any) => {
-                if (responseData.apiStatus.code === '200') {
-                    setintegrationSubmit(false);
-                    setLoading(false);
-                    SetShowButton1(false);
-                    setPhoneInfo(responseData.responseData)
-                    const formatPhoneNumber = (raw: string) => raw.startsWith('+') ? raw : raw.length === 11 && raw.startsWith('1') ? `+${raw[0]} ${raw.slice(1, 4)} ${raw.slice(4, 7)} ${raw.slice(7)}` : raw;
-                    setdisplayPhone(formatPhoneNumber(responseData.responseData[0]?.display_phone_number));
+    setLoading(true);
+    VendorAPI.whatsappsetupList()
+        .then((responseData: any) => {
+            if (responseData.apiStatus.code === '200') {
+                setintegrationSubmit(false);
+                setLoading(false);
+                SetShowButton1(false);
+                setPhoneInfo(responseData.responseData);
+                setdisplayPhone(responseData.responseData);
+                const verifiedPhone = responseData.responseData.find((item: any) => item.config_status === true);
+                if (verifiedPhone?.display_phone_number) {
+                    const formattedPhone = formatPhoneNumber(verifiedPhone.display_phone_number);
+                    setphoneno(formattedPhone);
                 } else {
-                    setLoading(false)
-                //    toast.error(responseData.apiStatus.message);
+                    setphoneno('');
                 }
-             })
-             .catch((error: any) => {
-                setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
-             });
-    };
+            } else {
+                setLoading(false);
+                // toast.error(responseData.apiStatus.message);
+            }
+        })
+        .catch((error: any) => {
+            setLoading(false);
+            console.error("Error during WhatsApp setup list fetch:", error);
+            toast.error("An error occurred during WhatsApp setup.");
+        });
+};
+
     //configList
     const handlewhatsappwebhookList = () => {
         const apiCall =  VendorAPI.whatsappwebhookList();
@@ -650,13 +679,13 @@ function Whatsapp_Settings() {
                                                                     <div className="mt-2">
                                                                         <p className="text-sm">You can either use Temporary access token or Permanent Access token, as the Temporary token expires in 24 hours its strongly recommended that you should create Permanent token.</p>
                                                                     </div>
-                                                                    <div className="vendor-create-container mt-3">
+                                                                    {/* <div className="vendor-create-container mt-3">
                                                                         <input type="text" id="vendor-crt-input" autoComplete="off" onChange={(e)=>setphonenoId(e.target.value)} value={phonenoId} 
                                                                        className={`vendor-crt-input loginfilled-frame-username ${integrationsubmit && !phonenoId ? 'error' : ''}`}
                                                                         placeholder=" " required />
                                                                         <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-book-open-reader"></i> Phone Number Id</label>
-                                                                    </div>
-                                                                    {integrationsubmit && phonenoId.length == 0 ? <div className='text-danger error-message-required'>Phone.no id is required</div> : <></>}
+                                                                    </div> */}
+                                                                    {/* {integrationsubmit && phonenoId.length == 0 ? <div className='text-danger error-message-required'>Phone.no id is required</div> : <></>} */}
                                                                     <div className="vendor-create-container mt-3">
                                                                         <input type="text" id="vendor-crt-input" autoComplete="off" onChange={(e)=>setbussinessId(e.target.value)} value={bussinessId} 
                                                                        className={`vendor-crt-input loginfilled-frame-username ${integrationsubmit && !bussinessId ? 'error' : ''}`}
@@ -705,27 +734,35 @@ function Whatsapp_Settings() {
                                                 <input
                                                     type="text"
                                                     id="vendor-crt-input"
-                                                    className={"vendor-crt-input loginfilled-frame-username"}
+                                                    className={`vendor-crt-input loginfilled-frame-username ${submit && !phoneno ? 'error' : ''}`}
                                                     placeholder=" "
                                                     required
-                                                    value={displayPhone}
+                                                    value={formatPhoneNumber(phoneno)}
                                                     readOnly
                                                     autoComplete="off"
                                                 />
                                                 <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-phone"></i> Select Default Phone Number</label>
                                                 <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
                                                 <ul className="dropdown-menu storename-dropdown-menu">
-                                                    <li >
-                                                        <a
-                                                            className="dropdown-item"
-                                                            href="#"
-                                                        > {displayPhone}
-                                                        </a>
-                                                    </li>
+                                                    {displayPhone.length === 0 ? (
+                                                            <li className="dropdown-nodata-found">No data found</li>
+                                                         ) : (
+                                                            displayPhone.map((dropdownValue:any, id:any) => (                                                            
+                                                            <li key={id}>
+                                                               <a
+                                                                  className="dropdown-item"
+                                                                  href="#"
+                                                                  onClick={() => { setphonenoId(dropdownValue.id); setphoneno(dropdownValue.display_phone_number) }}
+                                                               >
+                                                                  {formatPhoneNumber(dropdownValue.display_phone_number)}
+                                                               </a>
+                                                            </li>
+                                                        )))}
                                                 </ul>
                                             </div>
+                                            {submit && phoneno.length == 0 ? <div className='text-danger error-message-required'>Phone.no is required</div> : <></>}
                                             <div className="text-end">
-                                                <button className="vendor-crt-btn">Save</button>
+                                                <button className="vendor-crt-btn" onClick={handlewhatsappaddPhoneno}>Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -780,7 +817,7 @@ function Whatsapp_Settings() {
                                             <h6 className="campaign-temp-head">Phone Numbers</h6>
                                             {whatsappInte? 
                                             <div className="p-3">
-                                                {phoneInfo.map((listData:any)=>(
+                                                {phoneInfo.filter((listData: any) => listData?.config_status === true).map((listData:any)=>(
                                                 <React.Fragment key={listData?.id}>
                                                 <h6 className="grayFont">Phone Number ID</h6>
                                                 <p>{listData?.id}</p>

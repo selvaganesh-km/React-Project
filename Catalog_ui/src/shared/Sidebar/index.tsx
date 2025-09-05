@@ -53,7 +53,7 @@ function Sidebar() {
   const isContactRoute = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"].includes(location.pathname);
   const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign", "/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
   const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/custom-campaign"].includes(location.pathname);
-  const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].includes(location.pathname);
+  const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].some(path => location.pathname.startsWith(path));
   const [isDropdownOpen, setDropdownOpen] = useState(isStoreRoute);
   const [isDropdownOpen1, setDropdownOpen1] = useState(isContentHubRoute);
   const [isDropdownOpen2, setDropdownOpen2] = useState(isContactRoute);
@@ -96,11 +96,7 @@ function Sidebar() {
     const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/custom-campaign"];
     const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"];
     const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"];
-    const allowedPaths = [
-  "/vendor/catalog/product/create",
-  "/vendor/catalog/product/details",
-  "/vendor/catalog/product/edit",
-];
+    const allowedPaths = ["/vendor/catalog/product/create","/vendor/catalog/product/details","/vendor/catalog/product/edit"];
 
 const isAllowed = allowedPaths.some((path) =>
   location.pathname.startsWith(path)
@@ -497,7 +493,8 @@ if (!isAllowed) {
 
               <li className="nav-item">
                 <Link
-                  className={`nav-link ${["/vendor/campaign","/vendor/sms/campaign", "/vendor/campaign/dashboard", "/vendor/create-campaign", "/vendor/campaign/create/new", "/vendor/contact/whatsapp/contact/","/vendor/create-smscampaign","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard"].some(path => {
+                  className={`nav-link ${["/vendor/campaign","/vendor/sms/campaign", "/vendor/campaign/dashboard", "/vendor/create-campaign", "/vendor/campaign/create/new", "/vendor/contact/whatsapp/contact/","/vendor/create-smscampaign","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard"]
+                    .some(path => {
                     const isActive = location.pathname.startsWith(path);
                     return isActive;
                   }) ? "active" : ""}`}
