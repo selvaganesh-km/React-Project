@@ -167,7 +167,7 @@ function CreateSms() {
                             <h4><i className="fa-regular fa-message"></i> {urlValue==='edit-sms' ? 'Edit SMS Template': 'Add SMS Template'}</h4>
                         </div>
                         <div className="col-md-8 text-end whatsapp-three-btn">
-                        <button className="vendor-crt-btn" onClick={() => navigate("/vendor/sms")}>
+                        <button className="vendor-crt-btn" onClick={() => navigate("/vendor/sms-template")}>
                           <i className="fa-solid fa-chevron-left"></i> Back
                         </button>
                         </div>

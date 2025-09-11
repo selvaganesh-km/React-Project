@@ -177,7 +177,7 @@ function CustomCampaign() {
 			<nav aria-label="breadcrumb">
 				<ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
 					 <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
-					<li className="breadcrumb-item text-sm grayFont active" aria-current="page">Settings</li>
+					<li className="breadcrumb-item text-sm grayFont active" aria-current="page">Campaign</li>
 				</ol>
 				<h6 className="font-weight-bolder text-start mb-0 grayFont">Custom Campaign</h6>
 			</nav>

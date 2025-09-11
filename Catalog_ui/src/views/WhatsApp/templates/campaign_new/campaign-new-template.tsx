@@ -94,6 +94,7 @@ function Createcampaign() {
    const [groupName, setGroupName] = useState("");
    const [groupId, setGroupId] = useState("");
    const [submit, setSubmit] = useState(false);
+   const [imgLoading, setimgLoading] = useState(false);
    const [campaignName, setcampaignName] = useState('');
    const [restrictLangCode, setrestrictLangCode] = useState(false);
    const [timeZoneId, settimeZoneId] = useState('70');
@@ -106,12 +107,16 @@ function Createcampaign() {
  
    const nextSlide = () => {
   requestAnimationFrame(() => {
+   const next = (currentCarousel + 1) % slides.length; // Wrap to 0 if at last
+    setCurrentCarousel(next);
     setCurrentIndex((prev) => (prev + 1) % slides.length);
   });
 };
  
  const prevSlide = () => {
   requestAnimationFrame(() => {
+   const prev = (currentCarousel - 1 + slides.length) % slides.length; // Wrap to last if at first
+    setCurrentCarousel(prev);
     setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
   });
 };
@@ -776,10 +781,10 @@ setCarouselVariables((prev) => {
       VendorAPI.contactGroupDropdownAPI()
          .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
-            // const originalData = responseData?.result?.GroupDataDropDown || [];
-            // const updatedData = [{ id: "0", group_name: "All Contacts" }, ...originalData];
-            // setGroupDropDown(updatedData);
-            setGroupDropDown(responseData?.result?.GroupDataDropDown);
+            const originalData = responseData?.result?.GroupDataDropDown || [];
+            const updatedData = [{ id: "0", group_name: "All Contacts" }, ...originalData];
+            setGroupDropDown(updatedData);
+            // setGroupDropDown(responseData?.result?.GroupDataDropDown);
             } else {
                toast.error(responseData.apiStatus.message);
             }
@@ -854,6 +859,7 @@ setCarouselVariables((prev) => {
    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
            const selectedFile = event.target.files?.[0];
           if (!selectedFile) return;
+          setimgLoading(true)
            const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
             const videoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
 
@@ -863,10 +869,13 @@ setCarouselVariables((prev) => {
             if (!isImage && !isVideo) {
             if (selectedFile.type.startsWith('image/')) {
                   toast.error("Only JPG, JPEG, and PNG image files are allowed.");
+                  setimgLoading(false)
             } else if (selectedFile.type.startsWith('video/')) {
                   toast.error("Only MP4, WEBM, and OGG video files are allowed.");
+                  setimgLoading(false)
             } else {
                   toast.error("Unsupported file type.");
+                  setimgLoading(false)
             }
             return;
             }
@@ -887,7 +896,7 @@ const [imageUrls, setImageUrls] = useState<string[]>([]);
 const handleFileChange1 = (event: React.ChangeEvent<HTMLInputElement>, indexToReplace: number) => {
   const selectedFile = event.target.files?.[0];
   if (!selectedFile) return;
-
+setimgLoading(true)
   const imageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
   const videoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
 
@@ -899,6 +908,7 @@ const handleFileChange1 = (event: React.ChangeEvent<HTMLInputElement>, indexToRe
     format = 'video';
   } else {
     toast.error("Only JPG, JPEG, PNG images and MP4, WebM, OGG videos are allowed.");
+    setimgLoading(false)
     return;
   }
 
@@ -916,6 +926,7 @@ const handleFileChange1 = (event: React.ChangeEvent<HTMLInputElement>, indexToRe
       };
     } else {
       toast.error("Invalid index to replace media.");
+      setimgLoading(false);
     }
     return updatedSlides;
   });
@@ -957,11 +968,14 @@ console.log(slides,"Slidezzzz")
             return updated;
          });
                toast.success(response?.apiStatus?.message);
+               setimgLoading(false)
          } else {
                toast.error(response.apiStatus?.message);
+               setimgLoading(false)
          }
       } catch (error) {
          console.error("Import Error:", error);
+         setimgLoading(false)
          toast.error("An error occurred while importing the file.");
       }
    };
@@ -989,10 +1003,10 @@ console.log(slides,"Slidezzzz")
                   <div className="col-md-6">
                      <nav aria-label="breadcrumb">
                         <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                           <li className="breadcrumb-item text-sm"><a className="opacity-5 text-dark" href="javascript:;">Dashboard</a></li>
-                           <li className="breadcrumb-item text-sm text-dark active" aria-current="page">{contactDetailsValue.firstName ? "Send WhatsApp Template Message" : "Create New Campaign"}</li>
+                           <li className="breadcrumb-item text-sm"><a className="opacity-5 grayFont" href="javascript:;">Dashboard</a></li>
+                           <li className="breadcrumb-item text-sm grayFont active" aria-current="page">{contactDetailsValue.firstName ? "Send WhatsApp Template Message" : "Create New Campaign"}</li>
                         </ol>
-                        <h6 className="text-start font-weight-bolder mb-0">{contactDetailsValue.firstName ? ("Send WhatsApp Template Message") : (<>Create <i className="fa-brands fa-whatsapp"></i> New Campaign</>)}</h6>
+                        <h6 className="text-start grayFont font-weight-bolder mb-0">{contactDetailsValue.firstName ? ("Send WhatsApp Template Message") : (<>Create <i className="fa-brands fa-whatsapp"></i> New Campaign</>)}</h6>
                      </nav>
                   </div>
                   <div className="col-md-6 text-end">
@@ -1286,14 +1300,14 @@ console.log(slides,"Slidezzzz")
                                                          id={`vendor-crt-input-button-${idx}`}
                                                          value={textValue}
                                                          onChange={(e) => handleInputChange(currentCarousel, textVarName, e.target.value)}
-                                                         className={`vendor-crt-input loginfilled-frame-username ${submit && !textValue ? 'error' : ''}`}
+                                                         className={`vendor-crt-input loginfilled-frame-username`}
                                                          placeholder=" "
                                                          maxLength={12}
                                                          required
                                                          />
                                                          <label htmlFor={`vendor-crt-input-button-${idx}`} className="vendor-crt-label">Button Text</label>
                                                       </div>
-                                                      {submit && !textValue && <div className="invalid-feedback d-block">Field is required</div>}
+                                                      {/* {submit && !textValue && <div className="invalid-feedback d-block">Field is required</div>} */}
                                                    </div>
                                                    </React.Fragment>
                                                 );
@@ -1326,7 +1340,7 @@ console.log(slides,"Slidezzzz")
                                                                   d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
                                                                ></path>
                                                             </svg>
-                                                            <span>Upload file</span> <span className="mx-2">{fileNames[currentCarousel]}</span></label>
+                                                            <span>Upload Media {imgLoading ? <span className="media-loader"></span>:<></>}</span> <span className="mx-2">{fileNames[currentCarousel]}</span></label>
                                                       </div>
                                                    </div>
                                              <div className="d-flex justify-content-between mt-4">
@@ -1423,7 +1437,7 @@ console.log(slides,"Slidezzzz")
                                                                   d="M296 384h-80c-13.3 0-24-10.7-24-24V192h-87.7c-17.8 0-26.7-21.5-14.1-34.1L242.3 5.7c7.5-7.5 19.8-7.5 27.3 0l152.2 152.2c12.6 12.6 3.7 34.1-14.1 34.1H320v168c0 13.3-10.7 24-24 24zm216-8v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h136v8c0 30.9 25.1 56 56 56h80c30.9 0 56-25.1 56-56v-8h136c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"
                                                                ></path>
                                                             </svg>
-                                                            <span>Upload file</span> <span className="mx-2">{fileName}</span></label>
+                                                            <span>Upload Media</span> {imgLoading ? <span className="media-loader"></span>:<></>}<span className="mx-2">{fileName}</span></label>
                                                       </div>
                                                    </div>:""}
                                           <div className="text-start pt-3 pb-3 form-check form-switch ms-1 is-filled">

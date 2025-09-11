@@ -188,6 +188,98 @@ function VendorDashboard() {
                                  </div>
                               </div>
                            </div>
+
+                           {/* <div className="col-lg-4 col-md-4 col-6 dashboard-card">
+                              <div className="card">
+                                 <span className="mask vendor-dash-bg-img4 opacity-10 border-radius-lg"></span>
+                                 <div className="card-body p-3 position-relative">
+                                    <div className="row">
+                                       <div className="col-9 text-start">
+                                          <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
+                                             <i className="fa-solid fa-shop text-white"></i>
+                                          </div>
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
+                                             0
+                                          </h5>
+                                          <span className="vendordash-total">Total Catalog </span>
+                                          <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/catalog/details")}}>Manage catalog</p>
+                                       </div>
+                                       <div className="col-3">
+                                          <div className="dropstart text-end mb-6">
+                                             <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
+                                             </a>
+                                             <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
+                                                <li><Link className="dropdown-item border-radius-md" to={"/vendor/catalog/details"}>View all</Link></li>
+                                             </ul>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div className="col-lg-4 col-md-4 col-6 dashboard-card">
+                              <div className="card">
+                                 <span className="mask vendor-dash-bg-img5 opacity-10 border-radius-lg"></span>
+                                 <div className="card-body p-3 position-relative">
+                                    <div className="row">
+                                       <div className="col-9 text-start">
+                                          <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
+                                            <i className="fa-solid fa-bag-shopping text-white"></i>
+                                          </div>
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
+                                             0
+                                          </h5>
+                                          <span className="vendordash-total">Total Product </span>
+                                          <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/catalog/product/details")}}>Manage Product</p>
+                                       </div>
+                                       <div className="col-3">
+                                          <div className="dropstart text-end mb-6">
+                                             <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
+                                             </a>
+                                             <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
+                                                <li><Link className="dropdown-item border-radius-md" to={"/vendor/catalog/product/details"}>View all</Link></li>
+                                             </ul>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div className="col-lg-4 col-md-4 col-6 dashboard-card">
+                              <div className="card">
+                                 <span className="mask vendor-dash-bg-img6 opacity-10 border-radius-lg"></span>
+                                 <div className="card-body p-3 position-relative">
+                                    <div className="row">
+                                       <div className="col-9 text-start">
+                                          <div className="icon icon-shape bg-dark vendor-dashboard-iconbg shadow text-center border-radius-2xl">
+                                            <i className="fa-solid fa-cart-arrow-down text-white"></i>
+                                          </div>
+                                          <h5 className="grayFont font-weight-bolder mb-0 mt-3">
+                                             0
+                                          </h5>
+                                          <span className="vendordash-total">Total Order </span>
+                                          <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/catalog/orders")}}>Manage Order</p>
+                                       </div>
+                                       <div className="col-3">
+                                          <div className="dropstart text-end mb-6">
+                                             <a href="javascript:;" className="cursor-pointer" id="dropdownUsers2" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i className="fa fa-ellipsis-h grayFont"></i>
+                                             </a>
+                                             <ul className="dropdown-menu vendor-dashboard-card" aria-labelledby="dropdownUsers2">
+                                                <li><Link className="dropdown-item border-radius-md" to={"/vendor/catalog/orders"}>View all</Link></li>
+                                             </ul>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div> */}
+
+
                         </div>
                      </div>
                       

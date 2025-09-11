@@ -78,10 +78,10 @@ function App() {
         <Route path='/vendor/settings/sms' element={<Sms_Settings />} />
         <Route path='/vendor/settings/catalog' element={<Catalog_Settings />} />
         <Route path='/vendor/settings/general' element={<General_Settings />} />
-        <Route path='/vendor/settings/custom-campaign' element={<CustomCampaign />} />
+        <Route path='/vendor/custom-campaign' element={<CustomCampaign />} />
         <Route path="/vendor/create-sms" element={<CreateSms />} />
         <Route path="/vendor/edit-sms/:id" element={<CreateSms />} />
-        <Route path="/vendor/sms" element={<Sms />} />
+        <Route path="/vendor/sms-template" element={<Sms />} />
         <Route path="/vendor/sms/campaign" element={<SmsCampaigns />} />
         <Route path="/vendor/sms/campaign/:name/:id" element={<SmsCampaigns />} />
         <Route path="/vendor/sms-campaign/dashboard/:id" element={<SmsCampaignDashboard />} />

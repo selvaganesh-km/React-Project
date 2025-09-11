@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Userimg from "../../assets/img/YallilogoSun.png"
+import yalliLogoimg from "../../assets/img/YallilogoSun.png"
 import Userimg1 from "../../assets/img/small-logos/logo-spotify.svg";
 import { Link, useNavigate } from 'react-router-dom';
 import LoginAPI from '../../api/services/loginApi';
@@ -78,7 +78,7 @@ function TopNav() {
                               <a className="dropdown-item border-radius-md" href="javascript:;">
                                  <div className="d-flex py-1">
                                     <div>
-                                       {/* <img src={Userimg} className="avatar avatar-sm  me-3 " /> */}
+                                       {/* <img src={yalliLogoimg} className="avatar avatar-sm  me-3 " /> */}
                                         <i className="fa-solid fa-ban p-0"></i>
                                     </div>
                                     <div className="d-flex flex-column justify-content-center">
@@ -99,7 +99,7 @@ function TopNav() {
                         <div className="dropdown sadmin-content">
                            <button className="dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                               <img
-                                 src={imageSrc}
+                                 src={yalliLogoimg}
                                  alt="Profile"
                                  className="profile-navbar-img"
                               /> <span className="MuiTypography-root MuiTypography-button css-1w3klud nav-user-name">

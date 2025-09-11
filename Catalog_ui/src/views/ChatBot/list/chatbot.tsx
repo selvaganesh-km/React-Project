@@ -1056,7 +1056,7 @@ const handleChangeInteractive = (e: {
     const { files } = event.target;
     if (!files || files.length === 0) {
       return;
-    }
+    } 
     const file1 = files[0];
     setfileName(file1.name);
     const allowedExtensions = {
@@ -1572,8 +1572,11 @@ const validateListSectionWithStructure = (
                     </div>
                   ))}
                 </div>
-                {submit && keywords?.length == 0 ? <div className='text-start text-danger error-message-required'>Keyword is required</div> : <></>}
-                
+                  {submit && keywords?.length === 0 ? (<div className="text-start text-danger error-message-required">Keyword is required</div>) : (
+                    <>
+                      {keywords.length > 0 && keywords.some(kw => !/^[a-zA-Z0-9 ]*$/i.test(kw)) && (<div className="text-start text-danger error-message-required">Special characters are not allowed</div>)}
+                    </>
+                  )}                
               </div>
 
                 <div className="col-md-12 px-3 login-input-group">

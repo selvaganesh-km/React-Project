@@ -44,6 +44,8 @@ function VendorStaff() {
    const [recordsPerPage] = useState(10);
    const [totalRecords, setTotalRecords] = useState(0);
    const [loading, setLoading] = useState(false);
+   const [exportLoading, setexportLoading] = useState(false);
+   const [importLoading, setimportLoading] = useState(false);
    const [submit, setSubmit] = useState(false);
    const [modalMode, setModalMode] = useState("create");
    const [staffId, setStaffId] = useState("")
@@ -354,10 +356,9 @@ function VendorStaff() {
       }
     };  
    const handleImport = async () => {
-      if (!file) {
-         toast.error("Please select a file to import.");
-         return;
-      }
+      setSubmit(true);
+      if (!file) {return}
+      setimportLoading(true);
       const formData = new FormData();
       formData.append("file", file);
       try {
@@ -365,17 +366,22 @@ function VendorStaff() {
          if (response.apiStatus?.code === "200") {
             handleStaffList(currentPage)
             toast.success(response.apiStatus.message);
+            setSubmit(false);
+            setimportLoading(false);
             document.getElementById("closepopup")?.click();
          } else {
             toast.error(response.apiStatus?.message || "File import failed.");
+            setimportLoading(false);
          }
       } catch (error) {
          console.error("Import Error:", error);
+         setimportLoading(false);
          toast.error("An error occurred while importing the file.");
       }
    };
 
    const handleExport = async (name:any) => {
+      setexportLoading(true);
       try {
          var response;
          if(name==="withData"){
@@ -383,7 +389,14 @@ function VendorStaff() {
          }else{
             response = await VendorAPI.exportHeaderStaff()
          }
-         var blob = new Blob([response], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+         const blob = new Blob([response], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+         });
+
+         // Validate that blob has size
+         if (blob.size === 0) {
+            throw new Error("Empty file received from server.");
+         }
          const today = new Date();
          const formattedDate = `${today.getMonth() + 1}-${today.getDate()}-${today.getFullYear().toString().slice(-2)}`;
          const fileName = `staff_data_${formattedDate}.xlsx`;
@@ -400,8 +413,11 @@ function VendorStaff() {
          },100);
          // link.remove();
          toast.success(`File downloaded: ${fileName}`);
+         setexportLoading(false);
       } catch (error) {
+         setexportLoading(false);
          console.error("Error downloading file:", error);
+         toast.error("Failed to download the file. Please try again.");
       }
    };
   
@@ -767,6 +783,13 @@ function VendorStaff() {
                                           <div className="modal-header vendor-view-header">
                                              <h1 className="modal-title fs-6 mb-3 text-center" id="vendorExportLabel">Export Staff</h1>
                                           </div>
+                                          {exportLoading ? (
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
+                                                <div className="downloadLoad-container"><span className="download-loader">
+                                                   <div className="downloadLoad-txt">Loading...</div></span></div>
+                                            </div>
+                                            ) : (
+                                            <> 
                                           <div className="p-0 modal-body text-center ">
                                              <div className="exportwithData">
                                                 <p className="exportwithData-para">Export with Data</p>
@@ -783,7 +806,7 @@ function VendorStaff() {
                                                    Export Blank Template
                                                 </button>
                                              </div> */}
-                                          </div>
+                                          </div></>)}
                                           <div className="modal-footer text-end vendor-view-footer">
                                              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                           </div>
@@ -889,10 +912,17 @@ function VendorStaff() {
                                                 <button className="vendor-crt-btn import-sample-filebtn" onClick={()=>{handleExport("withoutData")}}><i className="fa-solid fa-file-download"></i> Sample File</button>
                                              </div>
                                           </div>
+                                          {importLoading ? (
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
+                                                <div className="import-container"><span className="import-loader">
+                                                   <div className="import-txt">Loading...</div></span></div>
+                                            </div>
+                                            ) : (
+                                            <> 
                                           <div className="modal-body text-center">
                                              <form className="form-container" encType="multipart/form-data">
                                              <div className="upload-files-container" onDragOver={(e) => e.preventDefault()} onDrop={handleFileDrop}>
-                                                   <div className="drag-file-area">
+                                                   <div className="drag-file-area" style={submit && !file ? { border: '1.6px dashed red' } : {}}>
                                                       <i className="fa-solid fa-cloud-arrow-up import-staff-icon"></i>
                                                       <h5 className="dynamic-message mt-2 mb-n1 grayFont">
                                                          Drop Anywhere to Import
@@ -913,12 +943,17 @@ function VendorStaff() {
                                                          </span>
                                                       </label>
                                                    </div>
+                                                   {submit&& !file &&  (
+                                                <div className="text-center text-danger error-message-required mt-n2">
+                                                Excel file is required
+                                                </div>
+                                                )}
                                                    {fileName && (
                                                       <div className="file-name mt-2">Selected File: {fileName}</div>
                                                    )}
                                                 </div>
                                              </form>
-                                          </div>
+                                          </div></>)}
                                           <div className="modal-footer import-popup-footer">
                                              <button type="button" onClick={() => { setFileName('') }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
                                                 Close

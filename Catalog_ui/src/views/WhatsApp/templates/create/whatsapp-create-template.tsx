@@ -1602,10 +1602,10 @@ function handleRemoveButton(
                                     "dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"
                                   }
                                 ></i>
-                                <ul className="dropdown-menu dropdown-values">
-                                  <li>
+                                <ul className="dropdown-menu dropdown-values" style={{cursor:"default"}}>
+                                  <li style={{borderBottom: "1px solid #d9d9dc"}}>
                                     <a
-                                      className={`dropdown-item ${
+                                      className={`dropdown-item headertype-values ${
                                         selectedValue === "None" ? "active" : ""
                                       }`}
                                       href="#"
@@ -1616,9 +1616,9 @@ function handleRemoveButton(
                                       None
                                     </a>
                                   </li>
-                                  <li>
+                                  <li style={{borderBottom: "1px solid #d9d9dc"}}>
                                     <a
-                                      className="dropdown-item hederline-text"
+                                      className="hederline-text"
                                       href=""
                                     >
                                       Text
@@ -1630,12 +1630,12 @@ function handleRemoveButton(
                                         handleDropdownClick("text")
                                       }
                                     >
-                                      Text
+                                      <i className="fa-solid fa-text-width"></i> Text
                                     </a>
                                   </li>
-                                  {/* <li>
+                                  <li style={{borderBottom: "1px solid #d9d9dc"}}>
                                     <a
-                                      className="dropdown-item hederline-text"
+                                      className="hederline-text"
                                       href=""
                                     >
                                       Carousel
@@ -1647,12 +1647,12 @@ function handleRemoveButton(
                                         handleDropdownClick("carousel")
                                       }
                                     >
-                                      Carousel
+                                      <i className="fa-solid fa-columns"></i> Carousel
                                     </a>
-                                  </li> */}
+                                  </li>
 
                                   <a
-                                    className="dropdown-item hederline-text"
+                                    className="hederline-text"
                                     href=""
                                   >
                                     Media
@@ -1666,7 +1666,7 @@ function handleRemoveButton(
                                         handleDropdownClick("image")
                                       }
                                     >
-                                      Image
+                                      <i className="fa-solid fa-image"></i> Image
                                     </a>
                                   </li>
                                   <li>
@@ -1677,7 +1677,7 @@ function handleRemoveButton(
                                         handleDropdownClick("video")
                                       }
                                     >
-                                      Video
+                                      <i className="fa-solid fa-video"></i> Video
                                     </a>
                                   </li>
                                   <li>
@@ -1688,7 +1688,7 @@ function handleRemoveButton(
                                         handleDropdownClick("document")
                                       }
                                     >
-                                      Document
+                                      <i className="fa-solid fa-file"></i> Document
                                     </a>
                                   </li>
                                   <li>
@@ -1699,7 +1699,7 @@ function handleRemoveButton(
                                         handleDropdownClick("location")
                                       }
                                     >
-                                      Location
+                                      <i className="fa-solid fa-location-dot"></i> Location
                                     </a>
                                   </li>
                                 </ul>

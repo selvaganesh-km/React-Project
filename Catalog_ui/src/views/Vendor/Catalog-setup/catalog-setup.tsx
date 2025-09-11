@@ -139,7 +139,7 @@ function Catalog_Settings() {
     }
     const ShowButtonData2 = () => {
         
-        if(showbutton1===true){
+        if(showbutton2===true){
             SetShowButton2(false)
         }else{
             SetShowButton2(true);

@@ -38,3 +38,43 @@
     overflow: hidden;
     will-change: transform;
 }
+
+
+/* var(--bs-gray-light)
+ var(--bs-gray-dark) */
+
+.media-loader {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    border-top: 4px solid var(--bs-gray-light);
+    border-right: 4px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    position: absolute;
+    top: 7.5px;
+    right: 10px;
+}
+
+.media-loader::after {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border-bottom: 4px solid var(--bs-gray-dark);
+    border-left: 4px solid transparent;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

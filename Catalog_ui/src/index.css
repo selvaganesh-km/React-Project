@@ -27443,7 +27443,9 @@ textarea {
 
 .hederline-text {
     font-size: 10px;
-    cursor: none;
+    cursor: default;
+    margin: 5px 16px;
+    color: var(--bs-dropdown-link-color);
 }
 
 .selected-value-box input {

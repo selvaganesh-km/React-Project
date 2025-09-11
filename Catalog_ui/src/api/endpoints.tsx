@@ -170,7 +170,7 @@ let endpoints = {
 	CONTACTGROUPDROP: 'contactgroup/groupdropdown',
 	CONTACTGROUPASSIGN: 'contact/contactassigngroup',
 	CONTACTIMPORT: 'contact/importContactfromexcel',
-	CONTACTEXPORT: 'contact/exportcontacttoexcel',
+	CONTACTEXPORT: 'contact/exportcontacttoexcel/:id',
 	CONTACTEXPORTHEADER: 'contact/exportisheader',
 
 	//Custom Contact Field

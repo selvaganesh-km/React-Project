@@ -1191,15 +1191,25 @@ const VendorAPI = {
         }; const getResponse = API(importContact, requestAPIData);
         return getResponse;
     },
-    exportContact: function () {
-        const apiUrl = exportContact.url;
-        const requestAPIData = {
-            url: apiUrl,
-            method: exportContact.method,
-            authorization: exportContact.authorization
-        };
-        return API(requestAPIData);
-    },
+    exportContact: function (id?: any) {
+    let url = exportContact.url;
+
+    if (id) {
+        // Replace ':id' if id exists
+        url = url.replace(':id', id);
+    } else {
+        // Remove '/:id' from the URL if id is not provided
+        url = url.replace(/\/:id$/, '');
+    }
+
+    const requestAPIData = {
+        url: url,
+        method: exportContact.method,
+        authorization: exportContact.authorization
+    };
+
+    return API(requestAPIData);
+},
     exportHeaderContact: function () {
         const apiUrl = exportHeaderContact.url;
         const requestAPIData = {
