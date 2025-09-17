@@ -199,8 +199,8 @@ function SmsCampaignDashboard() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching campaign details:", error);
+                toast.error("An error occurred while fetching campaign details.");
             });
     };
     
@@ -228,8 +228,8 @@ function SmsCampaignDashboard() {
             })
             .catch((error: any) => {
                 setqueueLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching campaign queue details:", error);
+                toast.error("An error occurred while fetching campaign queue details.");
             });
     };
     const handlecampaignExecuteList = (page: any,search:string) => {
@@ -256,8 +256,8 @@ function SmsCampaignDashboard() {
             })
             .catch((error: any) => {
                 seexecutetLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching campaign execute details:", error);
+                toast.error("An error occurred while fetching campaign execute details.");
             });
     };
     const handlecampRepoList =() => {
@@ -278,8 +278,8 @@ function SmsCampaignDashboard() {
            })
            .catch((error: any) => {
               setLoading(false)
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error while fetching campaign report details:", error);
+              toast.error("An error occurred while fetching campaign report details.");
            });
      }
     useEffect(() => {

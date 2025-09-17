@@ -237,8 +237,8 @@ function Group() {
                 }
             })
             .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error(modalMode === "create" ? "Error while creating:" : "Error while updating:", error);
+                toast.error(modalMode === "create" ?"An error occurred while creating.": "An error occurred while updating.");
             });
     };
     const handleGetcontactGroup = (groupId: any) => {
@@ -254,8 +254,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching contact group details:", error);
+                toast.error("An error occurred while fetching contact group details.");
             });
     };
     const handlecontactGroupList = (page: any) => {
@@ -279,8 +279,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching group details:", error);
+                toast.error("An error occurred while fetching group details.");
             });
     }
     const handleArchivecontactGroupList = (page: any) => {
@@ -302,8 +302,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching archive group details:", error);
+                toast.error("An error occurred while fetching archive group details.");
             });
     }
     const handlecontactGroupDelete = (name:any) => {
@@ -342,8 +342,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false);
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during delete:", error);
+                toast.error("An error occurred during deletion.");
             });
     };
     //Group Delete All
@@ -368,8 +368,8 @@ function Group() {
        })
        .catch((error: any) => {
           setLoading(false)
-          console.error("Error during login:", error);
-          toast.error("An error occurred during login.");
+          console.error("Error during delete all:", error);
+          toast.error("An error occurred during delete all.");
        });
  };
     const handleBulkGroupDelete = (name:any) => {
@@ -414,8 +414,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during bulk delete:", error);
+                toast.error("An error occurred during bulk deletion.");
             });
     }
     const handleBulkGroupDeactive = () => {
@@ -449,8 +449,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during group deactive:", error);
+                toast.error("An error occurred during group deactive.");
             });
     }
     const handleBulkGroupActive = () => {
@@ -483,8 +483,8 @@ function Group() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during group active:", error);
+                toast.error("An error occurred during group active.");
             });
     }
     const navigate = useNavigate();

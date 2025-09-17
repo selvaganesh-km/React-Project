@@ -64,8 +64,8 @@ const handleVendorget = () => {
            })
            .catch((error: any) => {
               setLoading(false)
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error while fetching profile value:", error);
+              toast.error("An error occurred while fetching profile value.");
            });
      };
      const superAdminVendorEdit= () => {
@@ -92,8 +92,8 @@ const handleVendorget = () => {
                  }
               })
               .catch((error: any) => {
-                 console.error("Error during API call:", error);
-                 toast.error("An error occurred during the API call.");
+                 console.error("Error while fetching country dropdown data:", error);
+                 toast.error("An error occurred while fetching country dropdown data.");
               });
         };
         const handleCountryDrop = () => {

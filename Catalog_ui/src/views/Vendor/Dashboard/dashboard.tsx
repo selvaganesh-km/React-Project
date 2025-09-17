@@ -33,8 +33,8 @@ function VendorDashboard() {
                   }
                })
                .catch((error:any) => {
-                  console.error("Error during login:", error);
-                  toast.error("An error occurred during login.");
+                  console.error("Error while fetching dahboard count:", error);
+                  toast.error("An error occurred while fetching dahboard count.");
                   setLoading(false)
                });
    };

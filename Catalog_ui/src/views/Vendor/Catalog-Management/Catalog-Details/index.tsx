@@ -150,8 +150,8 @@ function CatalogDetails() {
           })
           .catch((error: any) => {
               setLoading(false)
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error while fetching catalog details:", error);
+              toast.error("An error occurred while fetching catalog details.");
           });
   }
   const resetForm = () => {
@@ -181,8 +181,8 @@ function CatalogDetails() {
         })
         .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching business info:", error);
+            toast.error("An error occurred while fetching business info.");
         });
   };
 
@@ -217,8 +217,8 @@ function CatalogDetails() {
       })
       .catch((error: any) => {
         setbtnLoading(false);
-        console.error("Error during login:", error);
-        toast.error("An error occurred during login.");
+        console.error("Error during catalog create:", error);
+        toast.error("An error occurred during catalog creation.");
       });
   };
   const handleSyncCatalog = () => {
@@ -240,8 +240,8 @@ function CatalogDetails() {
       })
       .catch((error: any) => {
         setLoading(false)
-        console.error("Error during login:", error);
-        toast.error("An error occurred during login.");
+        console.error("Error during sync catalog:", error);
+        toast.error("An error occurred during sync catalog.");
       });
   };
   useEffect(()=>{

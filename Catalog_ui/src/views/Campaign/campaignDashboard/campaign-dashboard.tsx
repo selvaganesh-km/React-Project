@@ -202,8 +202,8 @@ function CampaignDashboard() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching campaign details:", error);
+                toast.error("An error occurred while fetching campaign details");
             });
     };
 
@@ -223,8 +223,8 @@ function CampaignDashboard() {
             })
             .catch((error: any) => {
                 // setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching campaign dashboard count:", error);
+                toast.error("An error occurred while fetching campaign dashboard count");
             });
     };
 
@@ -253,8 +253,8 @@ function CampaignDashboard() {
             })
             .catch((error: any) => {
                 setqueueLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while loading campaign queue:", error);
+                toast.error("An error occurred while loading campaign queue");
             });
     };
 
@@ -283,8 +283,8 @@ function CampaignDashboard() {
             })
             .catch((error: any) => {
                 seexecutetLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while loading campaign execute:", error);
+                toast.error("An error occurred while loading campaign execute.");
             });
     };
 

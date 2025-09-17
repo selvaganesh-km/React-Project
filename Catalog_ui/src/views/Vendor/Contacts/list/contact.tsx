@@ -205,8 +205,8 @@ function StoreContacts() {
             }
          })
          .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching contact details:", error);
+            toast.error("An error occurred while fetching contact details.");
          });
    };
    const handlecustomFieldList = () => {
@@ -230,8 +230,8 @@ function StoreContacts() {
              })
              .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching customfield details:", error);
+                toast.error("An error occurred while fetching customfield details.");
              });
     }
    // Group Contact List Api
@@ -260,8 +260,8 @@ function StoreContacts() {
             }
          })
          .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching contact group details:", error);
+            toast.error("An error occurred while fetching contact group details.");
          });
    };
 
@@ -452,8 +452,8 @@ function StoreContacts() {
                })
                .catch((error: any) => {
                    setLoading(false)
-                   console.error("Error during login:", error);
-                   toast.error("An error occurred during login.");
+                   console.error("Error during bulk delete:", error);
+                   toast.error("An error occurred during bulk deletion.");
                });
        }
        //Contact Delete All
@@ -478,8 +478,8 @@ function StoreContacts() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during delete all:", error);
+            toast.error("An error occurred during delete all.");
          });
    };
    const contactGroupBulkAssign = (e:any) => {
@@ -512,8 +512,8 @@ function StoreContacts() {
                })
                .catch((error: any) => {
                    setLoading(false)
-                   console.error("Error during login:", error);
-                   toast.error("An error occurred during login.");
+                   console.error("Error during bulk assign:", error);
+                   toast.error("An error occurred during bulk assign.");
                });
        }
 
@@ -530,8 +530,8 @@ function StoreContacts() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching store dropdown data:", error);
+            toast.error("An error occurred while fetching store dropdown data.");
          });
    };
    //Store Dropdown Filter
@@ -550,8 +550,8 @@ function StoreContacts() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching country dropdown data:", error);
+            toast.error("An error occurred while fetching country dropdown data.");
          });
    };
    //CountryDropdown Filter
@@ -571,8 +571,8 @@ function StoreContacts() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching group dropdown data:", error);
+            toast.error("An error occurred while fetching group dropdown data.");
          });
    };
    

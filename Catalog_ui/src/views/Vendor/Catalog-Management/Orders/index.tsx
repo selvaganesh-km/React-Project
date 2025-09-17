@@ -167,8 +167,8 @@ function CatalogOrderList() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching catalog details:", error);
+                toast.error("An error occurred while fetching catalog details.");
             });
     }
     useEffect(() => {
@@ -207,8 +207,8 @@ function CatalogOrderList() {
               })
               .catch((error: any) => {
                   setLoading(false)
-                  console.error("Error during login:", error);
-                  toast.error("An error occurred during login.");
+                  console.error("Error while fetching order details:", error);
+                  toast.error("An error occurred while fetching order details.");
               });
       };
     const handleOrderStatusUpdateAPI = (orderId: any, orderStatus: any) => {
@@ -225,8 +225,8 @@ function CatalogOrderList() {
                 }
             })
             .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during order status update:", error);
+                toast.error("An error occurred during order status update.");
             });
     };
     const statusOptions = [
@@ -421,7 +421,8 @@ function CatalogOrderList() {
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-31px",
+                                                                        left: "-60px",
+                                                                        marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
                                                                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
@@ -459,7 +460,8 @@ function CatalogOrderList() {
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-31px",
+                                                                        left: "-60px",
+                                                                        marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
                                                                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
@@ -496,7 +498,8 @@ function CatalogOrderList() {
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-31px",
+                                                                        left: "-60px",
+                                                                        marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
                                                                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
@@ -533,7 +536,8 @@ function CatalogOrderList() {
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-31px",
+                                                                        left: "-60px",
+                                                                        marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
                                                                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
@@ -570,7 +574,8 @@ function CatalogOrderList() {
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-31px",
+                                                                        left: "-60px",
+                                                                        marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
                                                                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
@@ -607,7 +612,8 @@ function CatalogOrderList() {
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-31px",
+                                                                        left: "-60px",
+                                                                        marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
                                                                         boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"

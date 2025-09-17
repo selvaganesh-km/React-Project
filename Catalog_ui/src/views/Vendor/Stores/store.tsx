@@ -171,8 +171,8 @@ function VendorStore() {
             }
          })
          .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error(modalMode === "create" ? "Error while creating:" : "Error while updating:", error);
+            toast.error(modalMode === "create" ?"An error occurred while creating.": "An error occurred while updating.");
          });
    };
    const handleGetStore = (storeId: any) => {
@@ -194,8 +194,8 @@ function VendorStore() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching store dropdown data:", error);
+            toast.error("An error occurred while fetching store dropdown data.");
          });
    };
    const handleActiveStore = (name: any) => {
@@ -215,8 +215,8 @@ function VendorStore() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error( name === 'active' ? "Error while fetching store active:":"Error while fetching store deactive", error);
+            toast.error( name === 'active' ? "An error occurred while fetching store active.":"An error occurred while fetching store active.");
          });
    };
    const handleDeleteStore = () => {
@@ -244,8 +244,8 @@ function VendorStore() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during delete:", error);
+            toast.error("An error occurred during deletion.");
          });
    };
 
@@ -273,8 +273,8 @@ function VendorStore() {
          .catch((error: any) => {
             setLoading(false);
             handleError(error);
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching store details:", error);
+            toast.error("An error occurred while fetching store details.");
          });
    }
    const [file, setFile] = useState<File | null>(null);

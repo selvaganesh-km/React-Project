@@ -49,8 +49,8 @@ function Dashboard() {
             })
             .catch((error) => {
                setLoading(false)
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error while fetching campaign dashboard details:", error);
+               toast.error("An error occurred while fetching campaign dashboard details.");
             });
       };
    const chartRef = useRef(null);

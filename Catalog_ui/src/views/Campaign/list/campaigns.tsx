@@ -186,8 +186,8 @@ function Campaigns() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while loading campaign list:", error);
+            toast.error("An error occurred while loading campaign list.");
          });
    }
    const handleCampaignArchiveList = (page: any) => {
@@ -211,8 +211,8 @@ function Campaigns() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while loading campaign list:", error);
+            toast.error("An error occurred while loading campaign list.");
          });
    }
    //Campaign Delete Active
@@ -245,8 +245,8 @@ function Campaigns() {
             toast.error(responseData.apiStatus.message);
          }
    } catch (error) {
-      console.error("Error during API call:", error);
-      toast.error("An error occurred during the get process.");
+      console.error("Error during delete:", error);
+      toast.error("An error occurred deletion.");
    }
    }
    //Campaign Archive Active

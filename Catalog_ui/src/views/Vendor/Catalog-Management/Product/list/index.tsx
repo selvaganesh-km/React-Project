@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import DashboardLayout from '../../../../../layouts/DashboardLayout';
 import TopNav from '../../../../../shared/TopNav';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -25,13 +25,14 @@ function CatalogProductList() {
     }, [location.state]);
     const [loading, setLoading] = useState(false);
     const [submit, setSubmit] = useState(false);
+    const [importLoading, setimportLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [recordsPerPage, setrecordsPerPage] = useState(10);
     const [totalRecords, setTotalRecords] = useState(0);
     const [popupList, setPopuplist] = useState([]);
-    const [selectedCatalogId, setSelectedCatalogId] = useState(localStorage.getItem("catalogId") || null);
+    const [selectedCatalogId, setSelectedCatalogId] = useState<any>(localStorage.getItem("catalogId") || null);
     const [selectedCatalogName, setSelectedCatalogName] = useState('');
     const [retailerId, setretailerId] = useState('');
     const [catalogId, setcatalogId] = useState(localStorage.getItem("catalogId") ||'');
@@ -72,8 +73,8 @@ function CatalogProductList() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching catalog details:", error);
+                toast.error("An error occurred while fetching catalog details.");
             });
     }
     //Store Dropdown Filter
@@ -114,14 +115,14 @@ useEffect(() => {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching product details:", error);
+                toast.error("An error occurred while fetching product details.");
             });
     }
     const handleSyncProduct = () => {
         setLoading(true)
       VendorAPI.productSyncAPI(
-        {   limit:"100",
+        {   limit:"200",
             catalog_id:selectedCatalogId,
         }
       )
@@ -136,8 +137,8 @@ useEffect(() => {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during sync product:", error);
+            toast.error("An error occurred during sync product.");
          });
    };
     useEffect(() => {
@@ -241,8 +242,8 @@ useEffect(() => {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during delete:", error);
+            toast.error("An error occurred during deletion.");
          });
    };
     const handleStatusChange = () => {
@@ -262,8 +263,8 @@ useEffect(() => {
             })
             .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during product status update:", error);
+            toast.error("An error occurred during product status update.");
             });
     };
     const handleCatalogConfirm = () => {
@@ -282,14 +283,60 @@ useEffect(() => {
         }
         setShowpopup(false);
     };
-
+const [file, setFile] = useState<File | null>(null);
+   const [fileName, setFileName] = useState("");
+   const fileInputRef = useRef<HTMLInputElement | null>(null);
+   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      event.preventDefault();
+      const selectedFile = event.target.files?.[0];
+      if (selectedFile) {
+         setFile(selectedFile);
+         setFileName(selectedFile.name);
+         if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+         }
+      }
+   };
+   const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const droppedFile = event.dataTransfer.files?.[0];
+      if (droppedFile) {
+        setFile(droppedFile);
+        setFileName(droppedFile.name);
+      }
+    };  
+   const handleImport = async () => {
+      setSubmit(true);
+      if (!file) {return}
+      setimportLoading(true);
+      const formData = new FormData();
+      formData.append("product_file", file);
+      formData.append("catalog_id", selectedCatalogId);
+      try {
+         const response = await VendorAPI.productImportAPI(formData);
+         if (response.apiStatus?.code === "200") {
+            toast.success(response.apiStatus.message);
+            handleSyncProduct();
+            setSubmit(false);
+            setimportLoading(false);
+            document.getElementById("closepopup")?.click();
+         } else {
+            toast.error(response.apiStatus?.message || "File import failed.");
+            setimportLoading(false);
+         }
+      } catch (error) {
+         console.error("Import Error:", error);
+         setimportLoading(false);
+         toast.error("An error occurred while importing the file.");
+      }
+   };
     return (
         <>
             <DashboardLayout>
                 <main className="main-content position-relative  min-vh-100  border-radius-lg ">
                     <TopNav />
                     <div className="row vendor-breadcrumbs container-fluid py-1 px-3">
-                        <div className="col-md-6">
+                        <div className="col-md-5">
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                                     <li className="breadcrumb-item text-sm">
@@ -302,10 +349,10 @@ useEffect(() => {
                                         Product
                                     </li>
                                 </ol>
-                                <h6 className="text-start font-weight-bolder mb-0 grayFont">Product</h6>
+                                <h6 className="text-start font-weight-bolder mb-0 grayFont">Products Management</h6>
                             </nav>
                         </div>
-                        <div className="col-md-6 text-end position-relative d-flex justify-content-end align-items-center">
+                        <div className="col-md-7 text-end position-relative d-flex justify-content-end align-items-center">
                             <div className={`search-box2 ${search ? 'active' : ''}`}>
                                 <input className = "search-text2" type="text" placeholder = "Search Product..." value={search} onChange={(e)=>setSearch(e.target.value)}/>
                                     <a href="#" className = "search-btn2">
@@ -317,13 +364,16 @@ useEffect(() => {
                             </button>&nbsp;
                             <button onClick={() => navigate("/vendor/catalog/product/create")}
                             className="vendor-crt-btn">
-                                <span>Add Products</span>
+                                <span><i className="fa-solid fa-plus"></i> Add Products</span>
                             </button>
                             &nbsp;
                             <button onClick={() => handleSyncProduct()}
                                 className="vendor-crt-btn"
                             >
-                                <span>Sync Products</span>
+                                <span><i className="fa-solid fa-arrows-rotate"></i> Sync Products</span>
+                            </button>&nbsp;
+                            <button type="button" className="vendor-crt-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i className="fa-solid fa-arrow-up-from-bracket"></i> Import
                             </button>
                         </div>
                     </div>
@@ -517,7 +567,89 @@ useEffect(() => {
                     </div>
                     </div>
                 </div>
-
+{/* Product Import Modal */}
+                <div
+                className="modal fade"
+                id="exampleModal"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+                >
+                <div className="modal-dialog">
+                    <div className="modal-content all-modal-content">
+                        <div className="modal-header import-popup-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">
+                            Import Product
+                            </h1>
+                            <div>
+                            <button
+                            className="vendor-crt-btn import-sample-filebtn"
+                            onClick={() => {
+                                const url = `${baseURL}uploads/catalog_product_template/catalog_products.csv`;
+                                const link = document.createElement("a");
+                                link.href = url;
+                                link.setAttribute("download", "catalog_products.csv");
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            }}
+                            >
+                            <i className="fa-solid fa-file-download"></i> Sample File
+                            </button>
+                            </div>
+                        </div>
+                        {importLoading ? (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
+                            <div className="import-container"><span className="import-loader">
+                                <div className="import-txt">Loading...</div></span></div>
+                        </div>
+                        ) : (
+                        <> 
+                        <div className="modal-body text-center">
+                            <form className="form-container" encType="multipart/form-data">
+                            <div className="upload-files-container" onDragOver={(e) => e.preventDefault()} onDrop={handleFileDrop}>
+                                <div className="drag-file-area" style={submit && !file ? { border: '1.6px dashed red' } : {}}>
+                                    <i className="fa-solid fa-cloud-arrow-up import-staff-icon"></i>
+                                    <h5 className="dynamic-message mt-2 mb-n1">
+                                        Drop Anywhere to Import
+                                    </h5>
+                                    <label className="label">
+                                        or{" "}
+                                        <span className="browse-files">
+                                        <input
+                                            type="file"
+                                            className="default-file-input"
+                                            onChange={handleFileChange}
+                                            ref={fileInputRef}
+                                        />
+                                        <span className="browse-files-text text-primary">
+                                            browse file
+                                        </span>{" "}
+                                        <span>from device</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                {submit&& !file &&  (
+                            <div className="text-center text-danger error-message-required mt-n2">
+                            Excel file is required
+                            </div>
+                            )}
+                                {fileName && (
+                                    <div className="file-name mt-2">Selected File: {fileName}</div>
+                                )}
+                            </div>
+                            </form>
+                        </div></>)}
+                        <div className="modal-footer import-popup-footer">
+                            <button type="button" onClick={() => { setFileName('');setSubmit(false) }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
+                            Close
+                            </button>
+                            <button type="button" className="btn btn-primary import-btn-bg" onClick={handleImport}>
+                            Import
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </div>
             </DashboardLayout>
         
         </>

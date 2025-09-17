@@ -71,6 +71,8 @@ const whatsappChatClearAPI = API_EP_BOOK.WHATSAPP_CHATCLEAR;
 const whatsappContactSideListAPI = API_EP_BOOK.WHATSAPP_CONTACTSIDELIST;
 const whatsappContactUnreadSideListAPI = API_EP_BOOK.WHATSAPP_CONTACTUNREADSIDELIST;
 const sideListWappAPI = API_EP_BOOK.SIDE_LIST_WAPPCOUNT;
+const exportChat = API_EP_BOOK.WHATSAPP_CHATEXPORT;
+
 // Bot Reply
 const botReplyList = API_EP_BOOK.BOT_REPLY_LIST;
 const chatBotCreateAPI = API_EP_BOOK.CHAT_BOT_CREATE;
@@ -206,11 +208,17 @@ const catalogwhatsappIndustryDrop = API_EP_BOOK.CATALOG_WHATSAPP_INDUSTRY_DROP;
 const catalogwhatsappbussinessProfileUpdate = API_EP_BOOK.CATALOG_WHATSAPP_BUSSINESS_PROFILE_UPDATE;
 const catalogwhatsappImgUploadAPI = API_EP_BOOK.CATALOG_ADMIN_IMG_UPLOAD_API_EP;
 const catalogwhatsappaddPhoneno = API_EP_BOOK.CATALOG_WHATSAPP_ADD_PHONENO;
+const catalogwhatsappSubscription = API_EP_BOOK.CATALOG_WHATSAPP_SUBSCRIPTION;
+const catalogwhatsappwebhookUnsub = API_EP_BOOK.CATALOG_WHATSAPP_WEBHOOK_UNSUB;
 
 //Product
 const productListAPI = API_EP_BOOK.PRODUCT_LIST_API_EP;
+const productImgListAPI = API_EP_BOOK.PRODUCT_IMAGE_LIST;
 const productCreateAPI = API_EP_BOOK.PRODUCT_CREATE_API_EP;
+const productUploadImgAPI = API_EP_BOOK.PRODUCT_UPLOADIMG_API_EP;
+const productDeleteImgAPI = API_EP_BOOK.PRODUCT_DELETE_IMG_API_EP;
 const productUpdateAPI = API_EP_BOOK.PRODUCT_UPDATE_API_EP;
+const productImportAPI = API_EP_BOOK.PRODUCT_IMPORT_API_EP;
 const productDeleteAPI = API_EP_BOOK.PRODUCT_DELETE_API_EP;
 const productGetAPI = API_EP_BOOK.PRODUCT_GET_API_EP;
 const productSyncAPI = API_EP_BOOK.PRODUCT_SYNC_API_EP;
@@ -451,6 +459,15 @@ const VendorAPI = {
     sideListWappAPI: function () {
         const getResponse = API(sideListWappAPI);
         return getResponse;
+    },
+    exportChat: function () {
+        const apiUrl = exportChat.url;
+        const requestAPIData = {
+            url: apiUrl,
+            method: exportChat.method,
+            authorization: exportChat.authorization
+        };
+        return API(requestAPIData);
     },
     // Bot Reply
 
@@ -1567,6 +1584,21 @@ const VendorAPI = {
         const getResponse = API(catalogwhatsappaddPhoneno, requestAPIData);
         return getResponse;
     },
+    catalogwhatsappSubscription: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        };
+        const getResponse = API(catalogwhatsappSubscription, requestAPIData);
+        return getResponse;
+    },
+    catalogwhatsappwebhookUnsub: function () {
+         const requestAPIData = {
+            url: catalogwhatsappwebhookUnsub.url,
+            method: catalogwhatsappwebhookUnsub.method,
+            authorization: catalogwhatsappwebhookUnsub.authorization,
+        };
+        return API(requestAPIData);
+    },
     // CATALOG API'S END
 
     // PRODUCT API'S START
@@ -1576,16 +1608,40 @@ const VendorAPI = {
         }; const getResponse = API(productListAPI, requestAPIData);
         return getResponse;
     },
+    productImgListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productImgListAPI, requestAPIData);
+        return getResponse;
+    },
     productCreateAPI: function (apiData: any) {
         const requestAPIData = {
             bodyData: apiData
         }; const getResponse = API(productCreateAPI, requestAPIData);
         return getResponse;
     },
+    productUploadImgAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productUploadImgAPI, requestAPIData);
+        return getResponse;
+    },
+    productDeleteImgAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productDeleteImgAPI, requestAPIData);
+        return getResponse;
+    },
     productUpdateAPI: function (apiData: any) {
         const requestAPIData = {
             bodyData: apiData
         }; const getResponse = API(productUpdateAPI, requestAPIData);
+        return getResponse;
+    },
+    productImportAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(productImportAPI, requestAPIData);
         return getResponse;
     },
     productDeleteAPI: function (id: any) {

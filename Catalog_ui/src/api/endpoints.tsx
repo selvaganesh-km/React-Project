@@ -62,6 +62,7 @@ let endpoints = {
 	CONTACTUNREADSIDELIST:"whatsappchat/sidelistunread",
 	SIDELISTWAPPCOUNT:"whatsappchat/sidelistunreadcount",
 	CHATCLEAR:"whatsappchat/clearchathistory",
+	CHATEXPORT:"whatsappchat/export",
 
 	//Bot Replies 
 	BOTREPLYLIST:"botreply/list",
@@ -239,16 +240,21 @@ let endpoints = {
 	CATALOGWHATSAPPBUSSINESSPROFILE:"catalog_waba/update/businessProfile",
 	CATALOGWHATSAPPIMGUPLOAD: 'whatsapp_template/uploadMedia',
 	CATALOGWHATSAPPADDPHONENO:"catalog_waba/add/defaultPhoneNo",
+	CATALOGWHATSAPPSUBSCRIPTION:"catalog_waba/webhook/subscribe",
+	CATALOGWHATSAPPWEBHOOKUNSUB:"catalog_waba/webhook/unsubscribe",
 
 	//Product 
 	PRODUCTLIST: 'catalog_products/list',
+	PRODUCTIMAGELIST: 'catalog_products/listImages',
 	PRODUCTCREATE: 'catalog_products/create',
+	PRODUCTUPLOADIMG: 'catalog_products/uploadImages',
+	PRODUCTDELETEIMG: 'catalog_products/images_selected_delete',
 	PRODUCTUPDATE:'catalog_products/uploadcatalog',
 	PRODUCTSYNC: 'catalog_products/sync',
 	PRODUCTSTATUSCHANGE: 'catalog_products/publishstatus/:id',
 	PRODUCTDELETE: 'catalog_products/delete/:id',
 	PRODUCTGET: 'catalog_products/get/:id',
-
+	PRODUCTIMPORT: 'catalog_products/import',
 	//Order
 	ORDERLIST: '/order/orderlist',
 	ORDERSTATUSUPDATE: '/order/statusUpdate',
@@ -523,6 +529,9 @@ let API_EP_BOOK = {
 	},
 	WHATSAPP_CHATCLEAR: {
 		url: endpoints.CHATCLEAR, method: 'POST', authorization: true
+	},
+	WHATSAPP_CHATEXPORT: {
+		url: endpoints.CHATEXPORT, method: 'GET', authorization: true
 	},
 	WHATSAPP_CONTACTSIDELIST: {
 		url: endpoints.CONTACTSIDELIST, method: 'POST', authorization: true
@@ -888,12 +897,27 @@ let API_EP_BOOK = {
 	CATALOG_WHATSAPP_ADD_PHONENO: {
 		url: endpoints.CATALOGWHATSAPPADDPHONENO, method: 'POST', authorization: true
 	},
+	CATALOG_WHATSAPP_SUBSCRIPTION: {
+		url: endpoints.CATALOGWHATSAPPSUBSCRIPTION, method: 'POST', authorization: true
+	},
+	CATALOG_WHATSAPP_WEBHOOK_UNSUB: {
+		url: endpoints.CATALOGWHATSAPPWEBHOOKUNSUB, method: 'DELETE', authorization: true
+	},
 	//Catalog Product
 	PRODUCT_CREATE_API_EP: {
 		url: endpoints.PRODUCTCREATE, method: 'POST', authorization: true
 	},
+	PRODUCT_UPLOADIMG_API_EP: {
+		url: endpoints.PRODUCTUPLOADIMG, method: 'POST', authorization: true
+	},
+	PRODUCT_DELETE_IMG_API_EP: {
+		url: endpoints.PRODUCTDELETEIMG, method: 'POST', authorization: true
+	},
 	PRODUCT_UPDATE_API_EP: {
         url: endpoints.PRODUCTUPDATE, method: 'POST', authorization: true
+    },
+	PRODUCT_IMPORT_API_EP: {
+        url: endpoints.PRODUCTIMPORT, method: 'POST', authorization: true
     },
 	PRODUCT_DELETE_API_EP: {
 		url: endpoints.PRODUCTDELETE, method: 'DELETE', authorization: true
@@ -910,7 +934,9 @@ let API_EP_BOOK = {
 	PRODUCT_LIST_API_EP: {
 		url: endpoints.PRODUCTLIST, method: 'POST', authorization: true
 	},
-
+	PRODUCT_IMAGE_LIST: {
+		url: endpoints.PRODUCTIMAGELIST, method: 'POST', authorization: true
+	},
 	//Order
     ORDER_LIST_API_EP: {
         url: endpoints.ORDERLIST, method: 'POST', authorization: true

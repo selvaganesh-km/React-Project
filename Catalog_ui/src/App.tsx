@@ -37,6 +37,7 @@ import CatalogProductList from "./views/Vendor/Catalog-Management/Product/list";
 import CatalogProductCreate from "./views/Vendor/Catalog-Management/Product/create";
 import Catalog_Settings from "./views/Vendor/Catalog-setup/catalog-setup";
 import CatalogOrderList from "./views/Vendor/Catalog-Management/Orders";
+import ProductImages from "./views/Vendor/Catalog-Management/Product-Images";
 
 
 function App() {
@@ -88,6 +89,7 @@ function App() {
         <Route path="/vendor/sms-reportcampaign/dashboard" element={<PromotionmanagementSmsCreate />} />
         <Route path="/vendor/catalog/details" element={<CatalogDetails />} />
         <Route path="/vendor/catalog/product/details" element={<CatalogProductList />} />
+        <Route path="/vendor/catalog/product/images" element={<ProductImages />} />
         <Route path="/vendor/catalog/orders" element={<CatalogOrderList />} />
         <Route path="/vendor/catalog/product/create" element={<CatalogProductCreate/>} />
         <Route path="/vendor/catalog/product/edit/:id" element={<CatalogProductCreate/>} />

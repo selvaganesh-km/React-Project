@@ -595,8 +595,8 @@ const handleChatList = (to: any, isManual = true) => {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching contact sidelist details:", error);
+            toast.error("An error occurred while fetching contact sidelist details.");
          });
    }
     const handleContactUnreadSideList = (page:any,search:string) => {
@@ -657,8 +657,8 @@ const handleChatList = (to: any, isManual = true) => {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching unread sidelist details:", error);
+            toast.error("An error occurred while fetching unread sidelist details.");
          });
    }
 //    const visibleContacts = readCount
@@ -683,8 +683,8 @@ const handleChatClear = () => {
             }
          })
          .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching chat clear:", error);
+            toast.error("An error occurred while fetching chat clear.");
          });
    }
    const isValidDate = (date: string | number): boolean => {
@@ -764,8 +764,8 @@ const handleChatClear = () => {
             })
             .catch((error: any) => {
                setLoading(false)
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error while fetching store dropdown data:", error);
+               toast.error("An error occurred while fetching store dropdown data.");
             });
       };
       //Store Dropdown Filter
@@ -784,8 +784,8 @@ const handleChatClear = () => {
             })
             .catch((error: any) => {
                setLoading(false)
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error while fetching country dropdown data:", error);
+               toast.error("An error occurred while fetching country dropdown data.");
             });
       };
       //CountryDropdown Filter
@@ -902,10 +902,48 @@ const handleChatClear = () => {
             }            
         })
         .catch((error: any) => {
-        console.error("Error during login:", error);
-        toast.error("An error occurred during login.");
+        console.error("Error while fetching WhatsApp webhook list:", error);
+         toast.error("An error occurred while fetching WhatsApp webhook list.");
         });
     };
+       const [exportLoading, setexportLoading] = useState(false);
+    
+    const handleExport = async (name:any) => {
+          setexportLoading(true);
+          try {
+             var response =await VendorAPI.exportChat();
+             const blob = new Blob([response], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+             });
+    
+             // Validate that blob has size
+             if (blob.size === 0) {
+                throw new Error("Empty file received from server.");
+             }
+             const today = new Date();
+             const formattedDate = `${today.getMonth() + 1}-${today.getDate()}-${today.getFullYear().toString().slice(-2)}`;
+             const fileName = `whatsapp_chat_data_${formattedDate}.xlsx`;
+             var url = window.URL.createObjectURL(blob);
+             var link = document.createElement("a");
+             link.href = url;
+             link.setAttribute("download", fileName);
+             document.body.appendChild(link);
+             // link.target="_blank";
+             link.click();
+             setTimeout(function(){
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+             },100);
+             // link.remove();
+             toast.success(`File downloaded: ${fileName}`);
+             setexportLoading(false);
+          } catch (error) {
+             setexportLoading(false);
+             console.error("Error downloading file:", error);
+             toast.error("Failed to download the file. Please try again.");
+          }
+       };
+    
     const messageRefs = useRef<any>({});
     useEffect(() => {
     if (chatList.length > 0) {
@@ -2505,6 +2543,36 @@ const handleChatClear = () => {
                             </div>
                             </div>
                         </div>
+                        <div className="modal fade" id="vendorExport" aria-labelledby="vendorExportLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered">
+                                <div className="modal-content all-modal-content">
+                                    <div className="modal-header vendor-view-header">
+                                        <h1 className="modal-title fs-6 mb-3 text-center" id="vendorExportLabel">Export Chat</h1>
+                                    </div>
+                                    {exportLoading ? (
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
+                                                <div className="downloadLoad-container"><span className="download-loader">
+                                                   <div className="downloadLoad-txt">Loading...</div></span></div>
+                                            </div>
+                                            ) : (
+                                            <> 
+                                    <div className="p-0 modal-body text-center ">
+                                        <div className="exportwithData">
+                                        <p className="exportwithData-para">Export all chat data into an Excel file to keep your records organized.</p>
+                                        <p className="exportwithData-para1"></p>
+                                        <button className="exportwithData-btn" 
+                                        onClick={()=>{handleExport("withData")}}
+                                        >
+                                            Export Excel File With Data
+                                        </button>
+                                        </div>
+                                    </div></>)}
+                                    <div className="modal-footer text-end vendor-view-footer">
+                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
                         {/*Chat Delete Modal*/}
                         <div className="modal fade" id="chatdelete" tab-Index="-1" aria-labelledby="vendordeleteLabel" aria-hidden="true">
                         <div className="modal-dialog modal-dialog-centered">

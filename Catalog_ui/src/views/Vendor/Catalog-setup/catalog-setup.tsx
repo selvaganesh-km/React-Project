@@ -166,6 +166,7 @@ function Catalog_Settings() {
           if (!appId || !appSecreteId ) {
              return;
           }
+          setIsLoading(true);
           const apiData = {
             appId: appId,
             appSecret: appSecreteId,
@@ -174,18 +175,21 @@ function Catalog_Settings() {
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
-                    setSubscription(true)
+                    handlewhatsappwebhookList();
                     setSubmit(false);
-                    SetShowData(false)
+                    SetShowData(false);
+                    setIsLoading(false);
                    toast.success(responseData.apiStatus.message);
                    setappId("");
                    setappSecreteId("");
                 } else {
                    toast.error(responseData.apiStatus.message);
+                   setIsLoading(false);
                 }
              })
              .catch((error: any) => {
                 console.error("Error during login:", error);
+                setIsLoading(false);
                 toast.error("An error occurred during login.");
              });
     };
@@ -211,8 +215,8 @@ function Catalog_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during test contact.:", error);
+                toast.error("An error occurred while processing test contact.");
              });
     };
      //Phone.No Config
@@ -234,16 +238,18 @@ function Catalog_Settings() {
                     }
                  })
                  .catch((error: any) => {
-                    console.error("Error during login:", error);
-                    toast.error("An error occurred during login.");
+                    console.error("Error during add the phone number.:", error);
+                    toast.error("An error occurred while adding the phone number.");
                  });
         };
-    //Whatsapp Config
+//Whatsapp Config
+const [isLoading1, setIsLoading1] = useState(false);
     const handleSetup = () => {
           setintegrationSubmit(true);
           if (!bussinessId || !accesstoken) {
              return;
           }
+          setIsLoading1(true);
           const apiData = {
             // phone_number_id:phonenoId,
             wa_business_acc_id: bussinessId,
@@ -252,12 +258,13 @@ function Catalog_Settings() {
           const apiCall =  VendorAPI.catalogwhatsappIntegrationSet(apiData);
           apiCall
              .then((responseData: any) => {
-                if (responseData.apiStatus.code === '200') {
+                if (responseData.apiStatus.code === "200") {
                     handleHealthy();
                     handlewhatsappwebhookList()
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
                     SetShowButton1(false);
+                    setIsLoading1(false);
                     setPhoneInfo(responseData.responseData)
                     setdisplayPhone(responseData.responseData);
                    setbussinessId("");
@@ -265,11 +272,13 @@ function Catalog_Settings() {
                    setphonenoId("");
                 } else {
                    toast.error(responseData.apiStatus.message);
+                   setIsLoading1(false);
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during WhatsApp integration setup:", error);
+                setIsLoading1(false);
+                toast.error("An error occurred during WhatsApp integration setup.");
              });
        };
     //Over Health
@@ -293,8 +302,8 @@ function Catalog_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during during health check:", error);
+                toast.error("An error occurred during during health check.");
              });
     };
     const formatPhoneNumber = (raw: string) => {
@@ -331,8 +340,8 @@ function Catalog_Settings() {
              })
              .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching WhatsApp setup list:", error);
+                toast.error("An error occurred while fetching WhatsApp setup list.");
              });
     };
     //configList
@@ -351,8 +360,8 @@ function Catalog_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching WhatsApp webhook list:", error);
+            toast.error("An error occurred while fetching WhatsApp webhook list.");
             });
         };
     //health List
@@ -371,8 +380,8 @@ function Catalog_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching WhatsApp health data:", error);
+            toast.error("An error occurred while fetching WhatsApp health data.");
             });
         };
     //token Info    
@@ -388,8 +397,8 @@ function Catalog_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Errorwhile fetching WhatsApp token info:", error);
+            toast.error("An error occurredwhile fetching WhatsApp token info.");
             });
         };
     //Bussiness info    
@@ -419,8 +428,8 @@ function Catalog_Settings() {
             })
             .catch((error: any) => {
                 setprofileupdLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching WhatsApp business info:", error);
+            toast.error("An error occurred while fetching WhatsApp business info");
             });
         };
         const resetForm=()=>{
@@ -438,8 +447,8 @@ function Catalog_Settings() {
                 })
                 .catch((error: any) => {
                 
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching industry types:", error);
+                toast.error("An error occurred while fetching industry types.");
                 });
         };
     //Bussiness Info Profile Update
@@ -468,8 +477,8 @@ function Catalog_Settings() {
               }
            })
            .catch((error: any) => {
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error during profile update:", error);
+              toast.error("An error occurred during profile update.");
            });
   };
   //Profile Img Upload
@@ -516,10 +525,10 @@ function Catalog_Settings() {
           }
       };
     const handlewhatsappwebhookUnsub = () => {
-        const apiCall =  VendorAPI.whatsappwebhookUnsub();
+        const apiCall =  VendorAPI.catalogwhatsappwebhookUnsub();
         apiCall
             .then((responseData: any) => {
-            if (responseData.apiStatus.code === '200') {
+            if (responseData.apiStatus.code === "200") {
                 handlewhatsappsetupList()
                 handlewhatsappwebhookList()
                 handlewhatsapphealthList()
@@ -527,8 +536,8 @@ function Catalog_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during unsubscribing:", error);
+            toast.error("An error occurred while unsubscribing.");
             });
         };
         const formatDate = (unixTimestamp:any) => {
@@ -574,8 +583,8 @@ function Catalog_Settings() {
                 }
             })
             .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching catalog list:", error);
+                toast.error("An error occurred while fetching catalog list.");
             });
     }
     const handleloglistLinked = () => {
@@ -599,8 +608,8 @@ function Catalog_Settings() {
                 })
                 .catch((error: any) => {
                     setLoading(false)
-                    console.error("Error during login:", error);
-                    toast.error("An error occurred during login.");
+                    console.error("Error while fetching linked catalogs:", error);
+                    toast.error("An error occurred while fetching linked catalogs.");
                 });
         };
     const handlelogBizinfo = () => {
@@ -618,13 +627,15 @@ function Catalog_Settings() {
                 })
                 .catch((error: any) => {
                     setLoading(false)
-                    console.error("Error during login:", error);
-                    toast.error("An error occurred during login.");
+                    console.error("Error while fetching business info:", error);
+                    toast.error("An error occurred while fetching business info.");
                 });
         };
     const handlecatalogLink = () => {
         setSubmit(true);
+        setIsLoading(true);
         if(catalogConfig){
+            setIsLoading(false);
             toast.warn("Delete the existing catalog link before update");
             return;
         }
@@ -641,19 +652,23 @@ function Catalog_Settings() {
                  setSubmit(false);
                  SetShowData1(false)
                  SetShowButton2(false);
+                 setIsLoading(false);
                  toast.success(responseData.apiStatus.message);
                  handleloglistLinked();
               } else {
                  toast.error(responseData.apiStatus.message);
+                 setIsLoading(false);
               }
            })
            .catch((error: any) => {
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error while linking the catalog:", error);
+              setIsLoading(false);
+              toast.error("An error occurred while linking the catalog.");
            });
      };
     const handlebizIdLink = () => {
         setSubmit(true);
+        setIsLoading(true);
         if (!bizId) {
            return;
         }
@@ -666,18 +681,21 @@ function Catalog_Settings() {
               if (responseData.apiStatus.code === '200') {
                  setSubmit(false);
                  SetShowData2(false)
+                 setIsLoading(false);
                  SetShowButton3(false);
                  toast.success(responseData.apiStatus.message);
                  handlelogBizinfo();
               } else {
                  toast.error(responseData.apiStatus.message);
                  setSubmit(false);
+                 setIsLoading(false);
               }
            })
            .catch((error: any) => {
-              console.error("Error during login:", error);
+              console.error("Error while linking the Business ID:", error);
               setSubmit(false);
-              toast.error("An error occurred during login.");
+              setIsLoading(false);
+              toast.error("An error occurred while linking the Business ID.");
            });
      };
     const handlecatalogUnlink = () => {
@@ -707,8 +725,8 @@ function Catalog_Settings() {
            })
            .catch((error: any) => {
               setIsLoading(false);
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error while unlinking the catalog:", error);
+              toast.error("An error occurred while unlinking the catalog.");
            });
      };
     useEffect(()=>{
@@ -719,9 +737,10 @@ function Catalog_Settings() {
     },[])
        useEffect(()=>{
         handlewhatsappsetupList()
-        handlewhatsappwebhookList()
         handlewhatsapphealthList()
         handlewhatsapptokenInfo()
+        handlewhatsappwebhookList()
+
        },[])
         useEffect(() => {
         let apiWebsites = website || [];
@@ -805,7 +824,7 @@ function Catalog_Settings() {
                                                                     </div>
                                                                     {submit && appSecreteId.length == 0 ? <div className='text-danger error-message-required'>Appsecrete.Id is required</div> : <></>}
                                                                     <div className="text-end mt-1">
-                                                                        <button className="vendor-crt-btn" onClick={handleSubscription}>Save</button>
+                                                                        <button className="vendor-crt-btn" onClick={handleSubscription} disabled={isLoading}>{isLoading ? "Save...":"Save"}</button>
                                                                     </div>
                                                                 </div>
                                                             </>
@@ -909,7 +928,7 @@ function Catalog_Settings() {
                                                                     </div>
                                                                     {integrationsubmit && bussinessId.length == 0 ? <div className='text-danger error-message-required'>Whatsapp bussiness id is required</div> : <></>}
                                                                     <div className="text-end mb-2">
-                                                                        <button className="vendor-crt-btn" onClick={handleSetup}>Save</button>
+                                                                        <button className="vendor-crt-btn" onClick={handleSetup} disabled={isLoading1}>{isLoading1 ? "Save...":"Save"}</button>
                                                                     </div>
                                                                 </div>
                                                             </>

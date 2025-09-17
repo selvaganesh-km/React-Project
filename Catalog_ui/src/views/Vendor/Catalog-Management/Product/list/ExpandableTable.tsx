@@ -132,7 +132,7 @@ console.log(productlist,"productsToShow")
                             muted
                             playsInline
                             preload="metadata"
-                            // src={product.imgData.mainImgUrl}
+                            src={product.imgData.mainImgUrl}
                           />
                         ) : !isExpanded &&
                           index === 0 &&

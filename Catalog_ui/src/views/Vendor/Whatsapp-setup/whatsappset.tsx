@@ -125,8 +125,8 @@ function Whatsapp_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during subscription:", error);
+                toast.error("An error occurred during subscription.");
              });
     };
     
@@ -152,8 +152,8 @@ function Whatsapp_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during test contact.:", error);
+                toast.error("An error occurred while processing test contact.");
              });
     };
     //Phone.No Config
@@ -175,8 +175,8 @@ function Whatsapp_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during add the phone number.:", error);
+                toast.error("An error occurred while adding the phone number.");
              });
     };
     //Whatsapp Config
@@ -208,8 +208,8 @@ function Whatsapp_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during WhatsApp integration setup:", error);
+                toast.error("An error occurred during WhatsApp integration setup.");
              });
        };
     //Over Health
@@ -233,8 +233,8 @@ function Whatsapp_Settings() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during during health check:", error);
+                toast.error("An error occurred during during health check.");
              });
     };
     const formatPhoneNumber = (raw: string) => {
@@ -270,8 +270,8 @@ function Whatsapp_Settings() {
         })
         .catch((error: any) => {
             setLoading(false);
-            console.error("Error during WhatsApp setup list fetch:", error);
-            toast.error("An error occurred during WhatsApp setup.");
+            console.error("Error while fetching WhatsApp setup list:", error);
+                toast.error("An error occurred while fetching WhatsApp setup list.");
         });
 };
 
@@ -291,8 +291,8 @@ function Whatsapp_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching WhatsApp webhook list:", error);
+            toast.error("An error occurred while fetching WhatsApp webhook list.");
             });
         };
     //health List
@@ -311,8 +311,8 @@ function Whatsapp_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching WhatsApp health data:", error);
+            toast.error("An error occurred while fetching WhatsApp health data.");
             });
         };
     //token Info    
@@ -328,8 +328,8 @@ function Whatsapp_Settings() {
             }
             })
             .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Errorwhile fetching WhatsApp token info:", error);
+            toast.error("An error occurredwhile fetching WhatsApp token info.");
             });
         };
     //Bussiness info    
@@ -359,8 +359,8 @@ function Whatsapp_Settings() {
             })
             .catch((error: any) => {
                 setprofileupdLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching WhatsApp business info:", error);
+            toast.error("An error occurred while fetching WhatsApp business info.");
             });
         };
         const resetForm=()=>{
@@ -378,8 +378,8 @@ function Whatsapp_Settings() {
                 })
                 .catch((error: any) => {
                 
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching industry types:", error);
+                toast.error("An error occurred while fetching industry types");
                 });
         };
     //Bussiness Info Profile Update
@@ -408,8 +408,8 @@ function Whatsapp_Settings() {
               }
            })
            .catch((error: any) => {
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error during profile update:", error);
+              toast.error("An error occurred during profile update.");
            });
   };
   //Profile Img Upload
@@ -452,7 +452,7 @@ function Whatsapp_Settings() {
               }
           } catch (error) {
               console.error("Import Error:", error);
-              toast.error("An error occurred while importing the file.");
+              toast.error("An error occurred while unsubscribing.");
           }
       };
     const handlewhatsappwebhookUnsub = () => {
@@ -504,9 +504,9 @@ function Whatsapp_Settings() {
         };
        useEffect(()=>{
         handlewhatsappsetupList()
-        handlewhatsappwebhookList()
         handlewhatsapphealthList()
         handlewhatsapptokenInfo()
+        handlewhatsappwebhookList()
        },[])
         useEffect(() => {
         let apiWebsites = website || [];

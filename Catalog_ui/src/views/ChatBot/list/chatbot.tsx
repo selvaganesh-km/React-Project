@@ -467,8 +467,8 @@ useEffect(() => {
       })
       .catch((error: any) => {
         setLoading(false);
-        console.error("Error during login:", error);
-        toast.error("An error occurred during login.");
+        console.error("Error during fetching bot list:", error);
+        toast.error("An error occurred while fetching the bot flow list.");
       });
   };
   const handlebotStatus = (name: any) => {
@@ -491,8 +491,8 @@ useEffect(() => {
       })
       .catch((error: any) => {
         setLoading(false);
-        console.error("Error during login:", error);
-        toast.error("An error occurred during login.");
+        console.error("Error during bot status update:", error);
+        toast.error("An error occurred while updating the bot status.");
       });
   };
   const handlebotDelete = () => {
@@ -519,8 +519,8 @@ useEffect(() => {
       })
       .catch((error: any) => {
         setLoading(false);
-        console.error("Error during login:", error);
-        toast.error("An error occurred during login.");
+        console.error("Error during delete:", error);
+        toast.error("An error occurred during deletion.");
       });
   };
   interface Row {
@@ -844,8 +844,8 @@ const handleChangeInteractive = (e: {
          })
          .catch((error: any) => {
           setSubmit(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during bot creation:", error);
+            toast.error("An error occurred while bot creation.");
          });
    };
 
@@ -989,8 +989,8 @@ const handleChangeInteractive = (e: {
          })
          .catch((error: any) => {
             setSubmit(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during bot update:", error);
+            toast.error("An error occurred while bot update.");
          });
    };
    const [duplicateBotId,setDuplicateBotId]=useState("")
@@ -1017,8 +1017,8 @@ const handleChangeInteractive = (e: {
        })
        .catch((error: any) => {
           setLoading(false)
-          console.error("Error during login:", error);
-          toast.error("An error occurred during login.");
+          console.error("Error during bot duplication:", error);
+          toast.error("An error occurred while bot duplication.");
        });
   } 
   const handleGetBotbyID=()=>{
@@ -1124,8 +1124,8 @@ const handleChangeInteractive = (e: {
         })
         .catch((error: any) => {
           setLoading(false)
-          console.error("Error during login:", error);
-          toast.error("An error occurred during login.");
+          console.error("Error fetching trigger drop data:", error);
+          toast.error("An error occurred while fetching trigger drop data.");
         });
   };
   
@@ -1157,8 +1157,8 @@ const handleChangeInteractive = (e: {
         })
         .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error fetching bot reply data:", error);
+            toast.error("An error occurred while fetching bot reply data.");
         });
     };
     const getMediaType = (url:any) => {

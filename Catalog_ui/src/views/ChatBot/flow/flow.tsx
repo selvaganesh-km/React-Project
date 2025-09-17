@@ -122,8 +122,8 @@ function ChatbotFlow() {
                 }
             })
             .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during the bot flow operation:", error);
+                toast.error("An error occurred during the bot flow operation.");
             });
     };
     const handleduplicatebotFlow = () => {
@@ -151,8 +151,8 @@ function ChatbotFlow() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during duplicate bot flow:", error);
+                toast.error("An error occurred during the duplicate bot flow process.");
             });
     };
     const handlebotFlowList = (page: any) => {
@@ -176,8 +176,8 @@ function ChatbotFlow() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error during fetching bot flow list:", error);
+                toast.error("An error occurred while fetching the bot flow list.");
             });
     }
     const handlebotFlowGet= (botId: any) => {
@@ -193,8 +193,8 @@ function ChatbotFlow() {
                 })
                 .catch((error: any) => {
                     setLoading(false)
-                    console.error("Error during login:", error);
-                    toast.error("An error occurred during login.");
+                    console.error("Error during fetching bot flow:", error);
+                    toast.error("An error occurred while fetching the bot flow.");
                 });
         };
         const handleActiveBotflow = (name: any) => {
@@ -214,8 +214,8 @@ function ChatbotFlow() {
                  })
                  .catch((error: any) => {
                     setLoading(false)
-                    console.error("Error during login:", error);
-                    toast.error("An error occurred during login.");
+                    console.error("Error during bot flow update:", error);
+                    toast.error("An error occurred during bot flow update.");
                  });
            };
            const handledeletebotFlow = () => {
@@ -243,8 +243,8 @@ function ChatbotFlow() {
                     })
                     .catch((error: any) => {
                        setLoading(false)
-                       console.error("Error during login:", error);
-                       toast.error("An error occurred during login.");
+                       console.error("Error during delete:", error);
+                       toast.error("An error occurred during deletion.");
                     });
               };
               //For the modal is outside_close

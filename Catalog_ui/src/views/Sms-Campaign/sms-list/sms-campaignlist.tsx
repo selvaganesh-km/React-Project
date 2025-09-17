@@ -185,8 +185,8 @@ function SmsCampaigns() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching campaign details:", error);
+            toast.error("An error occurred while fetching campaign details.");
          });
    }
    const handleCampaignArchiveList = (page: any) => {
@@ -210,8 +210,8 @@ function SmsCampaigns() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching campaign archive details:", error);
+            toast.error("An error occurred while fetching campaign archive details.");
          });
    }
    //Campaign Delete Active
@@ -243,8 +243,8 @@ function SmsCampaigns() {
             toast.error(responseData.apiStatus.message);
          }
    } catch (error) {
-      console.error("Error during API call:", error);
-      toast.error("An error occurred during the get process.");
+      console.error("Error during delete:", error);
+      toast.error("An error occurred during deletion.");
    }
    }
    //Campaign Archive Active

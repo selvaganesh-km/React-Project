@@ -81,8 +81,8 @@ function VendorProfile() {
           }
         })
         .catch((error: any) => {
-          console.error("Error during login:", error);
-          toast.error("An error occurred during login.");
+          console.error("Error while fetching profile update:", error);
+          toast.error("An error occurred while fetching profile update.");
         });
     };
     
@@ -103,8 +103,8 @@ function VendorProfile() {
             })
             .catch((error: any) => {
              
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error while fetching password upate:", error);
+               toast.error("An error occurred while fetching password upate.");
             });
       };
    const handleGetStore = () => {
@@ -122,8 +122,8 @@ function VendorProfile() {
                }
             })
             .catch((error: any) => {
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error while fetching store dropdown data:", error);
+               toast.error("An error occurred while fetching store dropdown data.");
             });
       };
       useEffect(()=>{

@@ -66,8 +66,8 @@ function CreateSms() {
            })
            .catch((error: any) => {
               setLoading(false)
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error fetching SMS template:", error);
+              toast.error("An error occurred while fetching SMS template.");
            });
      };
 
@@ -100,8 +100,8 @@ function CreateSms() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error(`Error ${modalMode === 'create' ? 'creating' : 'updating'} SMS template:`, error);
+                toast.error(`Failed to ${modalMode === 'create' ? 'create' : 'update'} SMS template. Please try again later.`);
              });
        };
        const languageCodeDropdwon = () => {

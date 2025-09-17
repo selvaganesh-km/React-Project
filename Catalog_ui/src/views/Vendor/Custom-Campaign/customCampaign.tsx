@@ -101,8 +101,8 @@ function CustomCampaign() {
             })
             .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching customcampaign details:", error);
+                toast.error("An error occurred while fetching customcampaign details.");
             });
       }
       const handlecustomCampaignGet = (tempId: any) => {
@@ -127,8 +127,8 @@ function CustomCampaign() {
              })
              .catch((error: any) => {
                 setLoading(false)
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error while fetching customcampaign value:", error);
+                toast.error("An error occurred while fetching customcampaign value.");
              });
        };
        const handletempStatus = () => {
@@ -148,8 +148,8 @@ function CustomCampaign() {
                 })
                 .catch((error: any) => {
                    setLoading(false)
-                   console.error("Error during login:", error);
-                   toast.error("An error occurred during login.");
+                   console.error("Error during customcampaign status update:", error);
+                   toast.error("An error occurred during customcampaign status update.");
                 });
           };
       useEffect(()=>{

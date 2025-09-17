@@ -333,8 +333,8 @@ function WhatsappTemplate() {
          })
          .catch((error: any) => {
             setLoadingbtn(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+             console.error("Error during delete:", error);
+            toast.error("An error occurred during deletion.");
          });
    };
  

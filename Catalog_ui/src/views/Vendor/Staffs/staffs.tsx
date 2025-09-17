@@ -202,8 +202,8 @@ function VendorStaff() {
             }
          })
          .catch((error: any) => {
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error(modalMode === "create" ? "Error while creating:" : "Error while updating:", error);
+            toast.error(modalMode === "create" ?"An error occurred while creating.": "An error occurred while updating.");
          });
    };
    const handleGetStaff = (storeId: any) => {
@@ -223,8 +223,8 @@ function VendorStaff() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching staff values:", error);
+            toast.error("An error occurred while fetching staff values.");
          });
    };
    const handleActiveStaff = (name: any) => {
@@ -244,8 +244,8 @@ function VendorStaff() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error( name === 'active' ? "Error while fetching staff active:":"Error while fetching staff deactive", error);
+            toast.error( name === 'active' ? "An error occurred while fetching staff active.":"An error occurred while fetching staff active.");
          });
    };
 
@@ -260,8 +260,8 @@ function VendorStaff() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching store dropdown data:", error);
+            toast.error("An error occurred while fetching store dropdown data.");
          });
    };
    //Store Dropdown Filter
@@ -293,8 +293,8 @@ function VendorStaff() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during delete:", error);
+            toast.error("An error occurred during deletion.");
          });
    };
 
@@ -320,8 +320,8 @@ function VendorStaff() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error while fetching staff details:", error);
+            toast.error("An error occurred while fetching staff details.");
          });
    }
 

@@ -89,8 +89,8 @@ function Sms_Settings() {
               }
            })
            .catch((error: any) => {
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+              console.error("Error while fetching sms setup:", error);
+              toast.error("An error occurred while fetching sms setup.");
            });
      };
      
@@ -110,8 +110,8 @@ function Sms_Settings() {
            })
            .catch((error: any) => {
               setLoading(false)
-              console.error("Error during login:", error);
-              toast.error("An error occurred during login.");
+               console.error("Error while fetching sms setup config:", error);
+              toast.error("An error occurred while fetching sms setup config.");
         });
      };
       //Test contact Config
@@ -137,8 +137,8 @@ function Sms_Settings() {
                   })
                   .catch((error: any) => {
                      settestSubmit(false);
-                     console.error("Error during login:", error);
-                     toast.error("An error occurred during login.");
+                     console.error("Error while fetching sms test contact:", error);
+                     toast.error("An error occurred while fetching sms test contact.");
                   });
          };
     useEffect(()=>{

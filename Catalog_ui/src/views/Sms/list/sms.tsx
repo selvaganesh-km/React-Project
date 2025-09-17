@@ -114,8 +114,8 @@ function Sms() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error fetching SMS list:", error);
+            toast.error("An error occurred while fetching SMS list.");
          });
    }
    
@@ -136,8 +136,8 @@ function Sms() {
             })
             .catch((error: any) => {
                setLoading(false)
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error updating SMS template status:", error);
+               toast.error("An error occurred while updating SMS template status.");
             });
       };
    const handleDeleteStore = () => {
@@ -165,8 +165,8 @@ function Sms() {
             })
             .catch((error: any) => {
                setLoading(false)
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error during delete:", error);
+               toast.error("An error occurred during deletion.");
             });
       };
    useEffect(()=>{

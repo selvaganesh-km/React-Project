@@ -146,8 +146,8 @@ function ContactCustomField() {
                }
             })
             .catch((error: any) => {
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error(modalMode === "create" ? "Error while creating:" : "Error while updating:", error);
+               toast.error(modalMode === "create" ?"An error occurred while creating.": "An error occurred while updating.");
             });
    };
    const handlecustomFieldList = (page: any) => {
@@ -173,8 +173,8 @@ function ContactCustomField() {
             })
             .catch((error: any) => {
                setLoading(false)
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error while fetching custom fieldlist details:", error);
+               toast.error("An error occurred while fetching custom fieldlist details.");
             });
    }
    const handlecustomFieldGet = (inputId: any) => {
@@ -208,8 +208,8 @@ function ContactCustomField() {
         })
         .catch((error: any) => {
           setLoading(false);
-          console.error("Error during login:", error);
-          toast.error("An error occurred during login.");
+          console.error("Error while fetching custom field value:", error);
+          toast.error("An error occurred while fetching custom field value.");
         });
     };
     
@@ -259,8 +259,8 @@ function ContactCustomField() {
          })
          .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during delete:", error);
+            toast.error("An error occurred during deletion.");
          });
    };
    const handleinputStatus = (name: any) => {
@@ -280,8 +280,8 @@ function ContactCustomField() {
       })
       .catch((error: any) => {
             setLoading(false)
-            console.error("Error during login:", error);
-            toast.error("An error occurred during login.");
+            console.error("Error during field status update:", error);
+            toast.error("An error occurred during field status update.");
       });
    };
    

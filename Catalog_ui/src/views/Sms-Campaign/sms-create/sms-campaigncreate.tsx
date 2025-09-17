@@ -94,8 +94,8 @@ function CreatesmsPromotion() {
                }
             })
             .catch((error: any) => {
-               console.error("Error during login:", error);
-               toast.error("An error occurred during login.");
+               console.error("Error creating SMS campaign:", error);
+               toast.error("An error occurred while creating SMS campaign.");
             });
       };
     const handleGetGroupDrop = () => {
@@ -108,8 +108,8 @@ function CreatesmsPromotion() {
                 }
              })
              .catch((error: any) => {
-                console.error("Error during login:", error);
-                toast.error("An error occurred during login.");
+                console.error("Error fetching group dropdown data:", error);
+                toast.error("An error occurred while fetching group dropdown data.");
              });
     };
     const filteredGroupDrop = groupDropDown.filter((dropdownValue) =>
@@ -127,8 +127,8 @@ function CreatesmsPromotion() {
                   }
                })
                .catch((error: any) => {
-                  console.error("Error during login:", error);
-                  toast.error("An error occurred during login.");
+                  console.error("Error during fetching sms template content:", error);
+                  toast.error("An error occurred during fetching sms template content.");
                });
          };
     

@@ -95,7 +95,7 @@ function Sidebar() {
     const validRoutes3 = ["/vendor/chat-bot", "/vendor/chat-bot/flow"];
     const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"];
     const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign","/vendor/custom-campaign"];
-    const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"];
+    const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images","/vendor/catalog/product/images"];
     const allowedPaths = ["/vendor/catalog/product/create","/vendor/catalog/product/details","/vendor/catalog/product/edit"];
 
 const isAllowed = allowedPaths.some((path) =>
@@ -350,9 +350,11 @@ if (!isAllowed) {
               </li>
               <li className="nav-item">
                 <Link
-                  className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].includes(location.pathname) || location.pathname.startsWith("/vendor/catalog/product/edit")
-                    ? "active"
-                    : ""}`}
+                  className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images"]
+                    .some(path => {
+                    const isActive = location.pathname.startsWith(path);
+                    return isActive;
+                  }) ? "active" : ""}`}
                   onClick={toggleDropdown6} to={''}              >
                   <div className="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                     <svg width="13px" height="13px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 32C0 14.3 14.3 0 32 0L160 0c17.7 0 32 14.3 32 32l0 384c0 53-43 96-96 96s-96-43-96-96L0 32zM223.6 425.9c.3-3.3 .4-6.6 .4-9.9l0-262 75.4-75.4c12.5-12.5 32.8-12.5 45.3 0l90.5 90.5c12.5 12.5 12.5 32.8 0 45.3L223.6 425.9zM182.8 512l192-192L480 320c17.7 0 32 14.3 32 32l0 128c0 17.7-14.3 32-32 32l-297.2 0zM128 64L64 64l0 64 64 0 0-64zM64 192l0 64 64 0 0-64-64 0zM96 440a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>                     {" "}
@@ -389,6 +391,22 @@ if (!isAllowed) {
                         <svg width="13px" height="13px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M160 112c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48C336 50.1 285.9 0 224 0S112 50.1 112 112l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/></svg>
                       </div>
                       <span className="nav-link-text trxt ms-1 grayFont">Product</span>
+                    </Link>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link
+                      className={`mt-2 nav-link  ${["/vendor/catalog/product/images"]
+                        .some(path => {
+                    const isActive = location.pathname.startsWith(path);
+                    return isActive;
+                  }) ? "active" : ""}`}
+                      to={"/vendor/catalog/product/images"}
+                    >
+                      <div className="icon icon-shape vendorsidebar-child icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" viewBox="0 0 640 640"><path d="M128 160C128 124.7 156.7 96 192 96L512 96C547.3 96 576 124.7 576 160L576 416C576 451.3 547.3 480 512 480L192 480C156.7 480 128 451.3 128 416L128 160zM56 192C69.3 192 80 202.7 80 216L80 512C80 520.8 87.2 528 96 528L456 528C469.3 528 480 538.7 480 552C480 565.3 469.3 576 456 576L96 576C60.7 576 32 547.3 32 512L32 216C32 202.7 42.7 192 56 192zM224 224C241.7 224 256 209.7 256 192C256 174.3 241.7 160 224 160C206.3 160 192 174.3 192 192C192 209.7 206.3 224 224 224zM420.5 235.5C416.1 228.4 408.4 224 400 224C391.6 224 383.9 228.4 379.5 235.5L323.2 327.6L298.7 297C294.1 291.3 287.3 288 280 288C272.7 288 265.8 291.3 261.3 297L197.3 377C191.5 384.2 190.4 394.1 194.4 402.4C198.4 410.7 206.8 416 216 416L488 416C496.7 416 504.7 411.3 508.9 403.7C513.1 396.1 513 386.9 508.4 379.4L420.4 235.4z"/></svg>                      
+                      </div>
+                      <span className="nav-link-text trxt ms-1 grayFont">Product Images</span>
                     </Link>
                   </li>
                   <li className="nav-item">
