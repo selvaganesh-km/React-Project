@@ -1,6 +1,21 @@
 // export const baseURL = "https://ed0ad4e3a55c.ngrok-free.app/catalog_management/api/";
-export const baseURL = "http://192.168.0.108/catalog_management/api/";
-// export const baseURL = "https://whatsappcart.yalli.in/be/api/";
+// export const baseURL = "http://192.168.0.106/catalog_management/api/";
+export const baseURL = "https://whatsappcart.yalli.in/be/api/";
+
+
+// export let baseURL = "";
+// const port = window.location.port;
+
+// if (port === "3001") {
+//   baseURL = "http://192.168.0.106/catalog_management/api/";
+// } else if (port === "4000") {
+//   baseURL = "http://192.168.0.111/catalog_management/api/";
+// } else {
+//   baseURL = "https://ed0ad4e3a55c.ngrok-free.app/catalog_management/api/";
+// }
+
+
+
 
 
 const API: any = async (requestURL: any, requestAPIData: any) => {

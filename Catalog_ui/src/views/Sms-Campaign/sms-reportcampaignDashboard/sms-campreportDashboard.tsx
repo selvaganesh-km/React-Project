@@ -175,7 +175,7 @@ function PromotionmanagementSmsCreate() {
                   </div>
                   <div className="col-md-6 text-end">
                      <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/sms/campaign") }}><i className="fa-solid fa-chevron-left"></i> Back to Campaigns</button>&nbsp;
-                     <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/create-smscampaign") }}>Create Campaign</button>&nbsp;
+                     <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/smscampaign-create") }}>Create Campaign</button>&nbsp;
                   </div>
                </div>
             </div>

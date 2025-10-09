@@ -1329,16 +1329,16 @@ function handleRemoveButton(
         <TopNav />
         <div className="container-fluid py-1">
           <div className="row">
-            <div className="col-md-4 text-start mt-1">
-              <h4>
+            <div className="col-md-5 text-start mt-1">
+              <h4 className="grayFont">
                 <i className="fa-brands fa-whatsapp"></i>{" "}
                 {setValue === "create-whatsapp-template"
-                  ? "Create" + " New Template"
+                  ? "Create" + " Whatsapp Template"
                   : "Edit" + " Template"}
               </h4>
               <h3></h3>
             </div>
-            <div className="col-md-8 text-end whatsapp-three-btn">
+            <div className="col-md-7 text-end whatsapp-three-btn">
               {setValue == "create-whatsapp-template" ? (
                 <>
                   <button
@@ -2333,19 +2333,16 @@ function handleRemoveButton(
                                     }`}
                                   >
                                     <div className="modal-content all-modal-content vendorcreate-modal-content">
-                                      <div className="modal-header vendorcreate-modal-header border-0">
+                                      <div className="modal-header d-flex justify-content-between border-0 mb-4">
                                         <h5
-                                          className="modal-title mb-3 vendorcreate-modal-title"
+                                          className="modal-title ps-3"
                                           id="vendorcreateLabel"
                                         >
                                           Create Carousel
                                         </h5>
-                                        <button
-                                          type="button"
-                                          className="btn-close"
-                                          data-bs-dismiss="modal"
-                                          aria-label="Close"
-                                        ></button>
+                                        <button type="button" className="close modal-Xbutton" data-bs-dismiss="modal" aria-label="Close" onClick={resetCarousels}>
+                                          <span></span>
+                                        </button>
                                       </div>
                                       <div className="row modal-container-size modal-body vendorcreate-modal-body">
                                         <div className="row">

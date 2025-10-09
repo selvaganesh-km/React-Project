@@ -163,8 +163,8 @@ function CreateSms() {
                
                 <div className="container-fluid py-1">
                     <div className="row">
-                        <div className="col-md-4 text-start mt-1">
-                            <h4><i className="fa-regular fa-message"></i> {urlValue==='edit-sms' ? 'Edit SMS Template': 'Add SMS Template'}</h4>
+                        <div className="col-md-4 text-start mt-1 ">
+                            <h4 className="grayFont"><i className="fa-regular fa-message"></i> {urlValue==='edit-sms' ? 'Edit Sms Template': 'Create Sms Template'}</h4>
                         </div>
                         <div className="col-md-8 text-end whatsapp-three-btn">
                         <button className="vendor-crt-btn" onClick={() => navigate("/vendor/sms-template")}>

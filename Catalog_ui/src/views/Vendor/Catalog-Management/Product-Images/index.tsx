@@ -718,7 +718,7 @@ useEffect(() => {
               className="btn btn-secondary"
               data-bs-dismiss="modal"
               id="closepopup"
-              onClick={()=>setPreviewFiles([])}
+              onClick={()=>{setPreviewFiles([]);setSubmit(false);setimgLoading(false)}}
             >
               Close
             </button>
@@ -768,7 +768,7 @@ useEffect(() => {
     </div>
 
     {/* Product Image View */}
-               <div
+<div
   className="modal fade"
   id="productimgview"
   aria-labelledby="vendorviewLabel"
@@ -799,63 +799,61 @@ useEffect(() => {
               </button>
 
               <div className="product-tilt-effect">
-  <div className="product-image">
-    {(() => {
-      const fileName = productView?.altered_file_name || "";
-      const fileExt = fileName.split(".").pop()?.toLowerCase();
+                <div className="product-image">
+                  {(() => {
+                    const fileName = productView?.altered_file_name || "";
+                    const fileExt = fileName.split(".").pop()?.toLowerCase();
 
-      const isImage = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "avif"].includes(fileExt || "");
-      const isVideo = ["mp4", "mov", "avi", "webm", "mkv"].includes(fileExt || "");
+                    const isImage = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg", "avif"].includes(fileExt || "");
+                    const isVideo = ["mp4", "mov", "avi", "webm", "mkv"].includes(fileExt || "");
 
-      const fileUrl = `${baseURL}${productView?.path}/${productView?.altered_file_name}`;
+                    const fileUrl = `${baseURL}${productView?.path}/${productView?.altered_file_name}`;
 
-      if (isImage) {
-        return <img src={fileUrl} alt={productView?.original_file_name || ""} />;
-      } else if (isVideo) {
-        let mimeType = "video/mp4"; // default
+                    if (isImage) {
+                      return <img src={fileUrl} alt={productView?.original_file_name || ""} />;
+                    } else if (isVideo) {
+                      let mimeType = "video/mp4"; // default
 
-        switch (fileExt) {
-          case "mp4":
-            mimeType = "video/mp4";
-            break;
-          case "mov":
-            mimeType = "video/quicktime";
-            break;
-          case "avi":
-            mimeType = "video/x-msvideo";
-            break;
-          case "webm":
-            mimeType = "video/webm";
-            break;
-          case "mkv":
-            // mkv is not widely supported by browsers, may need a player plugin or conversion
-            mimeType = "video/x-matroska";
-            break;
-          default:
-            mimeType = "video/mp4";
-        }
+                      switch (fileExt) {
+                        case "mp4":
+                          mimeType = "video/mp4";
+                          break;
+                        case "mov":
+                          mimeType = "video/quicktime";
+                          break;
+                        case "avi":
+                          mimeType = "video/x-msvideo";
+                          break;
+                        case "webm":
+                          mimeType = "video/webm";
+                          break;
+                        case "mkv":
+                          // mkv is not widely supported by browsers, may need a player plugin or conversion
+                          mimeType = "video/x-matroska";
+                          break;
+                        default:
+                          mimeType = "video/mp4";
+                      }
 
-        return (
-          <video
-          ref={videoRef}
-            controls
-            autoPlay
-            loop
-            playsInline
-            style={{ maxWidth: "100%", height: "auto" }}
-          >
-            <source src={fileUrl} type={mimeType} />
-            Your browser does not support the video tag.
-          </video>
-        );
-      } else {
-        return <div>Unsupported media format</div>;
-      }
-    })()}
-  </div>
-</div>
-
-
+                      return (
+                        <video
+                        ref={videoRef}
+                          controls
+                          autoPlay
+                          loop
+                          playsInline
+                          style={{ maxWidth: "100%", height: "auto" }}
+                        >
+                          <source src={fileUrl} type={mimeType} />
+                          Your browser does not support the video tag.
+                        </video>
+                      );
+                    } else {
+                      return <div>Unsupported media format</div>;
+                    }
+                  })()}
+                </div>
+              </div>
               <div className="product-info text-start">
                 <div className="product-category">
                   {productView?.created_date ? formatDateTime(productView.created_date) : ""}

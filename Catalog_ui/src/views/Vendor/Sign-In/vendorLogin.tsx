@@ -94,7 +94,7 @@ function VendorLogin() {
                             onClick={togglePasswordVisibility}
                           ></i>
                         </div>
-                        <div className="text-center pt-0 px-lg-2 px-1">
+                        <div className="text-center pt-0 px-lg-2 px-1 mb-4">
                           <p className="text-sm mx-auto m-0 text-end text-small">
                             {/* <Link to={"/super-admin/forgot-password"} className="text-info text-gradient"> Forgot Password</Link> */}
                           </p>
@@ -109,7 +109,7 @@ function VendorLogin() {
                               </div>
                             </button>
                           ) : (
-                            <button className="btn bg-gradient-info w-100 mt-4 mb-0" type="submit" onClick={handleVendorLogin}>
+                            <button className="btn bg-gradient-info w-100 mt-2 mb-0" type="submit" onClick={handleVendorLogin}>
                               Login
                             </button>
                           )}
@@ -132,10 +132,10 @@ function VendorLogin() {
                   </div>
                   <div className="oblique position-absolute top-50 w-50 text-start">
                     <h4 className="mt-5 text-white font-weight-bolder position-relative">
-                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">BIZ CONVO</span>
+                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">YALLI MARKETING</span>
                     </h4>
                     <p className="login-bg-text-go position-relative">
-                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">BIZ CONVO</span> your comprehensive WhatsApp <br /> Marketing Platform.
+                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">YALLI MARKETING</span> your comprehensive WhatsApp <br /> Marketing Platform.
                     </p>
                   </div>
                 </div>  <div className="col-md-6 bg-login-query">
@@ -144,10 +144,10 @@ function VendorLogin() {
                   </div>
                   <div className="oblique position-absolute top-50 w-50 text-start">
                     <h4 className="mt-5 text-white font-weight-bolder position-relative">
-                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">BIZ CONVO</span>
+                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">YALLI MARKETING</span>
                     </h4>
                     <p className="login-bg-text-go position-relative">
-                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">BIZ CONVO</span> your comprehensive WhatsApp <br /> Marketing Platform.
+                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">YALLI MARKETING</span> your comprehensive WhatsApp <br /> Marketing Platform.
                     </p>
                   </div>
                 </div>

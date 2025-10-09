@@ -332,6 +332,9 @@ function CatalogOrderList() {
                                                             Order Date
                                                         </th>
                                                         <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                                            Payment Status
+                                                        </th>
+                                                        <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
                                                             Status
                                                         </th>
                                                         <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder text-center opacity-7 ps-2">
@@ -386,6 +389,34 @@ function CatalogOrderList() {
                                                                 second: '2-digit',
                                                                 hour12: true
                                                             }).replace(',', '').replace(' ', ' ')}
+                                                        </td>
+                                                        <td className="text-center text-sm">
+                                                            <span
+                                                         className="text-sm font-weight-bold"
+                                                         style={{
+                                                            color: listData?.payment_status === 'Paid'
+                                                               ? '#2bac32'
+                                                               : listData?.payment_status === 'Failed'
+                                                                  ? '#ef5252'
+                                                                  : listData?.payment_status === 'Pending'
+                                                                     ? '#f1c40f'
+                                                                     : 'black'
+                                                         }}
+                                                      >
+                                                         {listData?.payment_status === 'Paid'
+                                                            ? <>
+                                                            <i className="fa-regular fa-circle-check"></i> Paid
+                                                            </>
+                                                            : listData?.payment_status === 'Failed'
+                                                               ? <>
+                                                               <i className="fa-regular fa-circle-xmark"></i> Failed
+                                                               </>
+                                                               : listData?.payment_status === 'Pending'
+                                                                  ? <>
+                                                                  <i className="fa-regular fa-circle-dot"></i> Pending
+                                                                  </>
+                                                                  : 'Unknown Status'}
+                                                      </span>
                                                         </td>
                                                         <td>
                                                             <span

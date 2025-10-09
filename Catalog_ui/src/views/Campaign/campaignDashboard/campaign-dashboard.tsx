@@ -443,7 +443,7 @@ function CampaignDashboard() {
                                     </div>
                                     </div>
                                         <div className="w-50 myprofile-content">
-                                        <div className="mb-2 icon camp-icon-shape  superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
+                                        <div className="mb-2 icon camp-icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                         <i className="fa-solid fa-hourglass-start text-white"></i>
                                         </div>
                                     <div className="row">

@@ -38,6 +38,7 @@ import CatalogProductCreate from "./views/Vendor/Catalog-Management/Product/crea
 import Catalog_Settings from "./views/Vendor/Catalog-setup/catalog-setup";
 import CatalogOrderList from "./views/Vendor/Catalog-Management/Orders";
 import ProductImages from "./views/Vendor/Catalog-Management/Product-Images";
+import Catalog_Bot from "./views/Vendor/Catalog-Bot/catalog-bot";
 
 
 function App() {
@@ -63,7 +64,7 @@ function App() {
         <Route path="/vendor/campaign/dashboard" element={<CampaignDashboard />} />
         <Route path="/vendor/campaign/dashboard/:id" element={<CampaignDashboard />} />
         <Route path="/vendor/create-campaign" element={<Createcampaign />} />
-        <Route path="/vendor/create-smscampaign" element={<CreatesmsPromotion />} />
+        <Route path="/vendor/smscampaign-create" element={<CreatesmsPromotion />} />
         <Route path="/vendor/contact/whatsapp/contact/send-template-message/:id" element={<Createcampaign />} />
         <Route path="/vendor/chat-bot" element={<Chatbot />} />
         <Route path="/vendor/chat-bot/flow" element={<ChatbotFlow />} />
@@ -78,6 +79,7 @@ function App() {
         <Route path='/vendor/settings/whatsapp' element={<Whatsapp_Settings />} />
         <Route path='/vendor/settings/sms' element={<Sms_Settings />} />
         <Route path='/vendor/settings/catalog' element={<Catalog_Settings />} />
+        <Route path='/vendor/settings/catalog/bot' element={<Catalog_Bot />} />
         <Route path='/vendor/settings/general' element={<General_Settings />} />
         <Route path='/vendor/custom-campaign' element={<CustomCampaign />} />
         <Route path="/vendor/create-sms" element={<CreateSms />} />

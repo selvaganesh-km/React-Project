@@ -222,6 +222,11 @@ let endpoints = {
 	CATALOGSYNC: 'catalog/sync',
 	CATALOGBUSSINESSDROP: 'catalog/business_info',
 	
+	//Catalog Reply
+	CATALOGREPLYLIST:"catalog_botreply/list",
+	CATALOGREPLYEDIT:"catalog_botreply/update",
+	CATALOGREPLYGET:"catalog_botreply/get/:id",
+	
 	//Catalog Subcription
 	CATALOGLINK: 'catalog/updateLinked',
 	CATALOGDELETE: 'catalog/deleteLinked',
@@ -833,6 +838,16 @@ let API_EP_BOOK = {
 		url: endpoints.DELETESTAFF, method: 'DELETE', authorization: true
 	},
 
+	//Catalog Reply
+	CATALOG_REPLY_LIST_API_EP: {
+		url: endpoints.CATALOGREPLYLIST, method: 'POST', authorization: true
+	},
+	CATALOG_REPLY_EDIT_API_EP: {
+		url: endpoints.CATALOGREPLYEDIT, method: 'PUT', authorization: true
+	},
+	CATALOG_REPLY_GET: {
+		url: endpoints.CATALOGREPLYGET, method: 'GET', authorization: true
+	},
 	//Catalog
 	LIST_CATALOG_API_EP: {
 		url: endpoints.CATALOGLIST, method: 'POST', authorization: true

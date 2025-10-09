@@ -362,12 +362,12 @@ const [file, setFile] = useState<File | null>(null);
                             <button type="button" className="vendor-crt-btn" onClick={OpenNoPopup}>
                                 Select Catalog
                             </button>&nbsp;
-                            <button onClick={() => navigate("/vendor/catalog/product/create")}
+                            <button onClick={() => {!selectedCatalogId ? toast.warning("Please choose catalog"):navigate("/vendor/catalog/product/create")}}
                             className="vendor-crt-btn">
                                 <span><i className="fa-solid fa-plus"></i> Add Products</span>
                             </button>
                             &nbsp;
-                            <button onClick={() => handleSyncProduct()}
+                            <button onClick={() => {!selectedCatalogId ? toast.warning("Please choose catalog"): handleSyncProduct()}}
                                 className="vendor-crt-btn"
                             >
                                 <span><i className="fa-solid fa-arrows-rotate"></i> Sync Products</span>
@@ -389,7 +389,11 @@ const [file, setFile] = useState<File | null>(null);
                                                         <FadeLoader color="#36d7b7" />
                                                     </div>
                                                 )
-                                                 : productlist.length === 0 ? (
+                                                 : !selectedCatalogId ? (
+                                                    <>
+                                                        <p className="table-list-nodata or-text" style={{ textAlign: "center", marginTop: "40px" }}><span>Please choose catalog to see data</span></p>
+                                                    </>
+                                                ): productlist.length === 0 ? (
                                                     <>
                                                         <p className="table-list-nodata or-text" style={{ textAlign: "center", marginTop: "40px" }}><span>No data found</span></p>
                                                     </>
@@ -480,8 +484,11 @@ const [file, setFile] = useState<File | null>(null);
                                     {submit && selectedCatalogName.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
                                     </div>
                                     <div className="modal-footer text-center vendor-delete-footer">
+                                        <button type="button" onClick={() => { setShowpopup(false) }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
+                                            Close
+                                        </button>
                                         {popupList.length===0 ? 
-                                        <button type="button" data-bs-dismiss="modal" className="btn btn-secondary" onClick={()=>navigate("/vendor/catalog/details")}>
+                                        <button type="button" data-bs-dismiss="modal" className="btn btn-primary" onClick={()=>navigate("/vendor/catalog/details")}>
                                             Create Catalog
                                         </button>:<></>}
                                         {popupList.length !==0 ?
@@ -609,10 +616,10 @@ const [file, setFile] = useState<File | null>(null);
                             <div className="upload-files-container" onDragOver={(e) => e.preventDefault()} onDrop={handleFileDrop}>
                                 <div className="drag-file-area" style={submit && !file ? { border: '1.6px dashed red' } : {}}>
                                     <i className="fa-solid fa-cloud-arrow-up import-staff-icon"></i>
-                                    <h5 className="dynamic-message mt-2 mb-n1">
+                                    <h5 className="dynamic-message mt-2 mb-n1 grayFont">
                                         Drop Anywhere to Import
                                     </h5>
-                                    <label className="label">
+                                    <label className="label grayFont">
                                         or{" "}
                                         <span className="browse-files">
                                         <input
@@ -621,10 +628,10 @@ const [file, setFile] = useState<File | null>(null);
                                             onChange={handleFileChange}
                                             ref={fileInputRef}
                                         />
-                                        <span className="browse-files-text text-primary">
+                                        <span className="browse-files-text text-dark text-primary">
                                             browse file
                                         </span>{" "}
-                                        <span>from device</span>
+                                        <span className='grayFont'>from device</span>
                                         </span>
                                     </label>
                                 </div>

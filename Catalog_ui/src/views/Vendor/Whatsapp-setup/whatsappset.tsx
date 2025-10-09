@@ -56,10 +56,14 @@ function Whatsapp_Settings() {
     const [file, setFile] = useState<File | null>(null);
     const [imgValue, setImgValue] = useState("")
     const [imgid, setImgid] = useState("")
+    const [healthError, sethealthError] = useState("");
+    const [tokeninfoError, settokeninfoError] = useState("");
+    const [phonenoError, setphonenoError] = useState("");
     const [fileName, setFileName] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [profileupdLoading, setprofileupdLoading] = useState(false);
     const loginasSadmin=sessionStorage.getItem("loginAs");
+    const wabaAccesstoken=sessionStorage.getItem("wabaAccesstoken");
     const navigate=useNavigate();
     
     const ShowTernary = () => {
@@ -101,11 +105,14 @@ function Whatsapp_Settings() {
         }
     }
     //Facebook Config
+    const [isLoading, setIsLoading] = useState(false);
+
     const handleSubscription = () => {
           setSubmit(true);
           if (!appId || !appSecreteId ) {
              return;
           }
+          setIsLoading(true);
           const apiData = {
             appId: appId,
             appSecret: appSecreteId,
@@ -114,34 +121,41 @@ function Whatsapp_Settings() {
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
-                    setSubscription(true)
+                    handlewhatsappwebhookList();
+                    // setSubscription(true)
                     setSubmit(false);
+                    setIsLoading(false);
                     SetShowData(false)
                    toast.success(responseData.apiStatus.message);
                    setappId("");
                    setappSecreteId("");
                 } else {
                    toast.error(responseData.apiStatus.message);
+                   setIsLoading(false);
                 }
              })
              .catch((error: any) => {
                 console.error("Error during subscription:", error);
+                setIsLoading(false);
                 toast.error("An error occurred during subscription.");
              });
     };
     
     //Test contact Config
+    const [isLoading4, setIsLoading4] = useState(false);
     const handleTestContact = () => {
           setSubmit(true);
           if (!testContact) {
              return;
           }
+          setIsLoading4(true);
           const apiData = {test_contact: testContact};
           const apiCall =  VendorAPI.whatsapptestContact(apiData);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
                     setSubmit(false);
+                    setIsLoading4(false);
                     SetShowButtons(false);
                     settestContactInte(true);
                     toast.success(responseData.apiStatus.message);
@@ -149,44 +163,53 @@ function Whatsapp_Settings() {
                     handlewhatsappwebhookList()
                 } else {
                    toast.error(responseData.apiStatus.message);
+                   setIsLoading4(false);
                 }
              })
              .catch((error: any) => {
                 console.error("Error during test contact.:", error);
+                setIsLoading4(false);
                 toast.error("An error occurred while processing test contact.");
              });
     };
     //Phone.No Config
+    const [isLoading3, setIsLoading3] = useState(false);
     const handlewhatsappaddPhoneno = () => {
           setSubmit(true);
           if (!phoneno) {
              return;
           }
+          setIsLoading3(true);
           const apiData = {phone_no_id: phonenoId,display_phone_no:phoneno};
           const apiCall =  VendorAPI.whatsappaddPhoneno(apiData);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
                     setSubmit(false);
+                    setIsLoading3(false);
                     handlewhatsappsetupList();
                     toast.success(responseData.apiStatus.message);
                 } else {
                    toast.error(responseData.apiStatus.message);
+                   setIsLoading3(false);
                 }
              })
              .catch((error: any) => {
                 console.error("Error during add the phone number.:", error);
+                setIsLoading3(false);
                 toast.error("An error occurred while adding the phone number.");
              });
     };
-    //Whatsapp Config
+//Whatsapp Config
+const [isLoading1, setIsLoading1] = useState(false);
     const handleSetup = () => {
           setintegrationSubmit(true);
           if (!bussinessId || !accesstoken ) {
              return;
           }
+          sessionStorage.setItem("wabaAccesstoken",accesstoken)
+          setIsLoading1(true);
           const apiData = {
-            // phone_number_id:phonenoId,
             wa_business_acc_id: bussinessId,
             access_token: accesstoken,
           };
@@ -194,10 +217,13 @@ function Whatsapp_Settings() {
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    setphonenoError("")
                     handleHealthy();
-                    handlewhatsappwebhookList()
+                    handlewhatsappwebhookList();
+                    handlewhatsapptokenInfo();
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
+                    setIsLoading1(false);
                     SetShowButton1(false);
                     setPhoneInfo(responseData.responseData)
                     setdisplayPhone(responseData.responseData);
@@ -205,10 +231,12 @@ function Whatsapp_Settings() {
                    setaccesstoken("");
                 } else {
                    toast.error(responseData.apiStatus.message);
+                   setIsLoading1(false);
                 }
              })
              .catch((error: any) => {
                 console.error("Error during WhatsApp integration setup:", error);
+                setIsLoading1(false);
                 toast.error("An error occurred during WhatsApp integration setup.");
              });
        };
@@ -222,6 +250,7 @@ function Whatsapp_Settings() {
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    sethealthError("")
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
                     SetShowButton1(false);
@@ -251,6 +280,7 @@ function Whatsapp_Settings() {
     VendorAPI.whatsappsetupList()
         .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
+                setphonenoError("")
                 setintegrationSubmit(false);
                 setLoading(false);
                 SetShowButton1(false);
@@ -266,6 +296,7 @@ function Whatsapp_Settings() {
             } else {
                 setLoading(false);
                 // toast.error(responseData.apiStatus.message);
+                setphonenoError(responseData.apiStatus.message || "");
             }
         })
         .catch((error: any) => {
@@ -301,6 +332,7 @@ function Whatsapp_Settings() {
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
+                    sethealthError("")
                     setintegrationSubmit(false);
                     SetShowButton1(false);
                     setHealth(responseData?.responseData?.health_status)
@@ -308,6 +340,7 @@ function Whatsapp_Settings() {
                     setentities(responseData?.responseData?.health_status?.entities || [])
             } else {
                 toast.error(responseData.apiStatus.message);
+                sethealthError(responseData.apiStatus.message || "");
             }
             })
             .catch((error: any) => {
@@ -321,10 +354,12 @@ function Whatsapp_Settings() {
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
+                settokeninfoError("");
                 settokenInfo(responseData?.responseData);
                 setscopes(responseData?.responseData?.scopes || [])  
             } else {
                 toast.error(responseData.apiStatus.message);
+                settokeninfoError(responseData.apiStatus.message || "");
             }
             })
             .catch((error: any) => {
@@ -555,8 +590,8 @@ function Whatsapp_Settings() {
                                                         <div className="col-md-8">
                                                             To get started you should have Facebook App, you mostly need to select Business as type of your app.
                                                         </div>
-                                                        <div className="col-md-4 text-center">
-                                                            <h6 className="text-sm cursor-pointer" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
+                                                        <div className="col-md-4 text-center" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>
+                                                            <h6 className="text-sm cursor-pointer">Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
                                                         </div>
                                                     </div>
                                                     <div>
@@ -590,7 +625,7 @@ function Whatsapp_Settings() {
                                                                     </div>
                                                                     {submit && appSecreteId.length == 0 ? <div className='text-danger error-message-required'>Appsecrete.Id is required</div> : <></>}
                                                                     <div className="text-end mt-1">
-                                                                        <button className="vendor-crt-btn" onClick={handleSubscription}>Save</button>
+                                                                        <button className="vendor-crt-btn" onClick={handleSubscription} disabled={isLoading}>{isLoading ? "Save...":"Save"}</button>
                                                                     </div>
                                                                 </div>
                                                             </>
@@ -656,16 +691,16 @@ function Whatsapp_Settings() {
                                                         {showbutton && (
                                                             <>
                                                            <div className="col-md-12 text-end">
-                                                                <h6 className="text-sm cursor-pointer">
-                                                                    <span onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")}>
+                                                                <h6 className="text-sm cursor-pointer" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")}>
+                                                                    <span >
                                                                         Help & More Information
                                                                     </span> 
-                                                                    <i className="fa-solid fa-arrow-up-right-from-square px-2"></i>
+                                                                    <i onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")} className="fa-solid fa-arrow-up-right-from-square px-2"></i>
                                                                     <span>|</span>
                                                                     <span className="px-2" onClick={() => window.open("https://www.cloudperitus.com/blog/whatsapp-cloud-api-integration-generating-permanent-access-token", "_blank")}>
                                                                         External Help
                                                                     </span>
-                                                                    <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                                                    <i className="fa-solid fa-arrow-up-right-from-square" onClick={() => window.open("https://www.cloudperitus.com/blog/whatsapp-cloud-api-integration-generating-permanent-access-token", "_blank")}></i>
                                                                 </h6>
                                                             </div>
                                                                 <div className="">
@@ -694,7 +729,7 @@ function Whatsapp_Settings() {
                                                                     </div>
                                                                     {integrationsubmit && bussinessId.length == 0 ? <div className='text-danger error-message-required'>Whatsapp bussiness id is required</div> : <></>}
                                                                     <div className="text-end mb-2">
-                                                                        <button className="vendor-crt-btn" onClick={handleSetup}>Save</button>
+                                                                        <button className="vendor-crt-btn" onClick={handleSetup} disabled={isLoading1}>{isLoading1 ? "Save...":"Save"}</button>
                                                                     </div>
                                                                 </div>
                                                             </>
@@ -723,8 +758,11 @@ function Whatsapp_Settings() {
                                             <p>{formatDate(tokenInfo?.issued_at)}</p>
                                             <h6 className="grayFont">Expiry at</h6>
                                             <p>{tokenInfo?.expires_at ===0 ? "N/A" :tokenInfo?.expires_at}</p>
+                                            {tokeninfoError &&(<p className="text-danger text-xs">{tokeninfoError || ""}</p>)}
                                             <p className="border"></p>
-                                            <button className="setting-whats-share-debug">Debug Token <i className="fa-solid fa-arrow-up-right-from-square"></i></button>
+                                            {wabaAccesstoken ?
+                                            <Link className="setting-whats-share-debug" target="_blank" to={(`https://developers.facebook.com/tools/debug/accesstoken/?access_token=${wabaAccesstoken}&version=v23.0`)}>Debug Token <i className="fa-solid fa-arrow-up-right-from-square"></i></Link>
+                                            :null}
                                         </div>
                                     </div>
                                     <div className="campaign-template mt-4">
@@ -762,7 +800,7 @@ function Whatsapp_Settings() {
                                             </div>
                                             {submit && phoneno.length == 0 ? <div className='text-danger error-message-required'>Phone.no is required</div> : <></>}
                                             <div className="text-end">
-                                                <button className="vendor-crt-btn" onClick={handlewhatsappaddPhoneno}>Save</button>
+                                                <button className="vendor-crt-btn" onClick={handlewhatsappaddPhoneno} disabled={isLoading3}>{isLoading3 ?"Save...":"Save"}</button>
                                             </div>
                                         </div>
                                     </div>
@@ -784,7 +822,7 @@ function Whatsapp_Settings() {
                                                 {/* {submit && testContact.length == 0 ? <div className='text-danger error-message-required'>Test contact.no is required</div> : <></>} */}
                                                 <small>WhatsApp number to test, It should be with country code without 0 or +</small>
                                                 <div className="text-end">
-                                                    <button className="vendor-crt-btn" onClick={handleTestContact}>Save</button>
+                                                    <button className="vendor-crt-btn" onClick={handleTestContact} disabled={isLoading4}>{isLoading4 ?"Save...":"Save"}</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -829,8 +867,9 @@ function Whatsapp_Settings() {
                                                 <p className="text-success">{listData?.quality_rating}</p>
                                                 </React.Fragment>
                                                 ))}  
-                                                <button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal"
-                                                data-bs-target="#vendorview" onClick={handlewhatsappbussinessInfo}><i className="fa-solid fa-pen"></i> Update Bussiness Profile</button>
+                                                {phonenoError && (<p className="text-danger text-xs">{phonenoError || ""}</p> )}
+                                                {phoneInfo.length===1 &&(<button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#vendorview" onClick={handlewhatsappbussinessInfo}><i className="fa-solid fa-pen"></i> Update Bussiness Profile</button>)}
                                             </div>:<></>
                                             }
                                             <p className="border"></p>
@@ -861,6 +900,7 @@ function Whatsapp_Settings() {
                                                     </p>
                                                 <h6 className="grayFont">Overall Health</h6>
                                                 <p>{health?.can_send_message}</p>
+                                                {healthError && (<p className="text-danger text-xs">{healthError ||""}</p>)}
                                             </div>
                                         </div>
                                         <>

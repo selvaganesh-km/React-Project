@@ -1070,6 +1070,9 @@ const handleChatClear = () => {
                                     <h6 className="text-start font-weight-bolder mb-0 grayFont">WhatsApp Chat</h6>
                                 </nav>
                             </div>
+                            <div className="col-md-6 text-end">
+                                <button className="vendor-crt-btn" data-bs-toggle="modal" data-bs-target="#vendorExport">Export Chat <i className="fa-regular fa-comments"></i></button>
+                            </div>
                         </div>
                         <div className="card p-3 mt-4">
                             <div className="row">
@@ -1333,8 +1336,51 @@ const handleChatClear = () => {
 
                                                         </span>
                                                         {listData?.message_type==="location" ? "": <>{listData?.messageBody.messageText}</>}
-                                                        
-                                                        
+                                                        {(() => {
+                                                            if (listData?.message_type === "order") {
+                                                                const productItems = listData?.messageBody?.orderText?.product_items || [];
+                                                                const totalPrice = productItems.reduce((acc: number, item: any) => {
+                                                                return acc + (item.item_price || 0) * (item.quantity || 1);
+                                                                }, 0);
+
+                                                                return (
+                                                                    <>
+                                                                <div style={{background: "#f1f1f1",borderRadius:"5px"}}>
+                                                                <div className="row">
+                                                                    <div className="col-md-3 p-2 px-3"><img src={productItems[0]?.product_image} style={{width: "60px",borderRadius: "5px"}} alt="Img"/></div>
+                                                                <div className="order-details-container mt-2 col-md-9 px-4">
+                                                                    <strong className="d-block mb-1">
+                                                                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                                                                            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                                                                            fill="#000000" stroke="none">
+                                                                            <path d="M78 4789 c-43 -22 -78 -81 -78 -129 0 -50 35 -107 80 -130 37 -19 58
+                                                                            -20 444 -20 l406 0 5 -22 c13 -53 535 -2408 535 -2413 0 -2 -19 -14 -42 -26
+                                                                            -24 -12 -68 -47 -98 -78 -134 -138 -165 -328 -82 -505 58 -124 183 -220 321
+                                                                            -246 30 -5 117 -10 195 -11 109 -1 131 -3 97 -10 -227 -44 -391 -278 -353
+                                                                            -505 41 -245 270 -415 508 -376 196 32 344 180 376 376 38 227 -126 461 -353
+                                                                            505 -26 5 375 9 971 9 596 0 997 -4 971 -9 -227 -44 -391 -278 -353 -505 32
+                                                                            -196 180 -344 376 -376 238 -39 467 131 508 376 38 227 -126 461 -353 505 -34
+                                                                            7 -11 9 99 10 122 1 149 4 182 21 45 23 80 80 80 130 0 50 -35 107 -80 130
+                                                                            -39 20 -56 20 -1430 20 -1374 0 -1391 0 -1430 20 -45 23 -80 80 -80 130 0 45
+                                                                            35 107 73 127 30 17 117 18 1439 23 1401 5 1407 5 1434 26 15 11 36 31 46 45
+                                                                            20 26 628 2142 628 2184 0 45 -37 103 -80 125 -39 20 -55 20 -1888 20 l-1849
+                                                                            0 -54 247 c-39 179 -61 257 -79 284 -44 69 -41 69 -578 69 -455 -1 -479 -2
+                                                                            -514 -21z m4688 -896 c-3 -10 -118 -415 -257 -900 l-252 -883 -1243 0 -1244 0
+                                                                            -5 23 c-3 12 -91 407 -195 877 -104 470 -192 865 -195 878 l-5 22 1700 0
+                                                                            c1616 0 1701 -1 1696 -17z m-2746 -3003 c45 -23 80 -80 80 -130 0 -76 -74
+                                                                            -150 -150 -150 -76 0 -150 74 -150 150 0 48 35 107 78 129 48 26 93 26 142 1z
+                                                                            m2120 0 c45 -23 80 -80 80 -130 0 -76 -74 -150 -150 -150 -76 0 -150 74 -150
+                                                                            150 0 48 35 107 78 129 48 26 93 26 142 1z"/>
+                                                                            </g>
+                                                                        </svg> <span className="mt-1">{productItems?.length || 0} items</span> </strong>
+                                                                    <div className="product-item d-flex justify-content-between align-items-center mb-1 p-2">
+                                                                        <span> ₹ {totalPrice.toFixed(2)} <small>(estimated total)</small> </span> </div>
+                                                                </div>
+                                                                </div>
+                                                                </div>
+                                                                </>
+                                                                );}
+                                                            })()}
                                                         <span className="time-footer text-xxs d-block text-end mt-1">{formatDate(listData?.time)}</span>
                                                         
                                                         </span>
@@ -2543,6 +2589,7 @@ const handleChatClear = () => {
                             </div>
                             </div>
                         </div>
+                        {/* Chat Export */}
                         <div className="modal fade" id="vendorExport" aria-labelledby="vendorExportLabel" aria-hidden="true">
                             <div className="modal-dialog modal-dialog-centered">
                                 <div className="modal-content all-modal-content">

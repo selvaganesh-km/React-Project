@@ -356,7 +356,7 @@ function SmsCampaignDashboard() {
                         <div className="col-md-6">
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                    <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/create-smscampaign"}>Create Campaign</Link></li>
+                                    <li className="breadcrumb-item text-sm"><Link className="opacity-5 grayFont" to={"/vendor/smscampaign-create"}>Create Campaign</Link></li>
                                     <li className="breadcrumb-item text-sm grayFont active" aria-current="page">Campaign Dashboard</li>
                                 </ol>
                                 <h6 className="text-start font-weight-bolder mb-0 grayFont">Campaign Dashboard</h6>
@@ -364,7 +364,7 @@ function SmsCampaignDashboard() {
                         </div>
                         <div className="col-md-6 text-end">
                             <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/sms/campaign") }}><i className="fa-solid fa-chevron-left"></i> Back to Campaigns</button>&nbsp;
-                            <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/create-smscampaign") }}>Create Campaign</button>
+                            <button className="vendor-crt-btn" onClick={() => { navigate("/vendor/smscampaign-create") }}>Create Campaign</button>
                         </div>
                     </div>
                 </div>
@@ -416,7 +416,7 @@ function SmsCampaignDashboard() {
                                     </div>
                                     </div>
                                         <div className="w-50 myprofile-content">
-                                        <div className="mb-2 icon camp-icon-shape  superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
+                                        <div className="mb-2 icon camp-icon-shape bg-dark superadmin-dashboard-iconbg shadow text-center border-radius-2xl">
                                         <i className="fa-solid fa-hourglass-start text-white"></i>
                                         </div>
                                         <div className="row">

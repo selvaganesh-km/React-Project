@@ -186,6 +186,11 @@ const commongetMyProfileAPI = API_EP_BOOK.COMMON_GETMYPROFILE_API_EP;
 const commonupdateMyProfileAPI = API_EP_BOOK.COMMON_MYPROFILEUPDATE_API_EP;
 const commonchangePasswordAPI = API_EP_BOOK.COMMON_CHANGE_PASSWORD_API_EP;
 
+//Catalog Reply
+const catalogReplyListAPI = API_EP_BOOK.CATALOG_REPLY_LIST_API_EP;
+const catalogReplyEditAPI = API_EP_BOOK.CATALOG_REPLY_EDIT_API_EP;
+const catalogReplyGetAPI = API_EP_BOOK.CATALOG_REPLY_GET;
+
 //Catalog
 const catalogListAPI = API_EP_BOOK.LIST_CATALOG_API_EP;
 const catalogCreateAPI = API_EP_BOOK.CREATE_CATALOG_API_EP;
@@ -1451,6 +1456,31 @@ const VendorAPI = {
     },
     // CONTACT_GROUP API'S END
 
+    // CATALOG REPLY API'S START
+    catalogReplyListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogReplyListAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogReplyEditAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogReplyEditAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogReplyGetAPI: function (id: any) {
+        const url = catalogReplyGetAPI.url.replace(':id', id);
+        const requestAPIData = {
+            url: url,
+            method: catalogReplyGetAPI.method,
+            authorization: catalogReplyGetAPI.authorization
+        };
+
+        return API(requestAPIData)
+    },
+    // CATALOG REPLY API'S END
+    
     // CATALOG API'S START
     catalogListAPI: function (apiData: any) {
         const requestAPIData = {

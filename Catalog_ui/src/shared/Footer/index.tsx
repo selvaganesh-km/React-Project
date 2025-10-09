@@ -10,7 +10,7 @@ function Footer() {
         <div className="row align-items-center justify-content-lg-between">
           <div className="col-lg-6 mb-lg-0 mb-4">
             <div className="copyright text-center text-muted text-lg-start">
-              © {new Date().getFullYear()}, <Link to={"/vendor/dashboard"}>Bizconvo</Link> All rights reserved.
+              © {new Date().getFullYear()}, <Link to={"/vendor/dashboard"}>Yalli Marketing</Link> All rights reserved.
             </div>
           </div>
           <div className="col-lg-6">

@@ -49,10 +49,10 @@ function Sidebar() {
   }, [location.pathname]);
   const isChatBotRoute = ["/vendor/chat-bot", "/vendor/chat-bot/flow"].includes(location.pathname);
   const isStoreRoute = ["/vendor/store", "/vendor/staff"].includes(location.pathname);
-  const isContentHubRoute = ["/vendor/sms-template", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template"].includes(location.pathname);
+  const isContentHubRoute = ["/vendor/sms-template", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template","/vendor/edit-whatsapp-template","/vendor/edit-sms"].some(path => location.pathname.startsWith(path))
   const isContactRoute = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"].includes(location.pathname);
-  const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/custom-campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
-  const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"].includes(location.pathname);
+  const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/custom-campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/smscampaign-create","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
+  const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"].includes(location.pathname);
   const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].some(path => location.pathname.startsWith(path));
   const [isDropdownOpen, setDropdownOpen] = useState(isStoreRoute);
   const [isDropdownOpen1, setDropdownOpen1] = useState(isContentHubRoute);
@@ -90,11 +90,11 @@ function Sidebar() {
  
   useEffect(() => {
     const validRoutes = ["/vendor/store", "/vendor/staff"];
-    const validRoutes1 = ["/vendor/sms-template", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template"];
+    const validRoutes1 = ["/vendor/sms-template", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template","/vendor/edit-whatsapp-template","/vendor/edit-sms"];
     const validRoutes2 = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"];
     const validRoutes3 = ["/vendor/chat-bot", "/vendor/chat-bot/flow"];
-    const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"];
-    const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/create-smscampaign","/vendor/create-campaign","/vendor/custom-campaign"];
+    const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"];
+    const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/smscampaign-create","/vendor/create-campaign","/vendor/custom-campaign"];
     const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images","/vendor/catalog/product/images"];
     const allowedPaths = ["/vendor/catalog/product/create","/vendor/catalog/product/details","/vendor/catalog/product/edit"];
 
@@ -291,7 +291,11 @@ if (!isAllowed) {
               </li>
               <li className="nav-item">
                 <Link
-                  className={`cursor-pointer nav-link ${["/vendor/sms-template", "/vendor/whatsapp-template", "/vendor/create-sms", "/vendor/create-whatsapp-template"].includes(location.pathname) || location.pathname.startsWith("/vendor/edit-whatsapp-template")
+                  className={`cursor-pointer nav-link ${["/vendor/sms-template", "/vendor/whatsapp-template", "/vendor/create-sms", "/vendor/create-whatsapp-template","/vendor/edit-whatsapp-template","/vendor/edit-sms"]
+                    .some(path => {
+                    const isActive = location.pathname.startsWith(path);
+                    return isActive;
+                  })
                     ? "active"
                     : ""}`}
                   onClick={toggleDropdown1} to={''}              >
@@ -317,7 +321,12 @@ if (!isAllowed) {
                 >
                   <li className="nav-item">
                     <Link
-                      className={`mt-2 nav-link  ${["/vendor/sms-template", "/vendor/create-sms"].includes(location.pathname) ? "active" : ""
+                      className={`mt-2 nav-link  ${["/vendor/sms-template", "/vendor/create-sms","/vendor/edit-sms"]
+                        .some(path => {
+                          const isActive = location.pathname.startsWith(path);
+                          return isActive;
+                        })
+                        ? "active" : ""
                         }`}
                       to={"/vendor/sms-template"}
                     >
@@ -331,12 +340,17 @@ if (!isAllowed) {
                           <path d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z" />
                         </svg>
                       </div>
-                      <span className="nav-link-text trxt ms-1 grayFont">SMS</span>
+                      <span className="nav-link-text trxt ms-1 grayFont">Sms</span>
                     </Link>
                   </li>
                   <li className="nav-item">
                     <Link
-                      className={`nav-link ${["/vendor/whatsapp-template", "/vendor/create-whatsapp-template"].includes(location.pathname) || location.pathname.startsWith("/vendor/edit-whatsapp-template") ? "active" : ""
+                      className={`nav-link ${["/vendor/whatsapp-template", "/vendor/create-whatsapp-template","/vendor/edit-whatsapp-template"]
+                        .some(path => {
+                          const isActive = location.pathname.startsWith(path);
+                          return isActive;
+                        })
+                        ? "active" : ""
                         }`}
                       to={"/vendor/whatsapp-template"}
                     >
@@ -511,8 +525,7 @@ if (!isAllowed) {
 
               <li className="nav-item">
                 <Link
-                  className={`nav-link ${["/vendor/campaign","/vendor/sms/campaign", "/vendor/campaign/dashboard", "/vendor/create-campaign", "/vendor/campaign/create/new", "/vendor/contact/whatsapp/contact/","/vendor/create-smscampaign","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/custom-campaign"]
-                    .some(path => {
+                  className={`nav-link ${["/vendor/campaign","/vendor/sms/campaign", "/vendor/campaign/dashboard", "/vendor/create-campaign", "/vendor/campaign/create/new", "/vendor/contact/whatsapp/contact/","/vendor/smscampaign-create","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/settings/custom-campaign"].some(path => {
                     const isActive = location.pathname.startsWith(path);
                     return isActive;
                   }) ? "active" : ""}`}
@@ -533,7 +546,7 @@ if (!isAllowed) {
                 >
                   <li className="nav-item">
                     <Link
-                      className={`nav-link ${["/vendor/sms/campaign","/vendor/create-smscampaign","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard"].some(path => {
+                      className={`nav-link ${["/vendor/sms/campaign","/vendor/smscampaign-create","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard"].some(path => {
                         const isActive = location.pathname.startsWith(path);
                         return isActive;})
                         ? "active"
@@ -637,7 +650,7 @@ if (!isAllowed) {
               </li>
               <li className="nav-item">
                 <Link
-                  className={`cursor-pointer nav-link ${["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"].includes(location.pathname)
+                  className={`cursor-pointer nav-link ${["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"].includes(location.pathname)
                     ? "active"
                     : ""}`}
                   onClick={toggleDropdown4} to={''}              >
@@ -731,6 +744,23 @@ if (!isAllowed) {
                       </div>
                       <span className="nav-link-text trxt ms-1 grayFont">
                         Catalog Setup
+                      </span>
+                    </Link>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link
+                      className={`nav-link ${location.pathname === "/vendor/settings/catalog/bot"
+                        ? "active"
+                        : ""
+                        }`}
+                      to={"/vendor/settings/catalog/bot"}
+                    >
+                      <div className="icon icon-shape vendorsidebar-child icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 576 512"><g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" stroke="none"><path d="M3455 4786 c-37 -17 -70 -52 -84 -89 -7 -18 -11 -138 -11 -323 l0 -294 160 0 161 0 -3 309 c-3 295 -4 311 -24 337 -11 15 -32 37 -46 47 -34 25 -113 32 -153 13z"/><path d="M1284 3741 c-148 -42 -270 -167 -308 -316 -14 -52 -16 -192 -16 -1102 0 -725 3 -1058 11 -1095 28 -131 123 -253 244 -309 83 -40 145 -49 316 -49 l147 0 4 -162 c3 -148 5 -167 27 -212 31 -63 90 -122 150 -149 71 -33 189 -31 256 5 28 15 183 137 345 272 l295 245 497 1 c326 0 515 4 550 11 119 25 221 97 289 202 71 110 69 72 69 1239 0 1152 2 1108 -63 1216 -37 62 -103 127 -167 165 -102 59 -52 57 -1375 56 -1124 0 -1214 -2 -1271 -18z m2158 -969 c40 -25 78 -91 78 -137 0 -39 -35 -106 -68 -130 -27 -20 -43 -20 -892 -20 -849 0 -865 0 -892 20 -33 24 -68 91 -68 130 0 41 36 110 68 131 15 10 43 21 62 25 19 4 404 6 855 6 l820 -2 37 -23z m-482 -694 c50 -34 72 -71 77 -125 5 -65 -26 -120 -87 -150 l-44 -23 -586 0 c-549 0 -588 2 -626 19 -61 28 -89 73 -89 143 0 63 19 97 75 136 l33 22 607 0 607 0 33 -22z"/><path d="M505 3022 c-68 -33 -127 -92 -159 -161 -20 -45 -21 -58 -21 -486 0 -430 0 -441 22 -487 46 -100 137 -170 242 -187 l51 -8 0 678 0 679 -37 0 c-21 0 -65 -13 -98 -28z"/><path d="M4480 2371 l0 -678 51 8 c105 17 196 87 242 187 22 46 22 57 22 487 0 428 -1 441 -21 486 -47 100 -167 189 -256 189 l-38 0 0 -679z"/></g></svg>
+                     </div>
+                      <span className="nav-link-text trxt ms-1 grayFont">
+                        Catalog Bot
                       </span>
                     </Link>
                   </li>
