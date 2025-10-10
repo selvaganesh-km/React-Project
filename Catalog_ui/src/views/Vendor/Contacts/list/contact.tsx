@@ -188,7 +188,8 @@ function StoreContacts() {
       setLoading(true)
       const apiData = {
          pageIndex: page - 1,
-         dataLength: recordsPerPage
+         dataLength: recordsPerPage,
+         filterBy:search,
       };
       VendorAPI.contactListAPI(apiData)
          .then((responceData: any) => {
@@ -327,7 +328,7 @@ function StoreContacts() {
                resetForm()
                toast.success(responseData.apiStatus.message);
                const closeButton = document.getElementById("closeCreate");
-               superAdminConatctList(currentPage,debouncedSearch);
+               superAdminConatctList(currentPage,"");
 
                if (closeButton) {
                   closeButton.click();
@@ -729,7 +730,7 @@ function StoreContacts() {
       try {
          const response = await VendorAPI.importContact(formData);
          if (response.apiStatus?.code === "200") {
-            superAdminConatctList(currentPage,search);
+            superAdminConatctList(currentPage,debouncedSearch);
             toast.success(response.apiStatus.message);
             setSubmit(false);
             setimportLoading(false);
@@ -1025,6 +1026,9 @@ useEffect(() => {
                                                 Language <br />Code
                                              </th>
                                              <th className="contact-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Group <br />Name
+                                             </th>
+                                             <th className="contact-table-head text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Created On
                                              </th>
                                              <th className="contact-table-head text-xxs font-weight-bolder opacity-7 ps-2">
@@ -1191,6 +1195,30 @@ useEffect(() => {
                                                    <td className="align-middle text-start text-sm">
                                                       {contactList?.language}
                                                    </td>
+                                                   <td className="align-middle text-start text-sm group-tooltip-wrapper">
+                                                      {(() => {
+                                                         const groupNames = Array.isArray(contactList?.groupDetails)
+                                                            ? contactList.groupDetails
+                                                               .map((listData: any) => listData?.groupName?.trim())
+                                                               .filter(Boolean)
+                                                            : [];
+
+                                                         const displayedGroups = groupNames.slice(0, 2).join(', ');
+                                                         const hasMore = groupNames.length > 2;
+                                                         const fullGroupNames = groupNames.join(', ');
+
+                                                         if (groupNames.length === 0) return '—';
+
+                                                         return hasMore ? (
+                                                            <span className="group-tooltip">
+                                                            {`${displayedGroups}, ...`}
+                                                            <span className="tooltip-text">{fullGroupNames}</span>
+                                                            </span>
+                                                         ) : (
+                                                            displayedGroups
+                                                         );
+                                                      })()}
+                                                      </td>
                                                    <td className="align-middle text-start text-sm">
                                                    <span>
                                                          {new Date(contactList?.createdDate).toLocaleString('en-US', {

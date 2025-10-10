@@ -321,7 +321,7 @@ const WhatsApp_Chat: React.FC = () => {
         try {
             const response = await VendorAPI.whatsappChatsendAPI(formData);
             if (response?.apiStatus?.code==="200") {
-                handleChatList(to);
+                handleChatList(to,false);
                 resetForm();
                 const closeButton = document.getElementById("wachatImgclose");
                 if (closeButton) {
@@ -499,7 +499,9 @@ const handleChatList = (to: any, isManual = true) => {
     // });
     scrollToBottom();
     }
-
+// if (isManual) {
+//             scrollToBottom();  
+//         }
     // Update previousToRef
     previousToRef.current = to;
 

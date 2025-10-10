@@ -47,8 +47,12 @@ function TopNav() {
    };
    const userVendorName = sessionStorage.getItem("userVendorName")
    useEffect(() => {
-      window.scrollTo(0, 0);
-   }, []);
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth' // Enables smooth scrolling
+  });
+}, []);
+
    return (
       <>
          <nav className="navbar navbar-main navbar-expand-lg px-0 shadow-none border-radius-xl my-2 ms-4" id="navbarBlur" navbar-scroll="true">

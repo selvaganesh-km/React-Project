@@ -2146,7 +2146,7 @@ required
 
                       {interactiveType == "reply" && (
                         <div className="row">
-                        <div className="col-md-4 login-input-group ">
+                        {replyTextInput1 && (<div className="col-md-4 login-input-group ">
                         <div className="vendor-create-container">
                            <input autoComplete="off" type="text" id="vendor-crt-input"  value={replyTextInput1}
                               onChange={(e)=>setreplyTextInput1(e.target.value)}
@@ -2155,7 +2155,8 @@ required
                         </div>
                         {submit && replyTextInput1?.length == 0 ? <div className='text-start text-danger error-message-required'>Button 1 is required</div> : <></>}
 
-                     </div>
+                     </div>)}
+                     {replyTextInput2 &&(
                           <div className="col-md-4 login-input-group">
                         <div className="vendor-create-container">
                            <input autoComplete="off" type="text" id="vendor-crt-input"  value={replyTextInput2}
@@ -2163,15 +2164,16 @@ required
                             className={`vendor-crt-input loginfilled-frame-username`} placeholder=" " required />
                            <label htmlFor="vendor-crt-input" className="vendor-crt-label"> Button 2 Label (optional)</label>
                         </div>
-                     </div>
-                          {/* <div className="col-md-4 login-input-group">
+                     </div>)}
+                     {replyTextInput3 &&(
+                          <div className="col-md-4 login-input-group">
                         <div className="vendor-create-container">
                            <input autoComplete="off" type="text" id="vendor-crt-input"  value={replyTextInput3}
                               onChange={(e)=>setreplyTextInput3(e.target.value)}
                             className={`vendor-crt-input loginfilled-frame-username`} placeholder=" " required />
                            <label htmlFor="vendor-crt-input" className="vendor-crt-label"> Button 3 Label (optional)</label>
                         </div>
-                     </div> */}
+                     </div>)}
                         </div>
                       )}
 

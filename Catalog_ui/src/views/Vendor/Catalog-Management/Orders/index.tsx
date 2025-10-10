@@ -20,6 +20,8 @@ type OrderType = {
     catalogName: string;
     orderStatus: string;
     paymentStatus: string;
+    transactionId: string;
+    orderTime: string;
 };
 function CatalogOrderList() {
     const navigate = useNavigate();
@@ -172,9 +174,9 @@ function CatalogOrderList() {
             });
     }
     useEffect(() => {
-        handlecatalogListAPI();
-        handleOrderListAPI(1, carouselid,debouncedSearch|| null); // Use carouselId if available, otherwise null
-    }, []);
+        // handlecatalogListAPI();
+        handleOrderListAPI(currentPage, carouselid,debouncedSearch|| null); // Use carouselId if available, otherwise null
+    }, [currentPage,debouncedSearch]);
     useEffect(() => {
         const handler = setTimeout(() => {
           setDebouncedSearch(search);
@@ -241,11 +243,11 @@ function CatalogOrderList() {
     const toggleDropdown = (id:any) => {
         setOpenDropdownId(prevId => (prevId === id ? null : id));
     };
-    useEffect(() => {
-        // if (selectedCatalogId) {
-            handleOrderListAPI(currentPage, selectedCatalogId,debouncedSearch)
-        // }
-    }, [currentPage,debouncedSearch]);
+    // useEffect(() => {
+    //     if (selectedCatalogId) {
+    //         handleOrderListAPI(currentPage, selectedCatalogId,debouncedSearch)
+    //     }
+    // }, [currentPage,debouncedSearch]);
     const [isActive, setIsActive] = useState(false);
     const [query, setQuery] = useState('');
      const inputRef = useRef(null);
@@ -394,18 +396,18 @@ function CatalogOrderList() {
                                                             <span
                                                          className="text-sm font-weight-bold"
                                                          style={{
-                                                            color: listData?.payment_status === 'Paid'
+                                                            color: listData?.payment_status === 'Success'
                                                                ? '#2bac32'
                                                                : listData?.payment_status === 'Failed'
                                                                   ? '#ef5252'
                                                                   : listData?.payment_status === 'Pending'
                                                                      ? '#f1c40f'
-                                                                     : 'black'
+                                                                     : 'gray'
                                                          }}
                                                       >
-                                                         {listData?.payment_status === 'Paid'
+                                                         {listData?.payment_status === 'Success'
                                                             ? <>
-                                                            <i className="fa-regular fa-circle-check"></i> Paid
+                                                            <i className="fa-regular fa-circle-check"></i> Success
                                                             </>
                                                             : listData?.payment_status === 'Failed'
                                                                ? <>
@@ -415,7 +417,7 @@ function CatalogOrderList() {
                                                                   ? <>
                                                                   <i className="fa-regular fa-circle-dot"></i> Pending
                                                                   </>
-                                                                  : 'Unknown Status'}
+                                                                  : <span><i className="fa-solid fa-circle-exclamation" style={{color:"#e74c3c"}}></i> Nill </span>}
                                                       </span>
                                                         </td>
                                                         <td>
@@ -687,6 +689,8 @@ function CatalogOrderList() {
                                                                             catalogName: listData?.catalog_name,
                                                                             paymentStatus: listData?.payment_status,
                                                                             orderStatus: listData?.order_status,
+                                                                            transactionId: listData?.transaction_id,
+                                                                            orderTime: listData?.order_time,
                                                                         });
                                                                         setProduct(listData?.Products);
                                                                     }}
@@ -850,6 +854,18 @@ function CatalogOrderList() {
                                             <div className="col-md-6"><p><span className='fw-bold grayFont'><i className="prodView-icon fa-solid fa-truck-fast"></i> Order Status : </span>{OrderID?.orderStatus}</p></div>
                                             <div className="col-md-6"><p><span className='fw-bold grayFont'><i className="prodView-icon fa-solid fa-boxes-stacked"></i> Quantity : </span>{OrderID?.qty}</p></div>
                                             <div className="col-md-6"><p><span className='fw-bold grayFont'><i className="prodView-icon fa-solid fa-location-crosshairs"></i> Address : </span>{OrderID?.address}</p></div>
+                                            <div className="col-md-6"><p><span className='fw-bold grayFont'><i className="prodView-icon fa-solid fa-money-check-dollar"></i> Transaction Id : </span>{OrderID?.transactionId}</p></div>
+                                            <div className="col-md-6"><p><span className='fw-bold grayFont'><i className="prodView-icon fa-solid fa-clock"></i> Order Time : </span>
+                                            {new Date(OrderID?.orderTime || "-").toLocaleString('en-US', {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: '2-digit',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true
+                                                         }).replace(',', '').replace(' ', ' ')}
+                                            </p></div>
                                         </div>
                                     </div> 
                                     {/* </div>  */}
