@@ -801,6 +801,7 @@ const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   if (hasError) {
     setErrors(newErrors);
+    setbtnLoading(false);
     return;
   }
     const formData = buildProductFormData(productForm);

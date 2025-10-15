@@ -123,8 +123,16 @@
 }
 
 .upload-details p {
-    margin: 0px 0;
     font-size: 12px;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin: 4px 0;
+}
+
+.upload-details strong {
+    display: inline;
+    word-break: break-word;
 }
 
 .upload-details button {
@@ -156,16 +164,17 @@
 }
 
 .no-bottom-border td {
-  border-bottom: 0.5px solid #fff1f1 !important;
+    border-bottom: 0.5px solid #fff1f1 !important;
 }
 
 .add-button-row td {
-  border-top: none !important;
-  padding-top: 0;
+    border-top: none !important;
+    padding-top: 0;
 }
 
 
 /* Sticky columns */
+
 .sticky-col-1 {
     position: sticky;
     left: 0;
@@ -541,12 +550,19 @@ thead .sticky-col-2 {
     border-left: 1px solid #e3e7ec;
 }
 
-.menu-list,
-.submenu-list {
+.menu-list {
     list-style: none;
     padding: 0;
     margin: 0;
     max-height: 180px;
+    overflow-y: auto;
+}
+
+.submenu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 160px;
     overflow-y: auto;
 }
 

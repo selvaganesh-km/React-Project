@@ -41,6 +41,45 @@ function CatalogOrderList() {
     console.log(products, "products")
 
     console.log(OrderID, "ddd")
+    const printRef = useRef<HTMLDivElement>(null);
+
+    const handlePrint = () => {
+    const content = printRef.current;
+    if (!content) return;
+
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+    
+    if (printWindow) {
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Order Details</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                        }
+                        .grayFont { color: #333; }
+                        .fw-bold { font-weight: bold; }
+                        .prodView-icon { margin-right: 6px; }
+                        .circle-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; }
+                        .circle-wrap { text-align: center; }
+                        .product-cardbox { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; border-radius: 6px; }
+                        .modal-body .row { display: flex; flex-wrap: wrap; }
+                        .col-md-6 { width: 48%; margin: 1%; }
+                        .col-md-12 { width: 100%; }
+                    </style>
+                </head>
+                <body onload="window.print(); window.close();">
+                    ${content.innerHTML}
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+};
+
+
     const location = useLocation();
     // const [shopopup, setShowpopup] = useState(false);
     // useEffect(() => {
@@ -675,7 +714,9 @@ function CatalogOrderList() {
                                                       </span>
                                                         </td>
                                                             <td className="action-buttons">
-                                                              
+                                                              <button type="button" className="btn btn-primary" onClick={handlePrint}>
+                    Print
+                </button>
                                                                     <button
                                                                     type="button" className="custom-View-button" data-bs-toggle="modal" data-bs-target="#exampleModal"
                                                                     onClick={() => {
@@ -843,7 +884,7 @@ function CatalogOrderList() {
                                     <span></span>
                                 </button>
                             </div>
-                            <div className="modal-body">
+                            <div className="modal-body" ref={printRef}>
                                 <div className='row '>
                                     {/* <div className={`col-md-12`}> */}
                                     <div className={`mb-3 rounded`}>

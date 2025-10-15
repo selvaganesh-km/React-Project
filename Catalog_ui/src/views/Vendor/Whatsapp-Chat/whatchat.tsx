@@ -489,7 +489,7 @@ const handleChatList = (to: any, isManual = true) => {
   }
    
     let updatedRecordsPerPage = recordsPerPage;
-
+console.log(updatedRecordsPerPage,"updatedRecordsPerPage")
     if (previousToRef.current !== to) {
     updatedRecordsPerPage = 20;
     setrecordsPerPage(20);
@@ -508,13 +508,14 @@ const handleChatList = (to: any, isManual = true) => {
     const apiData = { filter: 
         { to },
         pageIndex:"0",
-        dataLength: recordsPerPage
+        dataLength: isManual ? recordsPerPage:updatedRecordsPerPage
     };
 
     VendorAPI.whatsappChatListAPI(apiData)
       .then((responseData: any) => {
         if (responseData.apiStatus.code === '200') {
-             window.dispatchEvent(new Event('triggerWappCount'));
+            if (isManual) {
+            window.dispatchEvent(new Event('triggerWappCount'));}
           const newChatData = responseData.responseData.MessageData;
           const isSame = _.isEqual(previousChatRef.current, newChatData);
           if (!isSame) {
@@ -1019,14 +1020,16 @@ const handleChatClear = () => {
     }, [debouncedSearch1, siderecordsPerPage, readCount]);
 
     useEffect(() => {
-        // const interval = setInterval(() => {
-        //     handleChatList(to, false); 
-        //     handleContactSideList(siderecordsPerPage, debouncedSearch);
-        // }, 10000);
         handleChatList(to, true); 
-        // return () => clearInterval(interval);
     }, [to, recordsPerPage]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            handleChatList(to, false); 
+        }, 10000);
+        return () => clearInterval(interval);
+    }, [to]);
+    
     useEffect(()=>{
     if (id && id !== "undefined" && id !== "") {
         contactListGet(id);

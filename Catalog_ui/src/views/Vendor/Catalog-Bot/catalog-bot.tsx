@@ -1869,7 +1869,7 @@ required
                         htmlFor={`option-${item.value}`}
                         >
                           <div>
-                            <i className={`${item.icon} chatbox-icon-size`}></i>
+                            <i className={`${item.icon} chatbox-icon-size grayFont`}></i>
                           </div>
                           <input
                             type="radio"

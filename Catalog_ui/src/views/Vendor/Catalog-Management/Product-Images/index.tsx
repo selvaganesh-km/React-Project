@@ -159,11 +159,12 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const handleUploadImg = async () => {
     setSubmit(true);
-    setimgLoading(true)
+    
   if (previewFiles.length === 0) {
     // toast.error("Please upload at least one file.");
     return;
   }
+  setimgLoading(true)
   const formData = new FormData();
   previewFiles.forEach((item, index) => {
     formData.append(`images[${index}]`, item.file); 
@@ -784,7 +785,7 @@ useEffect(() => {
             <div className="product-card">
               <button
                 type="button"
-                className="close-icon"
+                className="prdclose-icon"
                 aria-label="Close"
                 data-bs-dismiss="modal"
                  onClick={() => {

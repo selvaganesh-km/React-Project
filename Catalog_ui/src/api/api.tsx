@@ -1,6 +1,6 @@
 // export const baseURL = "https://ed0ad4e3a55c.ngrok-free.app/catalog_management/api/";
-// export const baseURL = "http://192.168.0.106/catalog_management/api/";
-export const baseURL = "https://whatsappcart.yalli.in/be/api/";
+export const baseURL = "http://192.168.0.117/catalog_management/api/";
+// export const baseURL = "https://whatsappcart.yalli.in/be/api/";
 
 
 // export let baseURL = "";

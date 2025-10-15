@@ -397,8 +397,11 @@ if (!isAllowed) {
                   </li>
                   <li className="nav-item">
                     <Link
-                      className={`mt-2 nav-link  ${["/vendor/catalog/product/details","/vendor/catalog/product/create"].includes(location.pathname) || location.pathname.startsWith("/vendor/catalog/product/edit") ? "active" : ""
-                        }`}
+                      className={`mt-2 nav-link  ${["/vendor/catalog/product/details","/vendor/catalog/product/create","/vendor/catalog/product/edit"]
+                        .some(path => {
+                    const isActive = location.pathname.startsWith(path);
+                    return isActive;
+                  }) ? "active" : ""}`}
                       to={"/vendor/catalog/product/details"}
                     >
                       <div className="icon icon-shape vendorsidebar-child icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -525,7 +528,7 @@ if (!isAllowed) {
 
               <li className="nav-item">
                 <Link
-                  className={`nav-link ${["/vendor/campaign","/vendor/sms/campaign", "/vendor/campaign/dashboard", "/vendor/create-campaign", "/vendor/campaign/create/new", "/vendor/contact/whatsapp/contact/","/vendor/smscampaign-create","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/settings/custom-campaign"].some(path => {
+                  className={`nav-link ${["/vendor/campaign","/vendor/sms/campaign", "/vendor/campaign/dashboard", "/vendor/create-campaign", "/vendor/campaign/create/new", "/vendor/contact/whatsapp/contact/","/vendor/smscampaign-create","/vendor/sms-reportcampaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/custom-campaign"].some(path => {
                     const isActive = location.pathname.startsWith(path);
                     return isActive;
                   }) ? "active" : ""}`}

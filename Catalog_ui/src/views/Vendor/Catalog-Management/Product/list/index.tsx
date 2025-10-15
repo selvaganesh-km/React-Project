@@ -373,7 +373,7 @@ const [file, setFile] = useState<File | null>(null);
                                 <span><i className="fa-solid fa-arrows-rotate"></i> Sync Products</span>
                             </button>&nbsp;
                             <button type="button" className="vendor-crt-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                <i className="fa-solid fa-arrow-up-from-bracket"></i> Import
+                                Import
                             </button>
                         </div>
                     </div>

@@ -74,12 +74,12 @@ function TopNav() {
                   </div>
                   <ul className="navbar-nav  justify-content-end">
                      <li className="nav-item dropdown notification-bell pe-2 d-flex align-items-center">
-                        <a href="javascript:;" className="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <Link to={""} className="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                            <i className="navbar-notification-icon fa-regular fa-bell-slash cursor-pointer"></i>
-                        </a>
+                        </Link>
                         <ul className="dropdown-menu  dropdown-menu-end  px-1 py-1 me-sm-n4" aria-labelledby="dropdownMenuButton">
                            <li className="mb-2">
-                              <a className="dropdown-item border-radius-md" href="javascript:;">
+                              <Link className="dropdown-item border-radius-md" to={""}>
                                  <div className="d-flex py-1">
                                     <div>
                                        {/* <img src={yalliLogoimg} className="avatar avatar-sm  me-3 " /> */}
@@ -95,7 +95,7 @@ function TopNav() {
                                        </p> */}
                                     </div>
                                  </div>
-                              </a>
+                              </Link>
                            </li>
                         </ul>
                      </li>

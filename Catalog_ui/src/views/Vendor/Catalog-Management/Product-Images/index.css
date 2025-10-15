@@ -468,7 +468,7 @@
 
 /* Fix Close Button Style */
 
-.close-icon {
+.prdclose-icon {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -479,7 +479,7 @@
     cursor: pointer;
 }
 
-.close-icon i {
+.prdclose-icon i {
     font-size: 24px;
     color: #dc3545;
     background: white;

@@ -180,7 +180,7 @@ function Catalog_Settings() {
             appId: appId,
             appSecret: appSecreteId,
           };
-          const apiCall =  VendorAPI.whatsappSubscription(apiData);
+          const apiCall =  VendorAPI.catalogwhatsappSubscription(apiData);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {

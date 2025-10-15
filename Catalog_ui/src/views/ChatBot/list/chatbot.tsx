@@ -1574,7 +1574,7 @@ const validateListSectionWithStructure = (
                 </div>
                   {submit && keywords?.length === 0 ? (<div className="text-start text-danger error-message-required">Keyword is required</div>) : (
                     <>
-                      {keywords.length > 0 && keywords.some(kw => !/^[a-zA-Z0-9 ]*$/i.test(kw)) && (<div className="text-start text-danger error-message-required">Special characters are not allowed</div>)}
+                      {keywords.length > 0 && keywords.some(kw => !/^[\u0B80-\u0BFFa-zA-Z0-9 ]+$/i.test(kw)) && (<div className="text-start text-danger error-message-required">Special characters are not allowed</div>)}
                     </>
                   )}                
               </div>
