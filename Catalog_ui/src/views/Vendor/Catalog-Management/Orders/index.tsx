@@ -9,6 +9,8 @@ import VendorAPI from '../../../../api/services/vendorLogin/vendorApi';
 import DashboardLayout from '../../../../layouts/DashboardLayout';
 import TopNav from '../../../../shared/TopNav';
 import Footer from '../../../../shared/Footer';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type OrderType = {
     id: string;
@@ -41,45 +43,6 @@ function CatalogOrderList() {
     console.log(products, "products")
 
     console.log(OrderID, "ddd")
-    const printRef = useRef<HTMLDivElement>(null);
-
-    const handlePrint = () => {
-    const content = printRef.current;
-    if (!content) return;
-
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-    
-    if (printWindow) {
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Order Details</title>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            padding: 20px;
-                        }
-                        .grayFont { color: #333; }
-                        .fw-bold { font-weight: bold; }
-                        .prodView-icon { margin-right: 6px; }
-                        .circle-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; }
-                        .circle-wrap { text-align: center; }
-                        .product-cardbox { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; border-radius: 6px; }
-                        .modal-body .row { display: flex; flex-wrap: wrap; }
-                        .col-md-6 { width: 48%; margin: 1%; }
-                        .col-md-12 { width: 100%; }
-                    </style>
-                </head>
-                <body onload="window.print(); window.close();">
-                    ${content.innerHTML}
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }
-};
-
-
     const location = useLocation();
     // const [shopopup, setShowpopup] = useState(false);
     // useEffect(() => {
@@ -303,6 +266,72 @@ function CatalogOrderList() {
 
   const handleChange = (e:any) => {
     setQuery(e.target.value);
+  };
+const contentRef = useRef<HTMLDivElement>(null);
+
+  const downloadPDF = async () => {
+    const originalContent = contentRef.current;
+    if (!originalContent) return;
+
+    // 1. Clone node and import all external stylesheets
+    const clone = originalContent.cloneNode(true) as HTMLElement;
+    const styleSheets = Array.from(document.styleSheets)
+  .map(styleSheet => {
+    try {
+      const ownerNode = styleSheet.ownerNode;
+      if (ownerNode && ownerNode instanceof Element) {
+        return ownerNode.outerHTML;
+      }
+      return "";
+    } catch {
+      return "";
+    }
+  })
+
+      .join("");
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = styleSheets;
+    wrapper.appendChild(clone);
+
+    // 2. Append wrapper to body off-screen
+    wrapper.style.position = "absolute";
+    wrapper.style.left = "-9999px";
+    document.body.appendChild(wrapper);
+
+    // 3. Wait for images to load
+    const images = clone.querySelectorAll("img");
+    await Promise.all(
+      Array.from(images).map(img =>
+        new Promise(resolve => {
+          if (img.complete) resolve(true);
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(true);
+        })
+      )
+    );
+
+    // 4. Use html2canvas with CORS to handle external images
+    const canvas = await html2canvas(clone, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#fff"
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pageWidth;
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("order-details.pdf");
+
+    document.body.removeChild(wrapper);
   };
 
     return (
@@ -714,12 +743,10 @@ function CatalogOrderList() {
                                                       </span>
                                                         </td>
                                                             <td className="action-buttons">
-                                                              <button type="button" className="btn btn-primary" onClick={handlePrint}>
-                    Print
-                </button>
-                                                                    <button
-                                                                    type="button" className="custom-View-button" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                                                    onClick={() => {
+                                                              
+                                                                    <div className="actionView-tooltip-container">
+                                                         <button 
+onClick={() => {
                                                                         setOrderID({
                                                                             id: listData?.id,
                                                                             name: listData?.name,
@@ -734,12 +761,43 @@ function CatalogOrderList() {
                                                                             orderTime: listData?.order_time,
                                                                         });
                                                                         setProduct(listData?.Products);
-                                                                    }}
+                                                                    }} 
+data-bs-toggle="modal" data-bs-target="#exampleModal" className="btn-3 vendorbtn-view" type="button">
+                                                            <span className="btn-inner--icon"><i className="fa-solid fa-eye"></i></span>
+                                                         </button>&nbsp;
+                                                         <div className="actionView-tooltip-text">
+                                                            View
+                                                         </div>
+                                                      </div>
 
-                                                                    >
-                                                                        <i className="fa-solid fa-eye" style={{color:"white"}}></i>
-                                                                    </button>
-                                                                
+                                                                <div className="actionEdit-tooltip-container">
+                                                         <button 
+onClick={()=>{
+                                                                setOrderID({
+                                                                            id: listData?.id,
+                                                                            name: listData?.name,
+                                                                            qty: listData?.qty,
+                                                                            price: listData?.price,
+                                                                            currency: listData?.currency,
+                                                                            address: listData?.address,
+                                                                            catalogName: listData?.catalog_name,
+                                                                            paymentStatus: listData?.payment_status,
+                                                                            orderStatus: listData?.order_status,
+                                                                            transactionId: listData?.transaction_id,
+                                                                            orderTime: listData?.order_time,
+                                                                        });
+                                                                        setProduct(listData?.Products);
+                                                                        setTimeout(() => {
+                                                                            downloadPDF();
+                                                                        }, 1000);
+                                                                            }}
+className="btn-3 vendorbtn-edit" type="button">
+                                                            <span className="btn-inner--icon"><i className="fa-solid fa-file-pdf"></i></span>
+                                                         </button>&nbsp;
+                                                         <div className="actionEdit-tooltip-text">
+                                                            Pdf
+                                                         </div>
+                                                      </div>
                                                             {/* <div className="actionEdit-tooltip-container">
                                                                 <button
                                                                         className="btn-3 order-view"
@@ -884,9 +942,8 @@ function CatalogOrderList() {
                                     <span></span>
                                 </button>
                             </div>
-                            <div className="modal-body" ref={printRef}>
+                            <div className="modal-body"  style={{display:"inline"}}>
                                 <div className='row '>
-                                    {/* <div className={`col-md-12`}> */}
                                     <div className={`mb-3 rounded`}>
                                         <div className='row product-cardbox mx-1'>
                                             <div className="col-md-6"><p><span className='fw-bold grayFont'><i className="prodView-icon fa-solid fa-user-tie"></i> Customer Name : </span>{OrderID?.name}</p></div>
@@ -909,34 +966,12 @@ function CatalogOrderList() {
                                             </p></div>
                                         </div>
                                     </div> 
-                                    {/* </div>  */}
-                                 
-                                    
+
                                     {products.map((item: any, index) => (
                                         <div className={`mt-3 ${products.length === 1 ? "col-md-12" : "col-md-6"
                                         }`}>
                                             <div className='product-cardbox'>
                                         <p className='fs-6 grayFont'><i className="prodView-icon fa-solid fa-cube"></i> <u>Product Details {index+1}</u></p>
-                                        {/* <div className={`card rounded-0`} key={index} style={{background: "#cfc1b5"}}>
-                                            <img src={item?.imgData?.mainImgUrl} alt="" className='width-25 height-20'/>
-                                            
-                                            <div className='row p-3 rounded-0'>
-                                                <div className="col-md-6">
-                                                <p className='grayFont'><span className='fw-bold'>Name :</span> {item?.name}</p></div>
-                                                <div className="col-md-6">
-                                                <p  className='grayFont'><span className='fw-bold'>Brand :</span> {item?.brand}</p></div>
-                                                <div className="col-md-6">
-                                                <p className='grayFont'><span className='fw-bold'>Currency :</span> { item?.currency}</p></div>
-                                                <div className="col-md-6">
-                                                <p className='grayFont'><span className='fw-bold'>Availability :</span> {item?.availability}</p></div>
-                                                <div className="col-md-6">
-                                                <p className='grayFont'><span className='fw-bold'>Visibility :</span> {item?.visibility}</p></div>
-                                                <div className="col-md-6">
-                                                <p className='grayFont'><span className='fw-bold'>Price:</span> {item?.price} </p></div>
-                                            </div>
-                                    
-                                            
-                                        </div> */}
                                           <div className="circle-wrap mt-2 mb-3">
                                                         <img
                                                             src={item?.imgData?.mainImgUrl ? item?.imgData?.mainImgUrl:noImage}
@@ -983,7 +1018,174 @@ function CatalogOrderList() {
                         </div>
                     </div>
                 </div>
+                                <div className="modal fade" id="exampleModal"   role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
+    <div className="container" style={{ paddingTop: "10px" }} ref={contentRef}>
+      <div className="invoice-container">
+        {/* Packing Slip */}
+        <div className="row border-bottom">
+          <div className="col-2 invoice-logo">
+            <img src="view/image/logo.png" alt="logo" />
+          </div>
+          <div className="col invoice-title">PACKING SLIP</div>
+        </div>
+
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-xl-4 mt-3">
+          <div className="col">
+            <h5>From:</h5>
+            <h5>
+              <strong>Yalli Marketing</strong>
+            </h5>
+            <p className="mb-0">
+              Building No : 3, Darga Complex, Near Pallivasal, Goripallayam, Madurai, Tamilnadu. Pincode - 625002
+              <br />
+              GST No.: 33CIHPD2878J1Z4
+              <br />
+              <br />
+              Email Id : info@yalli.in
+            </p>
+            <p>
+              Phone: <strong>+919025321043</strong>
+            </p>
+          </div>
+          <div className="col">
+            <h5>Shipping To:</h5>
+            <p className="mb-0">
+              SENTHIL KUMAR A S
+              <br />
+              9D/1,ARUMUGA NAGAR
+              <br />
+              KALUGUMALAI, Tamil Nadu 628552
+              <br />
+              India
+            </p>
+            <p className="mb-0">thamaraidigitalkmli@gmail.com</p>
+            <p>09443562349</p>
+          </div>
+          <div className="col">
+            <div className="invoice-order-details">
+              <h5>Order Details:</h5>
+              <p>
+                Order No: <strong>934</strong>
+              </p>
+              <p>
+                Items Ordered: <strong>1</strong>
+              </p>
+              <p>
+                Order Date: <strong>16/10/2025</strong>
+              </p>
+            </div>
+          </div>
+          <div className="col">
+            <h5>Goods Verified By:</h5>
+            <div className="invoice-goods-verified"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      {/* Invoice */}
+      <div className="invoice-container">
+        <div className="row border-bottom">
+          <div className="col-2 invoice-logo">
+            <img src="view/image/logo.png" alt="logo" />
+          </div>
+          <div className="col invoice-title">INVOICE</div>
+        </div>
+
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-3 mt-2">
+          <div className="col">
+            <h5>From:</h5>
+            <h5>
+              <strong>Yalli Marketing</strong>
+            </h5>
+            <p className="mb-0">
+              Building No : 3, Darga Complex, Near Pallivasal, Goripallayam, Madurai, Tamilnadu. Pincode - 625002
+              <br />
+              GST No.: 33CIHPD2878J1Z4
+              <br />
+              <br />
+              Email Id : info@yalli.in
+            </p>
+            <p>
+              Phone: <strong>+919025321043</strong>
+            </p>
+          </div>
+          <div className="col">
+            <h5>Billing To:</h5>
+            <p className="mb-0">
+              SENTHIL KUMAR A S
+              <br />
+              9D/1,ARUMUGA NAGAR
+              <br />
+              KALUGUMALAI, Tamil Nadu 628552
+              <br />
+              India
+            </p>
+            <p className="mb-0">thamaraidigitalkmli@gmail.com</p>
+            <p>09443562349</p>
+          </div>
+          <div className="col">
+            <div className="invoice-order-details">
+              <h5>Order Details:</h5>
+              <p>
+                Order No: <strong>934</strong>
+              </p>
+              <p>
+                Items Ordered: <strong>1</strong>
+              </p>
+              <p>
+                Order Date: <strong>16/10/2025</strong>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th className="text-end">Quantity</th>
+              <th className="text-end">Unit Price</th>
+              <th className="text-end">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rain Coat 2pcs &amp; Rain Pouch 2pcs</td>
+              <td className="text-end">1</td>
+              <td className="text-end">₹200.00</td>
+              <td className="text-end">₹200.00</td>
+            </tr>
+            <tr>
+              <td className="text-end">
+                <b>Sub-Total</b>
+              </td>
+              <td className="text-end">₹200.00</td>
+            </tr>
+            <tr>
+              <td className="text-end">
+                <b>Free Shipping</b>
+              </td>
+              <td className="text-end">₹0.00</td>
+            </tr>
+            <tr>
+              <td className="text-end">
+                <b>Total</b>
+              </td>
+              <td className="text-end">₹200.00</td>
+            </tr>
+            <tr>
+              <td className="text-end">
+                (Inclusive of Tax)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
 
 
 
