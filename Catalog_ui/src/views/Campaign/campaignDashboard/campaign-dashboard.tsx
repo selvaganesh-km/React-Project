@@ -449,7 +449,7 @@ function CampaignDashboard() {
                                     <div className="row">
                                     <div className="col-md-6">
                                     <div className=" campaign-dash-fonts">Execution Scheduled at</div>
-                                        <h6 className="campaign-dash-fonts">
+                                        <h6 className="campaign-dash-fonts grayFont">
                                             {new Date(campaigndetails?.scheduleAt).toLocaleString('en-US', {
                                                     year: 'numeric',
                                                     month: 'short',
@@ -471,7 +471,7 @@ function CampaignDashboard() {
                                     {campaigndetails?.groupName ? 
                                     <>
                                     <div className="campaign-dash-fonts">All contacts from: </div>
-                                    <h6 className="campaign-dash-fonts">{campaigndetails?.groupName}</h6>
+                                    <h6 className="campaign-dash-fonts grayFont">{campaigndetails?.groupName}</h6>
                                     </>:<></>}
                                     </div>
                                     </div>
@@ -526,7 +526,11 @@ function CampaignDashboard() {
                                                                     <i className="fa-solid fa-check text-white"></i>
                                                                 </div>
                                                                 <h5 className="grayFont font-weight-bolder mb-0 mt-3">
-                                                                    {campDashcount?.TotalDelivered}
+                                                                    {
+                                                                        Number(campDashcount?.TotalDelivered || 0) +
+                                                                        Number(campDashcount?.TotalRead || 0) +
+                                                                        Number(campDashcount?.TotalSent || 0)
+                                                                    }
                                                                 </h5>
                                                                 <span className=" text-sm">Total Delivered</span>
                                                                 {/* <p className=" text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer">2 Contacts</p> */}

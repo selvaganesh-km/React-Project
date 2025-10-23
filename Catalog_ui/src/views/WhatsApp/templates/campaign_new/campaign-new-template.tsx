@@ -782,9 +782,9 @@ setCarouselVariables((prev) => {
          .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
             const originalData = responseData?.result?.GroupDataDropDown || [];
-            const updatedData = [{ id: "0", group_name: "All Contacts" }, ...originalData];
-            setGroupDropDown(updatedData);
-            // setGroupDropDown(responseData?.result?.GroupDataDropDown);
+            // const updatedData = [{ id: "0", group_name: "All Contacts" }, ...originalData];
+            // setGroupDropDown(updatedData);
+            setGroupDropDown(responseData?.result?.GroupDataDropDown);
             } else {
                toast.error(responseData.apiStatus.message);
             }
@@ -1514,7 +1514,7 @@ console.log(slides,"Slidezzzz")
                                                             {/* <i className="fa fa-5x fa-image text-white"></i> */}
                                                             <img className="w-100" src={imageUrl||imgValue} alt="" />
                                                             </div> : null}
-                                                         {(vdoValue || imageUrl) && (
+                                                         {(vdoValue) && (
                                                          <div
                                                             className="rounded"
                                                             style={{

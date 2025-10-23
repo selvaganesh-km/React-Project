@@ -188,6 +188,7 @@ let endpoints = {
 	//Common 
 	COMMONSUPERADMINDASHCOUNT: 'common/superAdmindashboardcount',
 	COMMONVENDORDASHCOUNT: 'common/vendordashboardcount',
+	COMMONCATALOGDASHCOUNT: 'common/catalogvendordashboard',
 	COMMONCAMPDASHCOUNT: 'common/campaigndashboardcount',
 	COMMONCOUNTRYDROP: 'common/countrydropdown',
 	TIMEZONEDROP:'common/timezonedropdown',
@@ -322,6 +323,9 @@ let API_EP_BOOK = {
 	},
 	COMMON_VENDOR_DASHCOUNT: {
 		url: endpoints.COMMONVENDORDASHCOUNT, method: 'GET', authorization: true
+	},
+	COMMON_CATALOG_DASHCOUNT: {
+		url: endpoints.COMMONCATALOGDASHCOUNT, method: 'GET', authorization: true
 	},
 	COMMON_CAMP_DASHCOUNT: {
 		url: endpoints.COMMONCAMPDASHCOUNT, method: 'POST', authorization: true

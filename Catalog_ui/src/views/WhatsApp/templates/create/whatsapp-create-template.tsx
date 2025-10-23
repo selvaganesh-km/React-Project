@@ -1262,7 +1262,7 @@ function handleRemoveButton(
       const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
       const validVideoTypes = ["video/mp4", "video/webm", "video/ogg"];
       const validTypes = [...validImageTypes, ...validVideoTypes];
-
+// const trimmedFileName = selectedFile.name.trim();
       if (!validTypes.includes(selectedFile.type)) {
         if (selectedFile.type.startsWith("image/")) {
           toast.error("Only JPG, JPEG, and PNG image files are allowed.");

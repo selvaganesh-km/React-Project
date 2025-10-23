@@ -179,6 +179,7 @@ const customCampaignStatus = API_EP_BOOK.CUSTOM_CAMPAIGN_STATUS_EP;
 //Common
 const commonSuperadminDashCount = API_EP_BOOK.COMMON_SUPERADMIN_DASHCOUNT;
 const commonVendorDashCount = API_EP_BOOK.COMMON_VENDOR_DASHCOUNT;
+const commonCatalogDashCount = API_EP_BOOK.COMMON_CATALOG_DASHCOUNT;
 const commonCampDashCount = API_EP_BOOK.COMMON_CAMP_DASHCOUNT;
 const commonCountryDropAPI = API_EP_BOOK.COMMON_COUNTRYDROP_API_EP;
 const commontimezonseDropAPI = API_EP_BOOK.COMMON_TIMEZONEDROP_API_EP;
@@ -293,6 +294,14 @@ const VendorAPI = {
             url: commonVendorDashCount.url,
             method: commonVendorDashCount.method,
             authorization: commonVendorDashCount.authorization,
+        };
+        return API(requestAPIData);
+    },
+    commonCatalogDashCount: function () {
+        const requestAPIData = {
+            url: commonCatalogDashCount.url,
+            method: commonCatalogDashCount.method,
+            authorization: commonCatalogDashCount.authorization,
         };
         return API(requestAPIData);
     },

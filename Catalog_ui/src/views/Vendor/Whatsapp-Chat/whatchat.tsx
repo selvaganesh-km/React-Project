@@ -1211,6 +1211,7 @@ const handleChatClear = () => {
                                         )}
                                     </div>
                                 </div>
+                                
                                 <div className="col-md-6">
                                     <div className="chat-container">
                                         <div className="chat-header">

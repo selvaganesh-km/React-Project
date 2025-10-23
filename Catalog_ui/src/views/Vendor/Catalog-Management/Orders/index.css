@@ -169,8 +169,8 @@
     float: left;
     shape-outside: circle(50%);
     /* clip-path: circle(50%); */
-    width: 130px;
-    height: 130px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 50%;
     margin-right: 15px;
@@ -332,4 +332,17 @@
 .modal-Xbutton:hover::after,
 .modal-Xbutton:hover span {
     background-color: white;
+}
+
+.invoice-table,
+.invoice-table th,
+.invoice-table td {
+    border: 1.41px solid #dee2e6;
+    border-collapse: collapse;
+}
+
+.invoice-table th,
+.invoice-td b,
+.invoice-td {
+    color: black !important;
 }

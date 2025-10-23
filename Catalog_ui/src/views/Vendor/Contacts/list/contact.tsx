@@ -284,7 +284,7 @@ function StoreContacts() {
 
    const superAdminContactCreate = () => {
       setSubmit(true)
-      if (!fName || !mobNumber || !groupName || !storeName) {
+      if (!fName || !mobNumber) {
          return;
       }
       const isDynamicValid = validateRequiredFields();
@@ -1508,7 +1508,7 @@ useEffect(() => {
                         <div className="col-md-6 login-input-group">
                            <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                               <input type="text" id="vendor-crt-input"
-                                 style={submit && storeName.length == 0 ? { borderColor: "red" } : { borderColor: "" }}
+                                 // style={submit && storeName.length == 0 ? { borderColor: "red" } : { borderColor: "" }}
                                  onClick={handleGetStoreDrop} 
                                  value={storeName}
                                  autoComplete="off" onChange={(e)=>setStoreName(e.target.value)} className="vendor-crt-input" placeholder=" " required />
@@ -1531,17 +1531,17 @@ useEffect(() => {
                                  )))}
                               </ul>
                            </div>
-                           {submit && storeName.length == 0 ? (
+                           {/* {submit && storeName.length == 0 ? (
                               <div className="text-danger error-message-required">Store is required </div>
                            ) : (
                               <></>
-                           )}
+                           )} */}
                         </div>
                         <div className="col-md-6 login-input-group">
                            <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
                               <div>
                                  <input type="text" id="vendor-crt-input" readOnly
-                                    style={submit && groupName.length == 0 ? { borderColor: "red" } : { borderColor: "" }}
+                                    // style={submit && groupName.length == 0 ? { borderColor: "red" } : { borderColor: "" }}
                                     onClick={handleGetGroupDrop} value={groupName.map(group => group.groupName).join(', ')} className="vendor-crt-input" placeholder=" " required />
                                  <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-id-card-clip"></i> Group</label>
                                  <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
@@ -1578,11 +1578,11 @@ useEffect(() => {
                                  </button>
                               </div>
                            ))}
-                           {submit && groupName.length == 0 ? (
+                           {/* {submit && groupName.length == 0 ? (
                               <div className="text-danger error-message-required">Group is required </div>
                            ) : (
                               <></>
-                           )}
+                           )} */}
                         </div>
                         <div className="col-md-6 mt-2">
                            <div className="form-check form-switch ms-1 is-filled">

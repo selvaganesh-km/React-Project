@@ -11,6 +11,7 @@ import TopNav from '../../../../shared/TopNav';
 import Footer from '../../../../shared/Footer';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import yalliLogo from "../../../../assets/img/YallilogoSun.png"
 
 type OrderType = {
     id: string;
@@ -38,9 +39,18 @@ function CatalogOrderList() {
     const [selectedCatalogId, setSelectedCatalogId] = useState(null);
     const [selectedCatalogName, setSelectedCatalogName] = useState('');
     const [orderlist, setOrderList] = useState([]);
-    const [OrderID, setOrderID] = useState<OrderType | null>(null);
+    const [OrderID, setOrderID] = useState<OrderType | any>(null);
     const [products, setProduct] = useState([]);
+      const [btnloading, setbtnLoading] = useState(false);
+    
     console.log(products, "products")
+  // 💡 Place this subtotal calculation above your return statement
+  const subtotal = products.reduce((total: number, item: any) => {
+    const price = parseFloat(item?.price) || 0;
+    return total + price;
+  }, 0);
+  const now = new Date();
+    const formattedDateTime = now.toLocaleString('en-US');
 
     console.log(OrderID, "ddd")
     const location = useLocation();
@@ -269,70 +279,186 @@ function CatalogOrderList() {
   };
 const contentRef = useRef<HTMLDivElement>(null);
 
-  const downloadPDF = async () => {
-    const originalContent = contentRef.current;
-    if (!originalContent) return;
+  // const downloadPDF = async () => {
+  //   setbtnLoading(true);
+  //   const originalContent = contentRef.current;
+  //   if (!originalContent) return;
 
-    // 1. Clone node and import all external stylesheets
-    const clone = originalContent.cloneNode(true) as HTMLElement;
-    const styleSheets = Array.from(document.styleSheets)
-  .map(styleSheet => {
-    try {
-      const ownerNode = styleSheet.ownerNode;
-      if (ownerNode && ownerNode instanceof Element) {
-        return ownerNode.outerHTML;
+  //   // 1. Clone node and import all external stylesheets
+  //   const clone = originalContent.cloneNode(true) as HTMLElement;
+  //   const styleSheets = Array.from(document.styleSheets)
+  // .map(styleSheet => {
+  //   try {
+  //     const ownerNode = styleSheet.ownerNode;
+  //     if (ownerNode && ownerNode instanceof Element) {
+  //       return ownerNode.outerHTML;
+  //     }
+  //     return "";
+  //   } catch {
+  //     return "";
+  //   }
+  // })
+
+  //     .join("");
+
+  //   const wrapper = document.createElement("div");
+  //   wrapper.innerHTML = styleSheets;
+  //   wrapper.appendChild(clone);
+
+  //   // 2. Append wrapper to body off-screen
+  //   wrapper.style.position = "absolute";
+  //   wrapper.style.left = "-9999px";
+  //   document.body.appendChild(wrapper);
+
+  //   // 3. Wait for images to load
+  //   const images = clone.querySelectorAll("img");
+  //   await Promise.all(
+  //     Array.from(images).map(img =>
+  //       new Promise(resolve => {
+  //         if (img.complete) resolve(true);
+  //         img.onload = () => resolve(true);
+  //         img.onerror = () => resolve(true);
+  //       })
+  //     )
+  //   );
+
+  //   // 4. Use html2canvas with CORS to handle external images
+  //   const canvas = await html2canvas(clone, {
+  //     scale: 2,
+  //     useCORS: true,
+  //     backgroundColor: "#fff"
+  //   });
+
+  //   const imgData = canvas.toDataURL("image/png");
+
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  //   const pageWidth = pdf.internal.pageSize.getWidth();
+  //   const pageHeight = pdf.internal.pageSize.getHeight();
+
+  //   const imgProps = pdf.getImageProperties(imgData);
+  //   const pdfWidth = pageWidth;
+  //   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  //   pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //   pdf.save("order-details.pdf");
+
+  //   document.body.removeChild(wrapper);
+  //   setbtnLoading(false);
+  //   document.getElementById("closedeleteModal")?.click();
+
+  // };
+
+  //Final Code
+const downloadPDF = async () => {
+  setbtnLoading(true);
+
+  const originalContent = contentRef.current;
+  if (!originalContent) return;
+
+  // 1. Clone the node
+  const clone = originalContent.cloneNode(true) as HTMLElement;
+
+  // 2. Gather all stylesheets
+  const styleSheets = Array.from(document.styleSheets)
+    .map((styleSheet) => {
+      try {
+        const ownerNode = styleSheet.ownerNode;
+        if (ownerNode && ownerNode instanceof Element) {
+          return ownerNode.outerHTML;
+        }
+        return "";
+      } catch {
+        return "";
       }
-      return "";
-    } catch {
-      return "";
-    }
-  })
+    })
+    .join("");
 
-      .join("");
-
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = styleSheets;
-    wrapper.appendChild(clone);
-
-    // 2. Append wrapper to body off-screen
-    wrapper.style.position = "absolute";
-    wrapper.style.left = "-9999px";
-    document.body.appendChild(wrapper);
-
-    // 3. Wait for images to load
-    const images = clone.querySelectorAll("img");
-    await Promise.all(
-      Array.from(images).map(img =>
-        new Promise(resolve => {
+  // 3. Wait for all images to load
+  const images = clone.querySelectorAll("img");
+  await Promise.all(
+    Array.from(images).map(
+      (img) =>
+        new Promise((resolve) => {
           if (img.complete) resolve(true);
           img.onload = () => resolve(true);
           img.onerror = () => resolve(true);
         })
-      )
-    );
+    )
+  );
 
-    // 4. Use html2canvas with CORS to handle external images
-    const canvas = await html2canvas(clone, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#fff"
-    });
+  // 4. Calculate center position for popup
+  const popupWidth = 900;
+  const popupHeight = 700;
+  const left = window.screenX + (window.outerWidth - popupWidth) / 2;
+  const top = window.screenY + (window.outerHeight - popupHeight) / 2;
 
-    const imgData = canvas.toDataURL("image/png");
+  const printWindow = window.open(
+    "",
+    "_blank",
+    `width=${popupWidth},height=${popupHeight},left=${left},top=${top}`
+  );
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+  if (!printWindow) {
+    alert("Popup blocked. Please allow popups to print.");
+    setbtnLoading(false);
+    return;
+  }
 
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pageWidth;
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  // 5. Write styles and content to the print window
+  printWindow.document.open();
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Invoice</title>
+        ${styleSheets}
+        <style>
+          body {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            background: white;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            position: relative;
+            min-height: 100vh;
+          }
 
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save("order-details.pdf");
+          .not-print {
+            display: block;
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+          }
 
-    document.body.removeChild(wrapper);
-  };
+          @media print {
+            .not-print {
+              display: none !important;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        ${clone.outerHTML}
+        <script>
+          window.onload = function() {
+            window.focus();
+            window.print();
+            window.onafterprint = function() {
+              window.close();
+            };
+          };
+        </script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+
+  setbtnLoading(false);
+  document.getElementById("closedeleteModal")?.click();
+};
+
+
 
     return (
         <>
@@ -745,8 +871,7 @@ const contentRef = useRef<HTMLDivElement>(null);
                                                             <td className="action-buttons">
                                                               
                                                                     <div className="actionView-tooltip-container">
-                                                         <button 
-onClick={() => {
+                                                         <button onClick={()=> {
                                                                         setOrderID({
                                                                             id: listData?.id,
                                                                             name: listData?.name,
@@ -762,7 +887,7 @@ onClick={() => {
                                                                         });
                                                                         setProduct(listData?.Products);
                                                                     }} 
-data-bs-toggle="modal" data-bs-target="#exampleModal" className="btn-3 vendorbtn-view" type="button">
+                                                                  data-bs-toggle="modal" data-bs-target="#exampleModal" className="btn-3 vendorbtn-view" type="button">
                                                             <span className="btn-inner--icon"><i className="fa-solid fa-eye"></i></span>
                                                          </button>&nbsp;
                                                          <div className="actionView-tooltip-text">
@@ -772,7 +897,8 @@ data-bs-toggle="modal" data-bs-target="#exampleModal" className="btn-3 vendorbtn
 
                                                                 <div className="actionEdit-tooltip-container">
                                                          <button 
-onClick={()=>{
+                                                        //  data-bs-toggle="modal" data-bs-target="#vendordelete"
+                                                            onClick={()=>{
                                                                 setOrderID({
                                                                             id: listData?.id,
                                                                             name: listData?.name,
@@ -789,13 +915,13 @@ onClick={()=>{
                                                                         setProduct(listData?.Products);
                                                                         setTimeout(() => {
                                                                             downloadPDF();
-                                                                        }, 1000);
+                                                                        }, 100);
                                                                             }}
-className="btn-3 vendorbtn-edit" type="button">
-                                                            <span className="btn-inner--icon"><i className="fa-solid fa-file-pdf"></i></span>
+                                                                        className="btn-3 vendorbtn-edit" type="button">
+                                                            <span className="btn-inner--icon"><i className="fa-solid fa-print"></i></span>
                                                          </button>&nbsp;
                                                          <div className="actionEdit-tooltip-text">
-                                                            Pdf
+                                                            Print
                                                          </div>
                                                       </div>
                                                             {/* <div className="actionEdit-tooltip-container">
@@ -838,6 +964,7 @@ className="btn-3 vendorbtn-edit" type="button">
                                                      ))}
                                                 </tbody>
                                             </table>
+                                           
                                             {orderlist.length === 0 ? "" :
                                                                      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }} className="store-pagination">
                                                                          <Pagination>
@@ -855,6 +982,7 @@ className="btn-3 vendorbtn-edit" type="button">
                             </div>
                         </div>
                     </div>
+
                     {/* {shopopup && (
                         <div
                             className="modal fade"
@@ -978,13 +1106,13 @@ className="btn-3 vendorbtn-edit" type="button">
                                                             alt="Product"
                                                             className="circle-img"
                                                         />
-                                                        <div className="circle-text">
+                                                        <div className="circle-text pb-4">
                                                             <p className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-signature"></i> Product Name : </span> {item?.name || "-"}</p>
-                                                            <p  className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-ring"></i> Brand : </span> {item?.brand || "-"}</p>
+                                                            {/* <p  className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-ring"></i> Brand : </span> {item?.brand || "-"}</p>
                                                         <p className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-coins"></i> Currency : </span> { item?.currency || "-"}</p>
-                                                        <p className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-cubes"></i> Availability : </span> {item?.availability || "-"}</p>
+                                                        <p className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-cubes"></i> Availability : </span> {item?.availability || "-"}</p> */}
                                                         <p className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-money-bill-wave"></i> Price : </span> {item?.price || "-"} </p>
-                                                        <div className='d-flex justify-content-between mt-2'>
+                                                        {/* <div className='d-flex justify-content-between mt-2'>
                                                             <div className='row'>
                                                                 <hr style={{background: "#626262",height: "1.35px"}}/>
                                                                 <div className="col-md-6">
@@ -996,7 +1124,7 @@ className="btn-3 vendorbtn-edit" type="button">
                                                                 <div className="col-md-6">
                                                                 <p className='grayFont m-0 mb-1'><span className='fw-bold'><i className="prodView-icon fa-solid fa-map-location-dot"></i> Address: </span> {item?.address || "-"}</p></div>
                                                         </div>
-                                                        </div>
+                                                        </div> */}
                                                         </div>
                                                     </div>
                                                     </div>
@@ -1018,25 +1146,51 @@ className="btn-3 vendorbtn-edit" type="button">
                         </div>
                     </div>
                 </div>
-                                <div className="modal fade" id="exampleModal"   role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                     {/*Order invoice Modal*/}
+                        <div className="modal fade" id="vendordelete" tab-Index="-1" aria-labelledby="vendordeleteLabel" aria-hidden="true">
+                            <div className="modal-dialog modal-dialog-centered">
+                              <div className="modal-content all-modal-content vendor-delete-content">
+                                  <div className=" vendor-delete-header">
+                                    </div>
+                                  <div className="modal-body vendor-delete-body">
+                                    <div className="row">
+                                        <div className="vendor-delete-icon">
+                                          <i className="fa-solid fa-triangle-exclamation"></i>
+                                        </div>
+                                        <h4 className="modal-confirm-head">Are You Sure !</h4>
+                                        <h6 className="modal-confirm-subhead">You want to download this invoice ?</h6>
+                                        </div>
+                                  </div>
+                                  <div className="modal-footer text-center vendor-delete-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closedeleteModal">No</button>&nbsp;
+                                    <button type="button" className="btn btn-primary" disabled={btnloading} onClick={downloadPDF} style={{color:"white"}}>{btnloading ? "Yes..." : "Yes"}</button>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>           
+                {/* Invoice */}
+                 <div className="modal fade" id="exampleModal"   role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
-    <div className="container" style={{ paddingTop: "10px" }} ref={contentRef}>
-      <div className="invoice-container">
+    <div className="" style={{ paddingTop: "10px" }} ref={contentRef}>
+      {/* <div>
+      <p className='text-sm'>{formattedDateTime}</p>
+    </div> */}
+      <div className="invoice-container" style={{border: "1.45px solid #dee2e6",padding: "0% 3% 2%"}}>
         {/* Packing Slip */}
         <div className="row border-bottom">
-          <div className="col-2 invoice-logo">
-            <img src="view/image/logo.png" alt="logo" />
+          <div className="col-5 invoice-logo">
+            <img className="w-25" src={yalliLogo} alt="logo" />
           </div>
-          <div className="col invoice-title">PACKING SLIP</div>
+          <h5 className="col invoice-title d-flex align-items-center" style={{color:"#87171d"}}>PACKING SLIP</h5>
         </div>
 
-        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-xl-4 mt-3">
-          <div className="col">
+        <div className="row  mt-3">
+          <div className="col-4">
             <h5>From:</h5>
             <h5>
               <strong>Yalli Marketing</strong>
             </h5>
-            <p className="mb-0">
+            <p className="mb-0" style={{fontSize: "12px"}}>
               Building No : 3, Darga Complex, Near Pallivasal, Goripallayam, Madurai, Tamilnadu. Pincode - 625002
               <br />
               GST No.: 33CIHPD2878J1Z4
@@ -1044,41 +1198,36 @@ className="btn-3 vendorbtn-edit" type="button">
               <br />
               Email Id : info@yalli.in
             </p>
-            <p>
+            <p style={{fontSize: "12px"}}>
               Phone: <strong>+919025321043</strong>
             </p>
           </div>
-          <div className="col">
+          <div className="col-5">
             <h5>Shipping To:</h5>
-            <p className="mb-0">
-              SENTHIL KUMAR A S
+            <p className="mb-0" style={{fontSize: "12px"}}>
+              Customer Name : {OrderID?.name+","}
               <br />
-              9D/1,ARUMUGA NAGAR
+              Catalog Name : {OrderID?.catalogName+","}
               <br />
-              KALUGUMALAI, Tamil Nadu 628552
+              Address : {OrderID?.address+","}
               <br />
-              India
+              Transaction Id : {OrderID?.transactionId}
             </p>
-            <p className="mb-0">thamaraidigitalkmli@gmail.com</p>
-            <p>09443562349</p>
           </div>
-          <div className="col">
+          <div className="col-3">
             <div className="invoice-order-details">
               <h5>Order Details:</h5>
-              <p>
-                Order No: <strong>934</strong>
-              </p>
-              <p>
-                Items Ordered: <strong>1</strong>
-              </p>
-              <p>
-                Order Date: <strong>16/10/2025</strong>
+              <p className='mb-0' style={{fontSize: "12px"}}>
+                Order No: <strong>{OrderID?.id+","}</strong><br />
+                Items Ordered: <strong>{OrderID?.qty+","}</strong><br />
+                Payment Status: <strong>{OrderID?.paymentStatus+","}</strong><br />
+                Order Date: <strong>{new Date(OrderID?.orderTime).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                })}</strong>
               </p>
             </div>
-          </div>
-          <div className="col">
-            <h5>Goods Verified By:</h5>
-            <div className="invoice-goods-verified"></div>
           </div>
         </div>
       </div>
@@ -1086,21 +1235,22 @@ className="btn-3 vendorbtn-edit" type="button">
       <hr />
 
       {/* Invoice */}
-      <div className="invoice-container">
+    
+      <div className="invoice-container" style={{border: "1.45px solid #dee2e6",padding: "0% 3% 2%"}}>
         <div className="row border-bottom">
-          <div className="col-2 invoice-logo">
-            <img src="view/image/logo.png" alt="logo" />
+          <div className="col-5 invoice-logo">
+            <img className="w-25" src={yalliLogo} alt="logo" />
           </div>
-          <div className="col invoice-title">INVOICE</div>
+          <h5 className="col invoice-title d-flex align-items-center" style={{color:"#87171d"}}>INVOICE</h5>
         </div>
 
-        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-3 mt-2">
-          <div className="col">
+        <div className="row  mt-3">
+          <div className="col-4">
             <h5>From:</h5>
             <h5>
               <strong>Yalli Marketing</strong>
             </h5>
-            <p className="mb-0">
+            <p className="mb-0" style={{fontSize: "12px"}}>
               Building No : 3, Darga Complex, Near Pallivasal, Goripallayam, Madurai, Tamilnadu. Pincode - 625002
               <br />
               GST No.: 33CIHPD2878J1Z4
@@ -1108,86 +1258,90 @@ className="btn-3 vendorbtn-edit" type="button">
               <br />
               Email Id : info@yalli.in
             </p>
-            <p>
+            <p style={{fontSize: "12px"}}>
               Phone: <strong>+919025321043</strong>
             </p>
           </div>
-          <div className="col">
+          <div className="col-5">
             <h5>Billing To:</h5>
-            <p className="mb-0">
-              SENTHIL KUMAR A S
+            <p className="mb-0" style={{fontSize: "12px"}}>
+              Customer Name : {OrderID?.name+","}
               <br />
-              9D/1,ARUMUGA NAGAR
+              Catalog Name : {OrderID?.catalogName+","}
               <br />
-              KALUGUMALAI, Tamil Nadu 628552
+              Address : {OrderID?.address+","}
               <br />
-              India
+              Transaction Id : {OrderID?.transactionId}
             </p>
-            <p className="mb-0">thamaraidigitalkmli@gmail.com</p>
-            <p>09443562349</p>
           </div>
-          <div className="col">
+          <div className="col-3">
             <div className="invoice-order-details">
               <h5>Order Details:</h5>
-              <p>
-                Order No: <strong>934</strong>
-              </p>
-              <p>
-                Items Ordered: <strong>1</strong>
-              </p>
-              <p>
-                Order Date: <strong>16/10/2025</strong>
+              <p className='mb-0' style={{fontSize: "12px"}}>
+                Order No: <strong>{OrderID?.id+","}</strong><br />
+                Items Ordered: <strong>{OrderID?.qty+","}</strong><br />
+                Payment Status: <strong>{OrderID?.paymentStatus+","}</strong><br />
+                Order Date: <strong>{new Date(OrderID?.orderTime).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                })}</strong>
               </p>
             </div>
           </div>
         </div>
 
-        <table className="table table-bordered">
+        <table className="table table-bordered invoice-table">
           <thead>
-            <tr>
-              <th>Product</th>
-              <th className="text-end">Quantity</th>
-              <th className="text-end">Unit Price</th>
-              <th className="text-end">Total</th>
+            <tr >
+              <th className='text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 text-center'>Retailer Id</th>
+              <th className='text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 text-center'>Product</th>
+              <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 text-center">Quantity</th>
+              <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 text-center">Unit Price</th>
+              <th className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 text-center">Total</th>
             </tr>
           </thead>
           <tbody>
+            {products.map((item: any, index) => (
+              <>
             <tr>
-              <td>Rain Coat 2pcs &amp; Rain Pouch 2pcs</td>
-              <td className="text-end">1</td>
-              <td className="text-end">₹200.00</td>
-              <td className="text-end">₹200.00</td>
+              <td className='text-center' style={{fontSize: "12px"}}>{item?.product_retailer_id || "-"}</td>
+              <td className='whitespace-pre-wrap' style={{fontSize: "12px"}}>{item?.name || "-"}</td>
+              <td className="text-center" style={{fontSize: "12px"}}>{1}</td>
+              <td className="text-center" style={{fontSize: "12px"}}>{"₹"+item?.price || "-"}</td>
+              <td className="text-center" style={{fontSize: "12px"}}>{"₹"+item?.price || "-"}</td>
+            </tr>
+            </>))}
+            
+            <tr>
+              <td colSpan={3}></td>
+              <td className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 "><b>Sub-Total</b></td>
+              <td className="text-center" style={{fontSize: "12px"}}>₹{subtotal.toFixed(2)}</td>
             </tr>
             <tr>
-              <td className="text-end">
-                <b>Sub-Total</b>
-              </td>
-              <td className="text-end">₹200.00</td>
+              <td colSpan={3}></td>
+              <td className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 "><b>Free Shipping</b></td>
+              <td className="text-center" style={{fontSize: "12px"}}>₹0.00</td>
             </tr>
             <tr>
-              <td className="text-end">
-                <b>Free Shipping</b>
-              </td>
-              <td className="text-end">₹0.00</td>
+              <td colSpan={3}></td>
+              <td className="text-uppercase vendor-table-head text-xxs font-weight-bolder opacity-7 "><b>Total</b></td>
+              <td className="text-center" style={{fontSize: "12px"}}>₹{subtotal.toFixed(2)}</td>
             </tr>
             <tr>
-              <td className="text-end">
-                <b>Total</b>
-              </td>
-              <td className="text-end">₹200.00</td>
-            </tr>
-            <tr>
-              <td className="text-end">
+              <td colSpan={4} className="text-end invoice-td" style={{ fontStyle: "italic",fontSize: "12px" }}>
                 (Inclusive of Tax)
               </td>
             </tr>
+
           </tbody>
         </table>
       </div>
+       {/* <div className="text-center mt-2" style={{fontSize: "12px"}}>
+          Visit: <a href="https://yalli.in/" target="_blank">https://yalli.in/</a>
+        </div> */}
     </div>
     </div>
-
-
 
             </DashboardLayout>
         </>
