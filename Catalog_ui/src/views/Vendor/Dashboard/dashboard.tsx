@@ -85,7 +85,7 @@ function VendorDashboard() {
                               <FadeLoader color="#36d7b7" />
                            </div>
                         ) : vendorDashcount.length === 0 ? (
-                           <p className="" style={{ textAlign: "center", marginTop: "0px" }}><span>
+                           <p className="" style={{ textAlign: "center", marginTop: "40px" }}><span>
                               <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="120"
                                  height="120"
                                  viewBox="0 0 512 512">
@@ -96,7 +96,7 @@ function VendorDashboard() {
                            <path d="M0 0 C3.25 1.6875 3.25 1.6875 5 5 C5.88295249 10.84394828 6.02726712 15.9835127 3.3125 21.3125 C-2.01996586 24.02903921 -7.15257642 23.87599047 -13 23 C-16.3125 21.3125 -16.3125 21.3125 -18 18 C-18.6037666 13.58355915 -18.81350802 9.3929433 -18 5 C-13.04589661 -1.06852338 -7.42015564 -0.80030973 0 0 Z " fill="#FED6D6" transform="translate(260,336)"/>
                            </svg></span>
                            <p className="table-list-nodata or-text" style={{ textAlign: "center", marginTop: "10px",background:"#f5f5f5" }}>
-                              <span>No data found</span></p>
+                              <span style={{ background:"#f5f5f5" }}>No data found</span></p>
                            </p>
                         ) : (
                            <>
@@ -231,7 +231,7 @@ function VendorDashboard() {
                                              <i className="fa-solid fa-shop text-white"></i>
                                           </div>
                                           <h5 className="grayFont font-weight-bolder mb-0 mt-3">
-                                             {catalogDashcount?.totalCatalogs}
+                                             {catalogDashcount?.totalCatalogs || 0}
                                           </h5>
                                           <span className="vendordash-total">Total Catalog </span>
                                           <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/catalog/details")}}>Manage catalog</p>
@@ -261,7 +261,7 @@ function VendorDashboard() {
                                             <i className="fa-solid fa-bag-shopping text-white"></i>
                                           </div>
                                           <h5 className="grayFont font-weight-bolder mb-0 mt-3">
-                                             {catalogDashcount?.totalProducts}
+                                             {catalogDashcount?.totalProducts || 0}
                                           </h5>
                                           <span className="vendordash-total">Total Product </span>
                                           <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/catalog/product/details")}}>Manage Product</p>
@@ -291,7 +291,7 @@ function VendorDashboard() {
                                             <i className="fa-solid fa-cart-arrow-down text-white"></i>
                                           </div>
                                           <h5 className="grayFont font-weight-bolder mb-0 mt-3">
-                                             {catalogDashcount?.totalOrders}
+                                             {catalogDashcount?.totalOrders || 0}
                                           </h5>
                                           <span className="vendordash-total">Total Order </span>
                                           <p className="text-sm text-start font-weight-bolder mt-auto mb-0 cursor-pointer" onClick={()=>{navigate("/vendor/catalog/orders")}}>Manage Order</p>

@@ -262,8 +262,8 @@ let endpoints = {
 	PRODUCTGET: 'catalog_products/get/:id',
 	PRODUCTIMPORT: 'catalog_products/import',
 	//Order
-	ORDERLIST: '/order/orderlist',
-	ORDERSTATUSUPDATE: '/order/statusUpdate',
+	ORDERLIST: 'order/orderlist',
+	ORDERSTATUSUPDATE: 'order/statusUpdate',
 }
 
 let API_EP_BOOK = {

@@ -250,6 +250,8 @@ function CatalogOrderList() {
     { value: 'Shipped', label: 'Shipped', icon: 'fa-cart-flatbed' },
     { value: 'Delivered', label: 'Delivered', icon: 'fa-truck-ramp-box' },
     { value: 'Returned', label: 'Returned', icon: 'fa-reply-all' },
+    { value: 'Refund Initiated', label: 'Refund Initiated', icon: 'fa-arrows-rotate' },
+    { value: 'Refunded', label: 'Refunded', icon: 'fa-hand-holding-dollar' },
     ];
     const [openDropdownId, setOpenDropdownId] = useState(null);
     const toggleDropdown = (id:any) => {
@@ -630,25 +632,66 @@ const downloadPDF = async () => {
                                                                      ? '#2ecc71':
                                                                      listData?.order_status === 'Returned'
                                                                      ? '#e74c3c': 
+                                                                     listData?.order_status === 'Refunded'
+                                                                     ? '#234C6A': 
+                                                                     listData?.order_status === 'Refund Initiated'
+                                                                     ? '#CD2C58': 
                                                                      'gray'
                                                          }}
                                                       >
                                                          {listData?.order_status==="Ordered"
                                                             ? <div className="d-flex justify-content-evenly align-items-center">
                                                             <span><i className="fa-solid fa-folder-open"></i> Ordered </span>
-                                                            <div className="actionChangeStatus-tooltip-container">
-                                                                <span className="ms-2 position-relative dropdown-wrapper">
+                                                            
+                                                                
+                                                                </div>
+                                                            : listData?.order_status === 'Packed'
+                                                               ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                <span><i className="fa-solid fa-box"></i> Packed </span>
+                                                               </div>
+                                                               : listData?.order_status === 'Dispatched'
+                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-suitcase"></i> Dispatched </span>
+                                                                  </div>
+                                                                  :listData?.order_status === 'Shipped'
+                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-truck"></i> Shipped </span>
+                                                                  </div>
+                                                                  :listData?.order_status === 'Delivered'
+                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-circle-check"></i> Delivered </span>
+                                                                  </div>
+                                                                  :listData?.order_status === 'Returned'
+                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-rotate-left"></i> Returned </span>
+                                                                  </div>
+                                                                  :listData?.order_status === 'Refund Initiated'
+                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-arrows-rotate"></i> Refund Initiated </span>
+                                                                  </div>
+                                                                  :listData?.order_status === 'Refunded'
+                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-hand-holding-dollar"></i> Refunded </span>
+                                                                  </div>: 
+                                                                  <div className="d-flex justify-content-evenly align-items-center">
+                                                                  <span><i className="fa-solid fa-circle-exclamation" style={{color:"#e74c3c"}}></i> Nill </span>
+                                                                  </div>
+                                                                  }
+                                                      </span>
+                                                        </td>
+                                                            <td className="action-buttons">
+                                                              <div className="actionChangeStatus-tooltip-container cursor-pointer"  onClick={() => toggleDropdown(listData.id)}>
+                                                                <span className="ms-2 position-relative dropdown-wrapper" >
                                                                     <i
-                                                                    className="cursor-pointer text-secondary fa-solid fa-repeat vendorbtn-view"
-                                                                    onClick={() => toggleDropdown(listData.id)}
-                                                                    ></i>
+                                                                    className="text-secondary fa-solid fa-repeat vendorbtn-view"
+                                                                    ></i>&nbsp;
                                                                     <ul
                                                                     className={`dropdown-menu statusChange-drop ${openDropdownId === listData.id ? 'show' : ''}`}
                                                                     style={{
                                                                         display: openDropdownId === listData.id ? 'block' : 'none',
                                                                         position: 'absolute',
                                                                         top: '100%',
-                                                                        left: "-60px",
+                                                                        left: "-90px",
                                                                         marginTop:"10px",
                                                                         zIndex: 1000,
                                                                         borderRadius: "5px",
@@ -667,210 +710,10 @@ const downloadPDF = async () => {
                                                                     ))}</ul>
                                                                 </span> 
                                                                         <div className="actionChangeStatus-tooltip-text">
-                                                                            Status <i className="fa-solid fa-arrow-right-arrow-left"></i>
+                                                                            Status
                                                                         </div>
                                                                     </div>
-                                                                
-                                                                </div>
-                                                            : listData?.order_status === 'Packed'
-                                                               ? <div className="d-flex justify-content-evenly align-items-center">
-                                                                <span><i className="fa-solid fa-box"></i> Packed </span>
-                                                               <div className="actionChangeStatus-tooltip-container">
-                                                               <span className="ms-2 position-relative dropdown-wrapper">
-                                                                    <i
-                                                                    className="cursor-pointer text-secondary fa-solid fa-repeat"
-                                                                    onClick={() => toggleDropdown(listData.id)}
-                                                                    ></i>
-                                                                    <ul
-                                                                    className={`dropdown-menu statusChange-drop ${openDropdownId === listData.id ? 'show' : ''}`}
-                                                                    style={{
-                                                                        display: openDropdownId === listData.id ? 'block' : 'none',
-                                                                        position: 'absolute',
-                                                                        top: '100%',
-                                                                        left: "-60px",
-                                                                        marginTop:"10px",
-                                                                        zIndex: 1000,
-                                                                        borderRadius: "5px",
-                                                                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
-                                                                    }}
-                                                                    >
-                                                                    {statusOptions.map((option) => (
-                                                                        <li key={option.value}>
-                                                                        <a
-                                                                            className="dropdown-item cursor-pointer"
-                                                                            onClick={() => handleOrderStatusUpdateAPI(listData.id, option.value)}
-                                                                        >
-                                                                            <i className={`fa-solid ${option.icon} me-2`}></i> {option.label}
-                                                                        </a>
-                                                                        </li>
-                                                                    ))}</ul>
-                                                                </span>
-                                                                <div className="actionChangeStatus-tooltip-text">
-                                                                            Status <i className="fa-solid fa-arrow-right-arrow-left"></i>
-                                                                        </div>
-                                                                    </div>
-                                                               </div>
-                                                               : listData?.order_status === 'Dispatched'
-                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
-                                                                  <span><i className="fa-solid fa-suitcase"></i> Dispatched </span>
-                                                                  <div className="actionChangeStatus-tooltip-container">
-                                                                  <span className="ms-2 position-relative dropdown-wrapper">
-                                                                    <i
-                                                                    className="cursor-pointer text-secondary fa-solid fa-repeat"
-                                                                    onClick={() => toggleDropdown(listData.id)}
-                                                                    ></i>
-                                                                    <ul
-                                                                    className={`dropdown-menu statusChange-drop ${openDropdownId === listData.id ? 'show' : ''}`}
-                                                                    style={{
-                                                                        display: openDropdownId === listData.id ? 'block' : 'none',
-                                                                        position: 'absolute',
-                                                                        top: '100%',
-                                                                        left: "-60px",
-                                                                        marginTop:"10px",
-                                                                        zIndex: 1000,
-                                                                        borderRadius: "5px",
-                                                                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
-                                                                    }}
-                                                                    >
-                                                                    {statusOptions.map((option) => (
-                                                                        <li key={option.value}>
-                                                                        <a
-                                                                            className="dropdown-item cursor-pointer"
-                                                                            onClick={() => handleOrderStatusUpdateAPI(listData.id, option.value)}
-                                                                        >
-                                                                            <i className={`fa-solid ${option.icon} me-2`}></i> {option.label}
-                                                                        </a>
-                                                                        </li>
-                                                                    ))}</ul>
-                                                                </span>
-                                                                <div className="actionChangeStatus-tooltip-text">
-                                                                            Status <i className="fa-solid fa-arrow-right-arrow-left"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                  </div>
-                                                                  :listData?.order_status === 'Shipped'
-                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
-                                                                  <span><i className="fa-solid fa-truck"></i> Shipped </span>
-                                                                  <div className="actionChangeStatus-tooltip-container">
-                                                                  <span className="ms-2 position-relative dropdown-wrapper">
-                                                                    <i
-                                                                    className="cursor-pointer text-secondary fa-solid fa-repeat"
-                                                                    onClick={() => toggleDropdown(listData.id)}
-                                                                    ></i>
-                                                                    <ul
-                                                                    className={`dropdown-menu statusChange-drop ${openDropdownId === listData.id ? 'show' : ''}`}
-                                                                    style={{
-                                                                        display: openDropdownId === listData.id ? 'block' : 'none',
-                                                                        position: 'absolute',
-                                                                        top: '100%',
-                                                                        left: "-60px",
-                                                                        marginTop:"10px",
-                                                                        zIndex: 1000,
-                                                                        borderRadius: "5px",
-                                                                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
-                                                                    }}
-                                                                    >
-                                                                    {statusOptions.map((option) => (
-                                                                        <li key={option.value}>
-                                                                        <a
-                                                                            className="dropdown-item cursor-pointer"
-                                                                            onClick={() => handleOrderStatusUpdateAPI(listData.id, option.value)}
-                                                                        >
-                                                                            <i className={`fa-solid ${option.icon} me-2`}></i> {option.label}
-                                                                        </a>
-                                                                        </li>
-                                                                    ))}</ul>
-                                                                </span>
-                                                                <div className="actionChangeStatus-tooltip-text">
-                                                                            Status <i className="fa-solid fa-arrow-right-arrow-left"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                  </div>
-                                                                  :listData?.order_status === 'Delivered'
-                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
-                                                                  <span><i className="fa-solid fa-circle-check"></i> Delivered </span>
-                                                                  <div className="actionChangeStatus-tooltip-container">
-                                                                  <span className="ms-2 position-relative dropdown-wrapper">
-                                                                    <i
-                                                                    className="cursor-pointer text-secondary fa-solid fa-repeat"
-                                                                    onClick={() => toggleDropdown(listData.id)}
-                                                                    ></i>
-                                                                    <ul
-                                                                    className={`dropdown-menu statusChange-drop ${openDropdownId === listData.id ? 'show' : ''}`}
-                                                                    style={{
-                                                                        display: openDropdownId === listData.id ? 'block' : 'none',
-                                                                        position: 'absolute',
-                                                                        top: '100%',
-                                                                        left: "-60px",
-                                                                        marginTop:"10px",
-                                                                        zIndex: 1000,
-                                                                        borderRadius: "5px",
-                                                                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
-                                                                    }}
-                                                                    >
-                                                                    {statusOptions.map((option) => (
-                                                                        <li key={option.value}>
-                                                                        <a
-                                                                            className="dropdown-item cursor-pointer"
-                                                                            onClick={() => handleOrderStatusUpdateAPI(listData.id, option.value)}
-                                                                        >
-                                                                            <i className={`fa-solid ${option.icon} me-2`}></i> {option.label}
-                                                                        </a>
-                                                                        </li>
-                                                                    ))}</ul>
-                                                                </span>
-                                                                <div className="actionChangeStatus-tooltip-text">
-                                                                            Status <i className="fa-solid fa-arrow-right-arrow-left"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                  </div>
-                                                                  :listData?.order_status === 'Returned'
-                                                                  ? <div className="d-flex justify-content-evenly align-items-center">
-                                                                  <span><i className="fa-solid fa-rotate-left"></i> Returned </span>
-                                                                  <div className="actionChangeStatus-tooltip-container">
-                                                                  <span className="ms-2 position-relative dropdown-wrapper">
-                                                                    <i
-                                                                    className="cursor-pointer text-secondary fa-solid fa-repeat"
-                                                                    onClick={() => toggleDropdown(listData.id)}
-                                                                    ></i>
-                                                                    <ul
-                                                                    className={`dropdown-menu statusChange-drop ${openDropdownId === listData.id ? 'show' : ''}`}
-                                                                    style={{
-                                                                        display: openDropdownId === listData.id ? 'block' : 'none',
-                                                                        position: 'absolute',
-                                                                        top: '100%',
-                                                                        left: "-60px",
-                                                                        marginTop:"10px",
-                                                                        zIndex: 1000,
-                                                                        borderRadius: "5px",
-                                                                        boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px"
-                                                                    }}
-                                                                    >
-                                                                    {statusOptions.map((option) => (
-                                                                        <li key={option.value}>
-                                                                        <a
-                                                                            className="dropdown-item cursor-pointer"
-                                                                            onClick={() => handleOrderStatusUpdateAPI(listData.id, option.value)}
-                                                                        >
-                                                                            <i className={`fa-solid ${option.icon} me-2`}></i> {option.label}
-                                                                        </a>
-                                                                        </li>
-                                                                    ))}</ul>
-                                                                </span>
-                                                                <div className="actionChangeStatus-tooltip-text">
-                                                                            Status <i className="fa-solid fa-arrow-right-arrow-left"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                  </div>: 
-                                                                  <div className="d-flex justify-content-evenly align-items-center">
-                                                                  <span><i className="fa-solid fa-circle-exclamation" style={{color:"#e74c3c"}}></i> Nill </span>
-                                                                  </div>
-                                                                  }
-                                                      </span>
-                                                        </td>
-                                                            <td className="action-buttons">
-                                                              
-                                                                    <div className="actionView-tooltip-container">
+                                                                    <div className="actionView-tooltip-container cursor-pointer">
                                                          <button onClick={()=> {
                                                                         setOrderID({
                                                                             id: listData?.id,
@@ -894,7 +737,7 @@ const downloadPDF = async () => {
                                                             View
                                                          </div>
                                                       </div>
-
+                                                              
                                                                 <div className="actionEdit-tooltip-container">
                                                          <button 
                                                         //  data-bs-toggle="modal" data-bs-target="#vendordelete"
