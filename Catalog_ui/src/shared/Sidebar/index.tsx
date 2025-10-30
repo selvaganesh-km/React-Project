@@ -53,7 +53,7 @@ function Sidebar() {
   const isContactRoute = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"].includes(location.pathname);
   const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/custom-campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/smscampaign-create","/vendor/create-campaign"].some(path => location.pathname.startsWith(path));
   const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"].includes(location.pathname);
-  const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].some(path => location.pathname.startsWith(path));
+  const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/pending-orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].some(path => location.pathname.startsWith(path));
   const [isDropdownOpen, setDropdownOpen] = useState(isStoreRoute);
   const [isDropdownOpen1, setDropdownOpen1] = useState(isContentHubRoute);
   const [isDropdownOpen2, setDropdownOpen2] = useState(isContactRoute);
@@ -95,7 +95,7 @@ function Sidebar() {
     const validRoutes3 = ["/vendor/chat-bot", "/vendor/chat-bot/flow"];
     const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"];
     const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/smscampaign-create","/vendor/create-campaign","/vendor/custom-campaign"];
-    const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images","/vendor/catalog/product/images"];
+    const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/pending-orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images","/vendor/catalog/product/images"];
     const allowedPaths = ["/vendor/catalog/product/create","/vendor/catalog/product/details","/vendor/catalog/product/edit"];
 
 const isAllowed = allowedPaths.some((path) =>
@@ -364,7 +364,7 @@ if (!isAllowed) {
               </li>
               <li className="nav-item">
                 <Link
-                  className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images"]
+                  className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/pending-orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images"]
                     .some(path => {
                     const isActive = location.pathname.startsWith(path);
                     return isActive;
@@ -435,6 +435,35 @@ if (!isAllowed) {
                       <div className="icon icon-shape vendorsidebar-child icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <svg width="13px" height="13px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M24 0C10.7 0 0 10.7 0 24S10.7 48 24 48l45.5 0c3.8 0 7.1 2.7 7.9 6.5l51.6 271c6.5 34 36.2 58.5 70.7 58.5L488 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-288.3 0c-11.5 0-21.4-8.2-23.6-19.5L170.7 288l288.5 0c32.6 0 61.1-21.8 69.5-53.3l41-152.3C576.6 57 557.4 32 531.1 32L360 32l0 102.1 23-23c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-64 64c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l23 23L312 32 120.1 32C111 12.8 91.6 0 69.5 0L24 0zM176 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm336-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"/></svg>                      </div>
                       <span className="nav-link-text ms-1 grayFont">Order</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className={`mt-2 nav-link ${["/vendor/catalog/pending-orders"].includes(location.pathname) ? "active" : ""
+                        }`}
+                      to={"/vendor/catalog/pending-orders"}
+                    >
+                      <div className="icon icon-shape vendorsidebar-child icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="18px" height="18px" viewBox="0 0 576 512">
+
+<g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+stroke="none">
+<path d="M1145 4435 l-1080 -624 0 -1251 0 -1252 1081 -624 1082 -624 296 171
+295 171 -53 76 c-136 195 -216 418 -235 659 -34 430 128 831 454 1121 169 150
+389 262 609 308 227 48 537 28 729 -47 26 -11 52 -19 57 -19 7 0 9 237 8 657
+l-3 658 -315 182 c-173 100 -335 193 -360 207 l-46 25 -1079 -624 -1080 -623
+-3 -297 c-1 -171 -6 -295 -11 -293 -5 2 -165 93 -355 203 l-346 200 0 300 0
+300 1075 620 c591 341 1073 624 1072 629 -2 7 -703 417 -710 416 -1 0 -488
+-281 -1082 -625z"/>
+<path d="M3750 2424 c-522 -67 -926 -435 -1036 -944 -24 -113 -24 -362 0 -468
+54 -243 162 -440 331 -608 384 -381 989 -450 1448 -166 648 401 757 1298 223
+1837 -169 170 -371 280 -608 331 -73 15 -291 26 -358 18z m181 -273 l24 -19 0
+-461 0 -460 -23 -23 c-22 -23 -24 -23 -327 -23 -301 0 -305 0 -327 22 -33 33
+-30 89 6 119 27 24 29 24 267 24 l239 0 0 395 0 396 25 24 c30 31 83 33 116 6z"/>
+</g>
+</svg>                      </div>                      
+                      <span className="nav-link-text ms-1 grayFont">Pending Order</span>
                     </Link>
                   </li>
                 </ul>

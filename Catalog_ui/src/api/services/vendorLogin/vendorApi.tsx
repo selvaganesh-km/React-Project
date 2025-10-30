@@ -232,6 +232,7 @@ const productStatusChangeAPI = API_EP_BOOK.PRODUCT_STATUS_CHANGE_API_EP;
 
 //Order
 const OrderListAPI = API_EP_BOOK.ORDER_LIST_API_EP;
+const OrderPendingAPI = API_EP_BOOK.ORDER_PENDING_API_EP;
 const OrderStatusUpdateAPI = API_EP_BOOK.ORDER_STATUS_UPDATE_API_EP;
 
 const VendorAPI = {
@@ -1726,6 +1727,12 @@ const VendorAPI = {
         const requestAPIData = {
             bodyData: apiData
         }; const getResponse = API(OrderListAPI, requestAPIData);
+        return getResponse;
+    },
+    OrderPendingAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(OrderPendingAPI, requestAPIData);
         return getResponse;
     },
     OrderStatusUpdateAPI: function (apiData: any) {

@@ -39,6 +39,7 @@ import Catalog_Settings from "./views/Vendor/Catalog-setup/catalog-setup";
 import CatalogOrderList from "./views/Vendor/Catalog-Management/Orders";
 import ProductImages from "./views/Vendor/Catalog-Management/Product-Images";
 import Catalog_Bot from "./views/Vendor/Catalog-Bot/catalog-bot";
+import PendingOrder from "./views/Vendor/Catalog-Management/Pending-Order";
 
 
 function App() {
@@ -93,6 +94,7 @@ function App() {
         <Route path="/vendor/catalog/product/details" element={<CatalogProductList />} />
         <Route path="/vendor/catalog/product/images" element={<ProductImages />} />
         <Route path="/vendor/catalog/orders" element={<CatalogOrderList />} />
+        <Route path="/vendor/catalog/pending-orders" element={<PendingOrder />} />
         <Route path="/vendor/catalog/product/create" element={<CatalogProductCreate/>} />
         <Route path="/vendor/catalog/product/edit/:id" element={<CatalogProductCreate/>} />
       </Routes>

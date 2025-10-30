@@ -263,6 +263,7 @@ let endpoints = {
 	PRODUCTIMPORT: 'catalog_products/import',
 	//Order
 	ORDERLIST: 'order/orderlist',
+	ORDERPENDING: 'order/pendingorders',
 	ORDERSTATUSUPDATE: 'order/statusUpdate',
 }
 
@@ -959,6 +960,9 @@ let API_EP_BOOK = {
 	//Order
     ORDER_LIST_API_EP: {
         url: endpoints.ORDERLIST, method: 'POST', authorization: true
+    },
+    ORDER_PENDING_API_EP: {
+        url: endpoints.ORDERPENDING, method: 'POST', authorization: true
     },
     ORDER_STATUS_UPDATE_API_EP: {
         url: endpoints.ORDERSTATUSUPDATE, method: 'POST', authorization: true
