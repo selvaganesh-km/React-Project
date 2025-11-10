@@ -159,7 +159,6 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
 const handleUploadImg = async () => {
     setSubmit(true);
-    
   if (previewFiles.length === 0) {
     // toast.error("Please upload at least one file.");
     return;
@@ -656,7 +655,7 @@ useEffect(() => {
                   <p className="dynamic-message mt-2 mb-n1 tblName">
                     Drop Anywhere to Import
                   </p>
-                  <label className="label text-primary">
+                  <label className="label tblName">
                     or{" "}
                     <span className="browse-files">
                       <input
@@ -668,10 +667,10 @@ useEffect(() => {
                         accept="image/*,video/*"
                         style={{ display: "none" }}
                       />
-                      <span className="browse-files-text">
+                      <span className="browse-files-text text-dark">
                         browse file
                       </span>{" "}
-                      <span>from device</span>
+                      <span className="tblName">from device</span>
                     </span>
                   </label>
                 </div>
@@ -785,7 +784,7 @@ useEffect(() => {
             <div className="product-card">
               <button
                 type="button"
-                className="close-icon"
+                className="prdclose-icon"
                 aria-label="Close"
                 data-bs-dismiss="modal"
                  onClick={() => {

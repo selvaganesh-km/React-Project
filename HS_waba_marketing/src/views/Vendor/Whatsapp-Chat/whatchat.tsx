@@ -121,7 +121,8 @@ const WhatsApp_Chat: React.FC = () => {
     const [campaignOpt, setcampaignOpt] = useState(false);
     const [readCount, setreadCount] = useState(false);
     const chatBodyRef = useRef<HTMLDivElement>(null);
-
+    const [showAll, setShowAll] = useState(false);
+    
     const scrollToTop = () => {
         chatBodyRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -526,11 +527,11 @@ const handleChatList = (to: any, isManual = true) => {
     //   top: document.body.scrollHeight,
     //   behavior: 'smooth',
     // });
-    // scrollToBottom();
+    scrollToBottom();
     }
-if (isManual) {
-            scrollToBottom();  // <-- Only scroll if manually triggered
-        }
+// if (isManual) {
+//             scrollToBottom();  
+//         }
     // Update previousToRef
     previousToRef.current = to;
 
@@ -569,9 +570,7 @@ if (isManual) {
   
     const idSetRef = useRef(false);
     const handleContactSideList = (page:any,search:string) => {
-            setLoading(true);
             setsidelistLoading(true);
-
             const apiData = {
                 pageIndex:"0",
                 dataLength:siderecordsPerPage,
@@ -581,7 +580,7 @@ if (isManual) {
             .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
                 setLoading(false)
-                // setsidelistLoading(false)
+                setsidelistLoading(false)
                 const messageData = responseData.responseData.MessageData;
                 if (contactDetailsValue && Object.keys(contactDetailsValue).length > 0) {
                 const newContact = {
@@ -625,12 +624,12 @@ if (isManual) {
                }
             //    toast.error(responseData.apiStatus.message);
                setLoading(false)
-            //    setsidelistLoading(false)
+               setsidelistLoading(false)
             }
          })
          .catch((error: any) => {
             setLoading(false)
-            // setsidelistLoading(false)
+            setsidelistLoading(false)
             console.error("Error while fetching contact sidelist details:", error);
             toast.error("An error occurred while fetching contact sidelist details.");
          });
@@ -1038,7 +1037,7 @@ const handleChatClear = () => {
         }, 100);
         return () => clearTimeout(timer);
         } else {
-            handleContactSideList(siderecordsPerPage, debouncedSearch);
+            // handleContactSideList(siderecordsPerPage, debouncedSearch);
         }
     }, [debouncedSearch, siderecordsPerPage, to]);
     useEffect(() => {
@@ -1462,18 +1461,19 @@ const handleChatClear = () => {
                                                         {listData?.messageBody?.templateText ? 
                                                             <span className="p-2 chat-msg-2 position-relative d-inline-block text-start">
                                                             <div className="text-end text-xxs p-0">
-                                                                <i className="fa-solid fa-bullhorn" style={{color:"#00acf0"}}></i>
+                                                                <i className="fa-solid fa-bullhorn" style={{color:"#004aad"}}></i>
                                                             </div>
-                                                            <span
+                                                            {/* <span
                                                                 style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', background: "gainsboro", borderRadius:"5px" }}
                                                                 className="w-100">
                                                                 {(() => {
                                                                     const mediaUrl = listData.messageBody.templateText.headerImage || listData.messageBody.MessageMedia;
                                                                     const isWhatsAppCDNImage = mediaUrl?.includes('scontent.whatsapp.net') && mediaUrl.includes('.jpg');
+                                                                    if (!mediaUrl) return null;
                                                                     if (mediaUrl?.match(/\.(mp4)$/i)|  mediaUrl?.includes('whatsapp.net')) {
                                                                         return <video controls className="w-80" src={mediaUrl} />;
                                                                     }
-                                                                    if (mediaUrl?.match(/\.(jpeg|jpg|png)$/i) || isWhatsAppCDNImage) {
+                                                                    if (mediaUrl?.match(/\.(jpeg|jpg|png)$/i) || mediaUrl.includes("scontent.whatsapp.net")) {
                                                                         return <img className="w-50" src={mediaUrl} alt="media" />;
                                                                     }
                                                                     if (mediaUrl?.match(/\.(pdf|docx)$/i)) {
@@ -1492,7 +1492,63 @@ const handleChatClear = () => {
                                                                     return null;
                                                                     })()}
 
-                                                            </span>
+                                                            </span> */}
+                                                            <span
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "gainsboro",
+    borderRadius: "5px",
+  }}
+  className="w-100"
+>
+  {(() => {
+    const mediaUrl =
+      listData.messageBody.templateText.headerImage ||
+      listData.messageBody.MessageMedia;
+
+    if (!mediaUrl) return null;
+
+    // Video check (mp4 only)
+    if (mediaUrl.match(/\.(mp4)$/i)) {
+      return <video controls className="w-80" src={mediaUrl} />;
+    }
+
+    // Image check (jpg, jpeg, png)
+    if (mediaUrl.match(/\.(jpeg|jpg|png)$/i)) {
+      return <img className="w-50" src={mediaUrl} alt="media" />;
+    }
+
+    // WhatsApp CDN fallback (guess content type)
+    if (mediaUrl.includes("scontent.whatsapp.net")) {
+      // If URL has ".mp4" somewhere, treat as video
+      if (mediaUrl.match(/\.mp4/i)) {
+        return <video controls className="w-80" src={mediaUrl} />;
+      }
+      // Otherwise treat as image
+      return <img className="w-50" src={mediaUrl} alt="media" />;
+    }
+
+    // PDF / DOCX check
+    if (mediaUrl.match(/\.(pdf|docx)$/i)) {
+      return (
+        <a
+          href={mediaUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-50 text-center"
+          style={{ color: "#007bff", textDecoration: "underline" }}
+        >
+          <i className="fa fa-3x fa-file-alt text-white"></i>
+        </a>
+      );
+    }
+
+    return null;
+  })()}
+</span>
+
                                                             <div className="px-2 pt-2 bg-whatsapp fw-bold">
                                                                 {typeof listData.messageBody.templateText.headerText === 'string'
                                                                 ? listData.messageBody.templateText.headerText
@@ -1637,34 +1693,35 @@ const handleChatClear = () => {
                                                                 </span>
                                                             )}
                                                             <div className="template-buttontxt bg-white">
-                                                                
-                                                                {listData.messageBody.templateText.buttons?.map((button:any, idx:any) => {
-                                                                let icon = null;
-                                                                let url = null;
-                                                                switch (button.type) {
-                                                                    case 'QUICK_REPLY':
-                                                                    icon = <i className="fa-solid fa-reply bt-1"></i>;
-                                                                    break;
-                                                                    case 'PHONE_NUMBER':
-                                                                    icon = <i className="fa-solid fa-phone"></i>;
-                                                                    break;
-                                                                    case 'COPY_CODE':
-                                                                    icon = <i className="fa-solid fa-copy"></i>;
-                                                                    break;
-                                                                    case 'URL':
-                                                                    icon = <i className="fa-solid fa-square-arrow-up-right"></i>;
-                                                                    break;
-                                                                    default:
-                                                                    icon = null;
-                                                                }
-                                                                const text = typeof button.text === 'string' ? button.text : JSON.stringify(button.text);
-                                                                return (
-                                                                    <a key={idx} href={button.url} target="blank" className="border-top m-0 p-2 template-buttontxt button-option-style text-center d-block">
-                                                                    {icon} {text} 
+                                                                {(listData.messageBody.templateText.buttons || []).slice(0, showAll ? undefined : 3).map((button:any, idx:any) => (
+                                                                    <a
+                                                                    key={idx}
+                                                                    href={button.type === "URL" ? button.url : button.type === "PHONE_NUMBER" ? `tel:${button.phone_number}` : "#"}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className="border-top m-0 p-2 template-buttontxt button-option-style text-center d-block"
+                                                                    >
+                                                                    {button.type === "QUICK_REPLY" && <i className="fa-solid fa-reply bt-1"></i>}
+                                                                    {button.type === "PHONE_NUMBER" && <i className="fa-solid fa-phone"></i>}
+                                                                    {button.type === "COPY_CODE" && <i className="fa-solid fa-copy"></i>}
+                                                                    {button.type === "URL" && <i className="fa-solid fa-square-arrow-up-right"></i>}
+                                                                    {" "}
+                                                                    {typeof button.text === "string" ? button.text : JSON.stringify(button.text)}
                                                                     </a>
-                                                                );
-                                                                })}
+                                                                ))}
+
+                                                                {(listData.messageBody.templateText.buttons || []).length > 3 && (
+                                                                    <p
+                                                                    className="border-top button-option-style template-previewModal-text text-center p-2"
+                                                                    style={{ cursor: "pointer", fontWeight: 500 }}
+                                                                    onClick={() => setShowAll(prev => !prev)}
+                                                                    >
+                                                                    <i className="fa-solid fa-list-ul"></i>{" "}
+                                                                    {showAll ? "Hide options" : "See all options"}
+                                                                    </p>
+                                                                )}
                                                             </div>
+
                                                             
                                                             <span className="time-footer text-xxs d-block text-end mt-1">
                                                                 {typeof listData.time === 'string' ? formatDate(listData.time) : JSON.stringify(listData.time)}

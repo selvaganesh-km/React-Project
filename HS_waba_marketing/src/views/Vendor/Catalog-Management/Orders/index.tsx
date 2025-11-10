@@ -10,6 +10,11 @@ import DashboardLayout from '../../../../layouts/DashboardLayout';
 import TopNav from '../../../../shared/TopNav';
 import Footer from '../../../../shared/Footer';
 
+import $ from 'jquery';
+import moment from 'moment';
+import 'daterangepicker'; // This attaches to jQuery
+import 'daterangepicker/daterangepicker.css'; // CSS import
+
 type OrderType = {
     id: string;
     name: string;
@@ -21,9 +26,100 @@ type OrderType = {
     orderStatus: string;
     paymentStatus: string;
 };
+
 function CatalogOrderList() {
+const inputRef1 = useRef<HTMLInputElement>(null);
+const handleDivClick = () => {
+    inputRef1.current?.focus();
+  };
+  const handleRefreshClick = () => {
+  setDateRange({ from_date: "", to_date: "" });
+
+   if (inputRef1.current) {
+      const $input = $(inputRef1.current);
+      const drp = $input.data('daterangepicker');
+    if (drp) {
+      // Reset calendar to today or empty dates
+      const today = moment();
+
+      // Example: reset to today, or clear dates if you want
+      drp.setStartDate(today);
+      drp.setEndDate(today);
+
+      // Also update input value accordingly
+        inputRef1.current.value = `${today.format('DD/MM/YYYY')} - ${today.format('DD/MM/YYYY')}`;
+
+
+      // Optional: If you want empty input instead of today:
+      // inputRef1.current.value = '';
+    }
+  }
+};
+
+  useEffect(() => {
+    if (inputRef1.current) {
+      const today = moment();
+      const formattedValue = `${today.format('DD/MM/YYYY')} (${today.format('ddd')})`;
+      inputRef1.current.value = formattedValue;
+
+      // Initialize daterangepicker
+      $(inputRef1.current).daterangepicker(
+        {
+          startDate: today,
+          endDate: today,
+          locale: {
+            format: 'DD/MM/YYYY',
+          },
+        },
+        function (start:any, end:any) {
+          setDateRange({
+            from_date: start.format('YYYY-MM-DD'),
+            to_date: end.format('YYYY-MM-DD'),
+          });
+        }
+      );
+    }
+
+    return () => {
+      if (inputRef1.current) {
+        $(inputRef1.current).data('daterangepicker')?.remove();
+      }
+    };
+  }, []);
+  useEffect(() => {
+  const injectDaterangepickerOverride = () => {
+    const styleId = 'daterangepicker-style-override';
+    let styleEl = document.getElementById(styleId) as HTMLStyleElement | null;
+
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = styleId;
+      document.head.appendChild(styleEl);
+    }
+
+    const css = `
+      .daterangepicker.opensright:before {
+        right: 15px !important;
+        left: auto !important;
+      }
+        .daterangepicker.opensright:after {
+        right: 15px !important;
+        left: auto !important;
+      }
+    `;
+
+    styleEl.innerHTML = css;
+  };
+
+  injectDaterangepickerOverride();
+}, []);
+const [dateRange, setDateRange] = useState({
+  from_date: '',
+  to_date: '',
+});
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [exportLoading, setexportLoading] = useState(false);
     const [submit, setSubmit] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
@@ -36,6 +132,60 @@ function CatalogOrderList() {
     const [orderlist, setOrderList] = useState([]);
     const [OrderID, setOrderID] = useState<OrderType | null>(null);
     const [products, setProduct] = useState([]);
+    const [showBackView, setShowBackView] = useState(false);
+    const [headerName, setheaderName] = useState<any[]>([]);
+    const [headerId, setheaderId] = useState<string[]>([]);
+    const [headerDropDown] = useState<any[]>([
+            {
+                "id": "1",
+                "header_name": "first_name"
+            },
+            {
+                "id": "2",
+                "header_name": "last_name"
+            },
+            {
+                "id": "3",
+                "header_name": "product_name"
+            },
+            {
+                "id": "4",
+                "header_name": "price"
+            },
+            {
+                "id": "5",
+                "header_name": "qty"
+            },
+            {
+                "id": "6",
+                "header_name": "order_status"
+            },
+            {
+                "id": "7",
+                "header_name": "order_time"
+            },
+            {
+                "id": "8",
+                "header_name": "payment_status"
+            },
+            {
+                "id": "9",
+                "header_name": "product_price"
+            },
+            {
+                "id": "10",
+                "header_name": "visibility"
+            },
+            {
+                "id": "11",
+                "header_name": "address"
+            },
+            {
+                "id": "12",
+                "header_name": "phone_no"
+            }
+    ])
+   
     console.log(products, "products")
 
     console.log(OrderID, "ddd")
@@ -171,10 +321,11 @@ function CatalogOrderList() {
                 toast.error("An error occurred while fetching catalog details.");
             });
     }
+    
     useEffect(() => {
-        handlecatalogListAPI();
-        handleOrderListAPI(1, carouselid,debouncedSearch|| null); // Use carouselId if available, otherwise null
-    }, []);
+        // handlecatalogListAPI();
+        handleOrderListAPI(currentPage, carouselid,debouncedSearch|| null); // Use carouselId if available, otherwise null
+    }, [currentPage,debouncedSearch]);
     useEffect(() => {
         const handler = setTimeout(() => {
           setDebouncedSearch(search);
@@ -189,10 +340,11 @@ function CatalogOrderList() {
        const handleOrderListAPI = (page: any, catalogId: any,search:any) => {
           setLoading(true)
           const apiData = {
-           search:search,
+            search:search,
             pageIndex: page -1,
-              dataLength: recordsPerPage
-            
+            dataLength: recordsPerPage,
+            from_date: dateRange.from_date,
+            to_date: dateRange.to_date,
           };
            VendorAPI.OrderListAPI(apiData)
               .then((responseData: any) => {
@@ -241,11 +393,80 @@ function CatalogOrderList() {
     const toggleDropdown = (id:any) => {
         setOpenDropdownId(prevId => (prevId === id ? null : id));
     };
-    useEffect(() => {
+
+    const handleExport = async (name:String) => {
+          setSubmit(true);
+          if (headerName.length === 0) {
+            return;
+         }
+          setexportLoading(true);
+          try {
+             var response;
+             if(name==="headers"){
+             response = await VendorAPI.OrderExportAPI({from_date: dateRange.from_date,to_date: dateRange.to_date,headers:headerName.map(item => item.headers)})
+             }
+             else{
+                response = await VendorAPI.OrderExportAPI({})
+             }
+             const blob = new Blob([response], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+             });
+ 
+             // Validate that blob has size
+             if (blob.size === 0) {
+                throw new Error("Empty file received from server.");
+             }
+             const today = new Date();
+             const formattedDate = `${today.getMonth() + 1}-${today.getDate()}-${today.getFullYear().toString().slice(-2)}`;
+             const fileName = `order_data_${formattedDate}.xlsx`;
+             var url = window.URL.createObjectURL(blob);
+             var link = document.createElement("a");
+             link.href = url;
+             link.setAttribute("download", fileName);
+             document.body.appendChild(link);
+             // link.target="_blank";
+             link.click();
+             setTimeout(function(){
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+             },100);
+             // link.remove();
+             toast.success(`File downloaded: ${fileName}`);
+             setexportLoading(false);
+             setSubmit(false);
+          } catch (error) {
+             setexportLoading(false);
+             setSubmit(false);
+             console.error("Error downloading file:", error);
+             toast.error("Failed to download the file. Please try again.");
+          }
+       };
+
+    const handleSelectGroup = (dropdownValue: any) => {
+    const alreadySelected = headerName.some(item => item.id === dropdownValue.id);
+    console.log(alreadySelected,"alreadySelected")
+    if (alreadySelected) {
+        setheaderName(prev => prev.filter(group => group.id !== dropdownValue.id));
+        console.log(headerName,"setheaderName")
+        setheaderId(prev => prev.filter(id => id !== dropdownValue.id));
+        console.log(headerId,"setheaderId")
+    } else {
+        setheaderName(prev => [...prev, { id: dropdownValue.id, headers: dropdownValue.header_name }]);
+        console.log(headerName,"setheaderName1")
+        setheaderId(prev => [...prev, dropdownValue.id]);
+        console.log(headerId,"setheaderId1")
+    }
+    };
+    console.log(headerName,"HName")
+    const handleSelectHeaderName = (groupDetails: any) => {
+        setheaderName(prev => prev.filter(item => item.id !== groupDetails.id));
+        setheaderId(prev => prev.filter(id => id !== groupDetails.id));
+    };
+    // useEffect(() => {
         // if (selectedCatalogId) {
-            handleOrderListAPI(currentPage, selectedCatalogId,debouncedSearch)
+            // handleOrderListAPI(currentPage, selectedCatalogId,debouncedSearch)
         // }
-    }, [currentPage,debouncedSearch]);
+    // }, [currentPage,debouncedSearch,dateRange]);
     const [isActive, setIsActive] = useState(false);
     const [query, setQuery] = useState('');
      const inputRef = useRef(null);
@@ -274,10 +495,10 @@ function CatalogOrderList() {
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                                     <li className="breadcrumb-item text-sm">
-                                        <Link className="opacity-5 text-dark grayFont" to={"/vendor/dashboard"}>Dashboard</Link>
+                                        <Link className="opacity-5 text-dark" to={"/vendor/dashboard"}>Dashboard</Link>
                                     </li>
                                     <li
-                                        className="breadcrumb-item text-sm text-dark active"
+                                        className="breadcrumb-item text-sm grayFont active"
                                         aria-current="page"
                                     >
                                         Order
@@ -287,12 +508,32 @@ function CatalogOrderList() {
                             </nav>
                         </div>
                         <div className="col-md-6 text-end position-relative d-flex justify-content-end align-items-center">
+                            
                             <div className={`search-box2 ${search ? 'active' : ''}`}>
                                 <input className = "search-text2" type="text" placeholder = "Search Order..." value={search} onChange={(e)=>setSearch(e.target.value)}/>
                                     <a href="#" className = "search-btn2">
                                         <i className="fas fa-search"></i>
                                     </a>
                             </div>
+                            {/* <div className="" >
+                            <span className='sort-calendericon cursor-pointer' onClick={handleDivClick}>📅</span>
+                            <span className="sort-refreshicon cursor-pointer" onClick={()=>{handleRefreshClick();}}><i className="fa-solid fa-arrows-rotate"></i></span>
+                            <input
+                                id="date-range-input"
+                                type="text"
+                                name="dates"
+                                className="sort-input"
+                                ref={inputRef1}
+                                style={{border: '1px solid #ccc',
+                                padding: '8px 12px',
+                                borderRadius: '10px',
+                                display: 'inline-block',
+                                cursor: 'pointer',
+                                minWidth: '230px',}}
+                                defaultValue="00/00/0000 - 00/00/0000"
+                            />
+                            </div>
+                            <button className="ms-3 vendor-crt-btn" data-bs-toggle="modal" data-bs-target="#vendorExport">Export</button> */}
                         </div>
                     </div>
                     <div className="vendor-maincontent container-fluid py-4">
@@ -798,6 +1039,160 @@ function CatalogOrderList() {
                     <Footer />
 
                 </main>
+                {/* Order Export */}
+                <div className="modal fade" id="vendorExport" aria-labelledby="vendorExportLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content all-modal-content">
+
+                        <div className="modal-header vendor-view-header mb-3 d-flex justify-content-between border-0">
+                            <h1 className="modal-title fs-6 text-center" id="vendorExportLabel">Export Order</h1>
+                           {showBackView &&  <button type="button" className="btn btn-primary" aria-label="Back" onClick={() => {setShowBackView(false);setSubmit(false)}}>
+                             Back
+                            </button>}
+                        </div>
+
+                        {exportLoading ? (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: "100px" }}>
+                            <div className="downloadLoad-container">
+                                <span className="download-loader">
+                                <div className="downloadLoad-txt">Loading...</div>
+                                </span>
+                            </div>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="p-0 modal-body text-center">
+                                    <div className={`flip-container ${showBackView ? 'flipped' : ''}`}>
+      <div className="flipper">
+        <div className="front">
+                                <div className="exportwithData">
+                                    <p className="exportwithData-para1">
+                                    Export all order data into an Excel file to keep your records organized.
+                                    </p>
+                                    <div className='d-flex justify-content-between mt-6'>
+                                    <button className="exportwithData-btn" onClick={() => handleExport("")}>
+                                    Export Excel File With Data
+                                    </button>&nbsp;
+                                    <button className="ms-2 exportwithData-btn" onClick={() => setShowBackView(true)}>
+                                    Export With Filter Excel File
+                                    </button>
+                                    </div>
+                                </div>
+                                </div>
+                            <div className="back">
+                                <div className="exportwithData">
+                                    <p className="exportwithData-para1">
+                                    Export selected header order data into an Excel file to keep your records organized.
+                                    </p>
+                                    <div className="login-input-group">
+                                        <div className="vendor-create-container dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <input
+                                            type="text"
+                                            id="vendor-crt-input"
+                                            readOnly
+                                            style={
+                                                submit && headerName.length === 0
+                                                ? { borderColor: "red" }
+                                                : {}
+                                            }
+                                            value={headerName.map(group => group.headers).join(', ')}
+                                            className="vendor-crt-input px-3"
+                                            placeholder=" "
+                                            required
+                                            />
+                                            <label htmlFor="vendor-crt-input" className="vendor-crt-label">
+                                            <i className="fa-solid fa-heading"></i>eaders
+                                            </label>
+                                            <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
+
+                                            <ul className="contatStore-dropdown-menu template-dropdown dropdown-menu">
+                                            {headerDropDown?.map((dropdownValue:any, id:any) => (
+                                                <li key={id}>
+                                                <a
+                                                    className="dropdown-item"
+                                                    href="#"
+                                                    onClick={(e) => {
+                                                    e.preventDefault();
+                                                    handleSelectGroup(dropdownValue);
+                                                    }}
+                                                >
+                                                    {dropdownValue?.header_name}
+                                                </a>
+                                                </li>
+                                            ))}
+                                            </ul>
+                                        </div>
+
+                                        {/* Selected group chips */}
+                                        {headerName.map((item, index) => (
+                                            <div
+                                            className="border mt-1 px-1"
+                                            key={index}
+                                            style={{
+                                                display: 'inline-flex',
+                                                marginBottom: '5px',
+                                                marginRight: '10px',
+                                                borderRadius: '5px',
+                                                alignItems: 'center'
+                                            }}
+                                            >
+                                            <span style={{ marginRight: '4px', fontSize: '10px' }}>
+                                                {item.headers}
+                                            </span>
+                                            <button
+                                                style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                cursor: 'pointer',
+                                                fontSize: '10px',
+                                                color: '#a1a1a1',
+                                                padding: '0'
+                                                }}
+                                                onClick={() => handleSelectHeaderName(item)}
+                                            >
+                                                <i className="fa-solid fa-xmark group-xmark"></i>
+                                            </button>
+                                            </div>
+                                        ))}
+
+                                        {/* Validation message */}
+                                        {submit && headerName.length === 0 && (
+                                            <div className="text-danger error-message-required">Header is required</div>
+                                        )}
+                                        </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+                            
+                            </>
+                        )}
+
+                        {/* Footer only visible in front view */}
+                        {!showBackView ? 
+                            <div className="modal-footer text-end vendor-view-footer">
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>{setheaderName([]);setSubmit(false)}}>Close</button>
+                            </div>
+                        :
+                        <div className="modal-footer text-end vendor-view-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>{setheaderName([]);setSubmit(false);setShowBackView(false)}}>
+                                Close
+                            </button>&nbsp;
+                            
+                            {/* <button className="btn btn-primary me-2" onClick={() => setShowBackView(false)}>
+                                ←
+                                Back
+                            </button>&nbsp; */}
+                            <button className="btn btn-primary me-2" onClick={() => handleExport("headers")}>
+                                Export
+                            </button>
+                            </div>
+                        }
+                        </div>
+                    </div>
+                    </div>
+
                 {/* Order View modal */}
                 <div className="modal fade" id="exampleModal"   role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div className={`modal-dialog modal-dialog-centered ${ products.length === 1 ? "modal-lg" : "modal-xl" }`} role="document" >                        

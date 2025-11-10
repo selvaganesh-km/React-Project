@@ -186,6 +186,11 @@ const commongetMyProfileAPI = API_EP_BOOK.COMMON_GETMYPROFILE_API_EP;
 const commonupdateMyProfileAPI = API_EP_BOOK.COMMON_MYPROFILEUPDATE_API_EP;
 const commonchangePasswordAPI = API_EP_BOOK.COMMON_CHANGE_PASSWORD_API_EP;
 
+//Catalog Reply
+const catalogReplyListAPI = API_EP_BOOK.CATALOG_REPLY_LIST_API_EP;
+const catalogReplyEditAPI = API_EP_BOOK.CATALOG_REPLY_EDIT_API_EP;
+const catalogReplyGetAPI = API_EP_BOOK.CATALOG_REPLY_GET;
+
 //Catalog
 const catalogListAPI = API_EP_BOOK.LIST_CATALOG_API_EP;
 const catalogCreateAPI = API_EP_BOOK.CREATE_CATALOG_API_EP;
@@ -211,6 +216,9 @@ const catalogwhatsappaddPhoneno = API_EP_BOOK.CATALOG_WHATSAPP_ADD_PHONENO;
 const catalogwhatsappSubscription = API_EP_BOOK.CATALOG_WHATSAPP_SUBSCRIPTION;
 const catalogwhatsappwebhookUnsub = API_EP_BOOK.CATALOG_WHATSAPP_WEBHOOK_UNSUB;
 
+//Catalog Enabled
+const catalogEnabled = API_EP_BOOK.CATALOG_ENABLED_API;
+
 
 //Product
 const productListAPI = API_EP_BOOK.PRODUCT_LIST_API_EP;
@@ -227,6 +235,7 @@ const productStatusChangeAPI = API_EP_BOOK.PRODUCT_STATUS_CHANGE_API_EP;
 
 //Order
 const OrderListAPI = API_EP_BOOK.ORDER_LIST_API_EP;
+const OrderExportAPI = API_EP_BOOK.ORDER_EXPORT_API_EP;
 const OrderStatusUpdateAPI = API_EP_BOOK.ORDER_STATUS_UPDATE_API_EP;
 
 const VendorAPI = {
@@ -1453,6 +1462,31 @@ const VendorAPI = {
     },
     // CONTACT_GROUP API'S END
 
+    // CATALOG REPLY API'S START
+    catalogReplyListAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogReplyListAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogReplyEditAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(catalogReplyEditAPI, requestAPIData);
+        return getResponse;
+    },
+    catalogReplyGetAPI: function (id: any) {
+        const url = catalogReplyGetAPI.url.replace(':id', id);
+        const requestAPIData = {
+            url: url,
+            method: catalogReplyGetAPI.method,
+            authorization: catalogReplyGetAPI.authorization
+        };
+
+        return API(requestAPIData)
+    },
+    // CATALOG REPLY API'S END
+
     // CATALOG API'S START
     catalogListAPI: function (apiData: any) {
         const requestAPIData = {
@@ -1601,6 +1635,15 @@ const VendorAPI = {
         };
         return API(requestAPIData);
     },
+    //CatalogEnabled
+    catalogEnabled: function () {
+         const requestAPIData = {
+            url: catalogEnabled.url,
+            method: catalogEnabled.method,
+            authorization: catalogEnabled.authorization,
+        };
+        return API(requestAPIData);
+    },
     // CATALOG API'S END
 
     // PRODUCT API'S START
@@ -1689,6 +1732,12 @@ const VendorAPI = {
         const requestAPIData = {
             bodyData: apiData
         }; const getResponse = API(OrderListAPI, requestAPIData);
+        return getResponse;
+    },
+    OrderExportAPI: function (apiData: any) {
+        const requestAPIData = {
+            bodyData: apiData
+        }; const getResponse = API(OrderExportAPI, requestAPIData);
         return getResponse;
     },
     OrderStatusUpdateAPI: function (apiData: any) {

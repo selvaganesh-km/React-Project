@@ -6,7 +6,8 @@ import { toast } from 'react-toastify';
 import VendorAPI from '../../api/services/vendorLogin/vendorApi';
 
 function Sidebar() {
-  const [wappCount, setwappCount] = useState("")
+  const [wappCount, setwappCount] = useState("");
+  const [isEnabled, setisEnabled] = useState("");
   const handleGetWappCount = () => {
     VendorAPI.sideListWappAPI()
         .then((responseData: any) => {
@@ -22,8 +23,27 @@ function Sidebar() {
           console.error("Error during login:", error);
         });
   };
+  const handlecatalogEnabled = () => {
+    VendorAPI.catalogEnabled()
+        .then((responseData: any) => {
+          if (responseData.apiStatus.code === '200') {
+            setisEnabled(responseData?.responseData?.is_enabled);
+            console.log(responseData,"Respo")
+          }
+          else if(responseData?.apiStatus?.code==="404") {
+            setisEnabled("")
+          }
+        })
+        .catch((error: any) => {
+          console.error("Error during login:", error);
+        });
+  };
   useEffect(() => {
-    handleGetWappCount();
+    location.pathname.startsWith("/vendor") && (() => {
+  handleGetWappCount();
+  handlecatalogEnabled();
+})();
+
   const handleEvent = () => {
     handleGetWappCount();
   };
@@ -40,19 +60,23 @@ const location = useLocation();
  
   const [isSidebarOpen, setSidebarOpen] = useState(() => !isWhatsAppChatRoute);
   useEffect(() => {
-    if (isWhatsAppChatRoute) {
-      setSidebarOpen(false);
-    } else {
-      setSidebarOpen(true);
-    }
-  }, [location.pathname]);
+  const appElement = document.querySelector(".App") as HTMLElement | null;
+  const isChat = isWhatsAppChatRoute;
+
+  setSidebarOpen(!isChat);
+
+  if (appElement) {
+    appElement.style.overflowY = isChat ? "visible" : "auto";
+  }
+}, [location.pathname]);
+
   const [superadminSidebar, setsuperadminSidebar] = useState(["/super-admin/dashboard", "/super-admin/vendor-management", "/super-admin/profile", "/super-admin/general"].includes(location.pathname));
   const isChatBotRoute = ["/vendor/chat-bot", "/vendor/chat-bot/flow"].includes(location.pathname);
   const isStoreRoute = ["/vendor/store", "/vendor/staff"].includes(location.pathname);
   const isContentHubRoute = ["/vendor/sms-template", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template","/vendor/edit-whatsapp-template","/vendor/edit-sms"].some(path => location.pathname.startsWith(path))
   const isContactRoute = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"].includes(location.pathname);
   const isPromotionRoute = ["/vendor/sms/campaign", "/vendor/campaign", "/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/smscampaign-create","/vendor/create-campaign","/vendor/settings/custom-campaign"].some(path => location.pathname.startsWith(path));
-  const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"].includes(location.pathname);
+  const isSettingsRoute = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"].includes(location.pathname);
   const isCatalogRoute = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit"].some(path => location.pathname.startsWith(path));
   const [isDropdownOpen, setDropdownOpen] = useState(isStoreRoute);
   const [isDropdownOpen1, setDropdownOpen1] = useState(isContentHubRoute);
@@ -93,7 +117,7 @@ const location = useLocation();
     const validRoutes1 = ["/vendor/sms-template", "/vendor/whatsapp-template","/vendor/create-sms","/vendor/create-whatsapp-template","/vendor/edit-whatsapp-template","/vendor/edit-sms"];
     const validRoutes2 = ["/vendor/contacts", "/vendor/contacts/groups","/vendor/contacts/custom-fields","/vendor/groupcontacts"];
     const validRoutes3 = ["/vendor/chat-bot", "/vendor/chat-bot/flow"];
-    const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"];
+    const validRoutes4 = ["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"];
     const validRoutes5 = ["/vendor/sms/campaign", "/vendor/campaign","/vendor/campaign/dashboard","/vendor/sms-campaign/dashboard","/vendor/smscampaign-create","/vendor/create-campaign","/vendor/settings/custom-campaign"];
     const validRoutes6 = ["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images","/vendor/catalog/product/images"];
     const allowedPaths = [
@@ -462,6 +486,7 @@ if (!isAllowed) {
                   </li>
                 </ul>
               </li>
+              {isEnabled && (
               <li className="nav-item">
                 <Link
                   className={`cursor-pointer nav-link ${["/vendor/catalog/details", "/vendor/catalog/product/details","/vendor/catalog/orders","/vendor/catalog/product/create","/vendor/catalog/product/edit","/vendor/catalog/product/images"]
@@ -538,7 +563,8 @@ if (!isAllowed) {
                     </Link>
                   </li>
                 </ul>
-              </li>
+              </li>)}
+
               <li className="nav-item">
                 <Link
                   className={`cursor-pointer nav-link ${["/vendor/contacts", "/vendor/contacts/groups","/vendor/groupcontacts","/vendor/contacts/custom-fields"].includes(location.pathname)
@@ -781,7 +807,7 @@ if (!isAllowed) {
               </li>
               <li className="nav-item">
                 <Link
-                  className={`cursor-pointer nav-link ${["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog"].includes(location.pathname)
+                  className={`cursor-pointer nav-link ${["/vendor/settings/general", "/vendor/settings/whatsapp","/vendor/settings/sms","/vendor/settings/catalog","/vendor/settings/catalog/bot"].includes(location.pathname)
                     ? "active"
                     : ""}`}
                   onClick={toggleDropdown4} to={''}              >
@@ -862,6 +888,8 @@ if (!isAllowed) {
                       </span>
                     </Link>
                   </li>
+                  {isEnabled && (
+                    <>
                   <li className="nav-item">
                     <Link
                       className={`nav-link ${location.pathname === "/vendor/settings/catalog"
@@ -878,6 +906,24 @@ if (!isAllowed) {
                       </span>
                     </Link>
                   </li>
+
+                  {/* <li className="nav-item">
+                    <Link
+                      className={`nav-link ${location.pathname === "/vendor/settings/catalog/bot"
+                        ? "active"
+                        : ""
+                        }`}
+                      to={"/vendor/settings/catalog/bot"}
+                    >
+                      <div className="icon icon-shape vendorsidebar-child icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 576 512"><g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" stroke="none"><path d="M3455 4786 c-37 -17 -70 -52 -84 -89 -7 -18 -11 -138 -11 -323 l0 -294 160 0 161 0 -3 309 c-3 295 -4 311 -24 337 -11 15 -32 37 -46 47 -34 25 -113 32 -153 13z"/><path d="M1284 3741 c-148 -42 -270 -167 -308 -316 -14 -52 -16 -192 -16 -1102 0 -725 3 -1058 11 -1095 28 -131 123 -253 244 -309 83 -40 145 -49 316 -49 l147 0 4 -162 c3 -148 5 -167 27 -212 31 -63 90 -122 150 -149 71 -33 189 -31 256 5 28 15 183 137 345 272 l295 245 497 1 c326 0 515 4 550 11 119 25 221 97 289 202 71 110 69 72 69 1239 0 1152 2 1108 -63 1216 -37 62 -103 127 -167 165 -102 59 -52 57 -1375 56 -1124 0 -1214 -2 -1271 -18z m2158 -969 c40 -25 78 -91 78 -137 0 -39 -35 -106 -68 -130 -27 -20 -43 -20 -892 -20 -849 0 -865 0 -892 20 -33 24 -68 91 -68 130 0 41 36 110 68 131 15 10 43 21 62 25 19 4 404 6 855 6 l820 -2 37 -23z m-482 -694 c50 -34 72 -71 77 -125 5 -65 -26 -120 -87 -150 l-44 -23 -586 0 c-549 0 -588 2 -626 19 -61 28 -89 73 -89 143 0 63 19 97 75 136 l33 22 607 0 607 0 33 -22z"/><path d="M505 3022 c-68 -33 -127 -92 -159 -161 -20 -45 -21 -58 -21 -486 0 -430 0 -441 22 -487 46 -100 137 -170 242 -187 l51 -8 0 678 0 679 -37 0 c-21 0 -65 -13 -98 -28z"/><path d="M4480 2371 l0 -678 51 8 c105 17 196 87 242 187 22 46 22 57 22 487 0 428 -1 441 -21 486 -47 100 -167 189 -256 189 l-38 0 0 -679z"/></g></svg>
+                     </div>
+                      <span className="nav-link-text trxt ms-1 grayFont">
+                        Catalog Bot
+                      </span>
+                    </Link>
+                  </li> */}
+                  </>)}
                 </ul>
               </li>
             </ul>

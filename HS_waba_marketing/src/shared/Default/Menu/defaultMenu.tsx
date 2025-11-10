@@ -27,7 +27,7 @@ function DefaultMenu() {
                         </li>
                         <li className="nav-item">
                             <a className="nav-link d-flex align-items-center me-2 active" href="">
-                                <i className="fa fa-user opacity-6 me-1" style={{color:"#8bc441"}}></i>
+                                <i className="fa fa-user opacity-6 me-1" style={{color:"#00acf0"}}></i>
                                 Contact Us
                             </a>
                         </li>

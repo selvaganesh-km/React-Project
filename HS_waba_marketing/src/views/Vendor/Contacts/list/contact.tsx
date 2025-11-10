@@ -333,8 +333,7 @@ function StoreContacts() {
                resetForm()
                toast.success(responseData.apiStatus.message);
                const closeButton = document.getElementById("closeCreate");
-               superAdminConatctList(currentPage,search);
-
+               superAdminConatctList(currentPage,"");
                if (closeButton) {
                   closeButton.click();
                }
@@ -1042,6 +1041,9 @@ useEffect(() => {
                                                 Language <br />Code
                                              </th>
                                              <th className="contact-table-head text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Group <br />Name
+                                             </th>
+                                             <th className="contact-table-head text-xxs font-weight-bolder opacity-7 ps-2">
                                                 Created On
                                              </th>
                                              <th className="contact-table-head text-xxs font-weight-bolder opacity-7 ps-2">
@@ -1208,6 +1210,32 @@ useEffect(() => {
                                                    <td className="align-middle text-start text-sm">
                                                       {contactList?.language}
                                                    </td>
+                                                   <td className="align-middle text-start text-sm group-tooltip-wrapper">
+                                                      {(() => {
+                                                         const groupNames = Array.isArray(contactList?.groupDetails)
+                                                            ? contactList.groupDetails
+                                                               .map((listData: any) => listData?.groupName?.trim())
+                                                               .filter(Boolean)
+                                                            : [];
+
+                                                         const displayedGroups = groupNames.slice(0, 2).join(', ');
+                                                         const hasMore = groupNames.length > 2;
+                                                         const fullGroupNames = groupNames.join(', ');
+
+                                                         if (groupNames.length === 0) return '—';
+
+                                                         return hasMore ? (
+                                                            <span className="group-tooltip">
+                                                            {`${displayedGroups}, ...`}
+                                                            <span className="tooltip-text">{fullGroupNames}</span>
+                                                            </span>
+                                                         ) : (
+                                                            displayedGroups
+                                                         );
+                                                      })()}
+                                                      </td>
+
+
                                                    <td className="align-middle text-start text-sm">
                                                    <span>
                                                          {new Date(contactList?.createdDate).toLocaleString('en-US', {
@@ -1943,7 +1971,7 @@ useEffect(() => {
                               <h5 className="dynamic-message mt-2 mb-n1">
                                  Drop Anywhere to Import
                               </h5>
-                              <label className="label text-primary">
+                              <label className="label">
                                  or{" "}
                                  <span className="browse-files">
                                     <input
@@ -1973,10 +2001,7 @@ useEffect(() => {
                      <button type="button" onClick={() => { setFileName('') }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
                         Close
                      </button>
-                     <button type="button" 
-                     // className="btn btn-primary import-btn-bg"
-                    className="btn btn-primary" 
-                     onClick={handleImport}disabled={importLoading}
+                     <button type="button" className="btn btn-primary import-btn-bg" onClick={handleImport}disabled={importLoading}
                         style={{
   opacity: importLoading ? 0.8 : 1,
   cursor: importLoading ? 'not-allowed !important' : 'pointer',

@@ -77,13 +77,13 @@ function Createcampaign() {
    const [quickbtn, setquickbtn] = useState('None')
    const [phoenobtn, setphoenobtn] = useState('None')
    const [copybtn, setcopybtn] = useState('None')
-   const [urlbtn, seturlbtn] = useState('None')
+   const [urlbtns, setUrlbtns] = useState<any>([]);
    const [dynamicurlbtn, setdynamicurlbtn] = useState('None')
    const [buttonQuicktxt, setButtonQuicktxt] = useState('');
    const [buttonPhonetxt, setButtonPhonetxt] = useState('');
    const [buttonPhoneNotxt, setButtonPhoneNotxt] = useState('');
    const [buttonCopycodetxt, setButtonCopycodetxt] = useState('');
-   const [buttonurltxt, setButtonurltxt] = useState('');
+   const [buttonurltxts, setButtonurltxts] = useState<string[]>([]);
    const [buttonwebUrltxt, setButtonwebUrltxt] = useState('');
    const [buttondynamicwebUrltxt, setButtondynamicwebUrltxt] = useState('');
    const [buttonexampleUrltxt, setButtonexampleUrltxt] = useState('');
@@ -101,10 +101,12 @@ function Createcampaign() {
    const [timeZoneName, settimeZoneName] = useState('Asia/Kolkata');
    const [scheduleStatus, setscheduleStatus] = useState(false);
    const [scheduledAt, setscheduledAt] = useState('');
+   const [campEndDate, setcampEndDate] = useState('');
    const [sendNum, setsendNum] = useState('');
-    const wrapperRef = useRef<HTMLDivElement>(null);
+   const wrapperRef = useRef<HTMLDivElement>(null);
    const videoLoaded = useRef(false);
- 
+   const [buttonOrder, setButtonOrder] = useState<any[]>([]);
+   const [showAll, setShowAll] = useState(false);
    const nextSlide = () => {
   requestAnimationFrame(() => {
    const next = (currentCarousel + 1) % slides.length; // Wrap to 0 if at last
@@ -191,6 +193,50 @@ console.log(currentCarousel,"carousel")
          }
       }
    }, [BodytextInput])
+   //Button Example
+const [ButtontextNumbers, setButtontextNumbers] = useState<string[]>([]);
+const [btninputValues, setbtnInputValues] = useState<{ [key: string]: string }>({});
+const [btnTypes, setBtnTypes] = useState<{ [key: string]: string }>({});
+
+useEffect(() => {
+  if (buttonOrder && buttonOrder.length > 0) {
+    const filteredButtons = buttonOrder
+      .map((btn, idx) => ({ ...btn, originalIndex: idx, type: btn.type }))
+      .filter(btn => btn.example && btn.example.length > 0);
+
+    const numbers = filteredButtons.map(btn => `${btn.originalIndex}`);
+    setButtontextNumbers(numbers);
+
+    const initialValues: { [key: string]: string } = {};
+    const typeValues: { [key: string]: string } = {};
+
+    numbers.forEach((num, idx) => {
+      const btn = filteredButtons[idx];
+      initialValues[num] = btn.example[0]; // first example
+      typeValues[num] = btn.type || "N/A"; // store type
+    });
+
+    setbtnInputValues(initialValues);
+    setBtnTypes(typeValues);
+
+    console.log("Input values with example only:", numbers);
+  }
+}, [buttonOrder]);
+
+
+// const buttonPayload = ButtontextNumbers.length > 0
+//   ? {
+//       type: "buttons",
+//       variables: ButtontextNumbers.map((btnIndex) => ({
+//         btn_index: btnIndex,
+//         btn_value: btninputValues[btnIndex] || "", // get corresponding input value
+//       })),
+//     }
+//   : null;
+
+// console.log("Button payload:", buttonPayload);
+
+
    const [carouselVariables, setCarouselVariables] = useState<
     {
       cardIndex: number;
@@ -397,6 +443,11 @@ setCarouselVariables((prev) => {
                ? format(new Date(scheduledAt), "yyyy-MM-dd HH:mm:ss")
                : ""
          } : {}),
+         ...(campEndDate && {
+            end_date: isValid(parseISO(campEndDate))
+               ? format(new Date(campEndDate), "yyyy-MM-dd HH:mm:ss")
+               : ""
+         }),
          SendNum: sendNum,
          variableIds: [
             imgActive === false ? {
@@ -422,6 +473,15 @@ setCarouselVariables((prev) => {
                      },
                    })),
                  } : null,
+                 ButtontextNumbers.length > 0
+                  ? {
+                        type: "buttons",
+                        variables: ButtontextNumbers.map((btnIndex) => ({
+                        btn_index: btnIndex,
+                        btn_value: btninputValues[btnIndex] || "",
+                        })),
+                     }
+                  : null,
             carouselTyp === "CAROUSEL" ?{
                type:"carousel",
                cards: carouselVariables.map((card: any) => ({
@@ -629,38 +689,51 @@ setCarouselVariables((prev) => {
                setslides(formattedSlides);
                   break;
                   case "BUTTONS":
-                     component?.buttons.forEach((buttonsValue: any) => {
-                        if (buttonsValue) {
-                           switch (buttonsValue?.type) {
-                              case "QUICK_REPLY":
-                                 setquickbtn("QUICK_REPLY");
-                                 setButtonQuicktxt(buttonsValue?.text);
-                                 break;
-                              case "PHONE_NUMBER":
-                                 setphoenobtn("PHONE_NUMBER");
-                                 setButtonPhonetxt(buttonsValue?.text);
-                                 setButtonPhoneNotxt(buttonsValue?.phone_number);
-                                 break;
-                              case "COPY_CODE":
-                                 setcopybtn("COPY_CODE");
-                                 setButtonCopycodetxt(buttonsValue?.text);
-                                 break;
-                              case "URL":
-                                 seturlbtn("URL");
-                                 setButtonurltxt(buttonsValue?.text);
-                                 setButtonwebUrltxt(buttonsValue?.text);
-                                 break;
-                              case "URL":
-                                 setdynamicurlbtn("URL");
-                                 setButtondynamicUrltxt(buttonsValue?.text);
-                                 setButtondynamicwebUrltxt(buttonsValue?.text);
-                                 setButtonexampleUrltxt(buttonsValue?.text);
-                                 break;
-                              default:
-                                 break;
-                           }
-                        }
-                     });
+                     const buttonOrder: any[] = [];
+
+                  component.buttons.forEach((btn: any) => {
+                     if (!btn) return;
+
+                     switch (btn.type) {
+                        case "QUICK_REPLY":
+                        buttonOrder.push({
+                           type: "QUICK_REPLY",
+                           text: btn.text,
+                        });
+                        break;
+
+                        case "PHONE_NUMBER":
+                        buttonOrder.push({
+                           type: "PHONE_NUMBER",
+                           text: btn.text,
+                           phone_number: btn.phone_number,
+                        });
+                        break;
+
+                        case "COPY_CODE":
+                        buttonOrder.push({
+                           type: "COPY_CODE",
+                           text: btn.text,
+                           example: btn.example,
+                        });
+                        break;
+
+                        case "URL":
+                        const isDynamic = (btn.url && btn.url.includes("{{")) || (btn.example && btn.example.length > 0);
+                        buttonOrder.push({
+                           type: isDynamic ? "DYNAMIC_URL" : "URL",
+                           text: btn.text,
+                           url: btn.url,
+                           example: btn.example,
+                        });
+                        break;
+
+                        default:
+                        break;
+                     }
+                  });
+                  // Save everything in one state
+                  setButtonOrder(buttonOrder);
                      break;
 
                   default:
@@ -719,8 +792,8 @@ setCarouselVariables((prev) => {
          setButtonPhoneNotxt("");
          setcopybtn("");
          setButtonCopycodetxt("");
-         seturlbtn("");
-         setButtonurltxt("");
+         setUrlbtns([]);
+         setButtonurltxts([]);
          setButtonwebUrltxt("");
          setdynamicurlbtn("");
          setButtondynamicUrltxt("");
@@ -1191,6 +1264,30 @@ console.log(slides,"Slidezzzz")
                                              
                                           </div>
                                        </div>}
+                                       
+                                       {/* Button Example */}
+                                       {ButtontextNumbers.length > 0 && (
+                                       <div className="text-start campaign-template">
+                                          <h6 className="campaign-temp-head">Buttons</h6>
+                                          <div className="row">
+                                             {ButtontextNumbers.map((item, idx) => (
+                                             <div className="col-md-6 mt-2" key={item}>
+                                                {`Assign content for (${btnTypes[item]?.toLowerCase()}) buttons`}
+                                                <input
+                                                   type="text"
+                                                   value={btninputValues[item] || ""}
+                                                   onChange={(e) => {
+                                                   const newValue = e.target.value;
+                                                   setbtnInputValues((prev) => ({ ...prev, [item]: newValue }));
+                                                   }}
+                                                   className="form-control"
+                                                />
+                                             </div>
+                                             ))}
+                                          </div>
+                                       </div>
+                                       )}
+
                                     <div>
                                        {BodytextNumbers1.length > 0 && (
                                        <div className="text-start campaign-template mt-4">
@@ -1490,6 +1587,14 @@ console.log(slides,"Slidezzzz")
                                                 </>
                                              )}
                                           </div>
+
+                                          <div className="mb-4 text-start campaign-template border border-light">
+                                             <h6 className="campaign-temp-head">Campaign End Date</h6>
+                                                   <div className="vendor-create-container mt-3">
+                                                      <input type="datetime-local" id="vendor-crt-input" min={minDateTime} onChange={(e) => setcampEndDate(e.target.value)} value={campEndDate} className="vendor-crt-input" placeholder=" " required />
+                                                      <label htmlFor="vendor-crt-input" className="vendor-crt-label">Campaign end date & time</label>
+                                                   </div>
+                                          </div>
                                        </div>
                                        <div className="text-start campaign-template mt-5">
                                           <h6 className="campaign-temp-head">Send using Phone Number</h6>
@@ -1551,20 +1656,50 @@ console.log(slides,"Slidezzzz")
                                                       ></p>
                                                       <p className="campaign-msg-cnt template-footertxt">{footertextInput} </p>
                                                       <div className="template-buttontxt">
-                                                         {(quickbtn === 'None' || quickbtn === 'QUICK_REPLY') && (
-                                                            <p className="template-buttontxt button-option-style text-center">{quickbtn === "QUICK_REPLY" ? <i className="fa-solid fa-reply bt-1"></i> : ""} {buttonQuicktxt}</p>
-                                                         )}
-                                                         {(phoenobtn === 'None' || phoenobtn === 'PHONE_NUMBER') && (
-                                                            <p className="template-buttontxt button-option-style text-center">{phoenobtn === "PHONE_NUMBER" ? <i className="fa-solid fa-phone"></i> : ""} {buttonPhonetxt}</p>
-                                                         )}
-                                                         {(copybtn === 'None' || copybtn === 'COPY_CODE') && (
-                                                            <p className="template-buttontxt button-option-style text-center">{copybtn === "COPY_CODE" ? <i className="fa-solid fa-copy"></i> : ""} {copybtn === "COPY_CODE" ? "Copy Code" : ""}</p>
-                                                         )}
-                                                         {(urlbtn === 'None' || urlbtn === 'URL') && (
-                                                            <p className="template-buttontxt button-option-style text-center">{urlbtn === "URL" ? <i className="fa-solid fa-square-arrow-up-right"></i> : ""} {buttonurltxt}</p>
-                                                         )}
-                                                         {(dynamicurlbtn === 'None' || dynamicurlbtn === 'URL') && (
-                                                            <p className="template-buttontxt button-option-style text-center">{dynamicurlbtn === "URL" ? <i className="fa-solid fa-square-arrow-up-right"></i> : ""} {buttondynamicUrltxt}</p>
+                                                          {buttonOrder.slice(0, showAll ? buttonOrder.length : 3).map((btn, index) => {
+                                                            switch (btn.type) {
+                                                               case "QUICK_REPLY":
+                                                                  return (
+                                                                  <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                                     <i className="fa-solid fa-reply"></i> {btn.text}
+                                                                  </p>
+                                                                  );
+
+                                                               case "PHONE_NUMBER":
+                                                                  return (
+                                                                  <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                                     <i className="fa-solid fa-phone"></i> {btn.text}
+                                                                  </p>
+                                                                  );
+
+                                                               case "COPY_CODE":
+                                                                  return (
+                                                                  <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                                     <i className="fa-solid fa-copy"></i> {btn.text}
+                                                                  </p>
+                                                                  );
+
+                                                               case "URL":
+                                                               case "DYNAMIC_URL":
+                                                                  return (
+                                                                  <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                                     <i className="fa-solid fa-square-arrow-up-right"></i> {btn.text}
+                                                                  </p>
+                                                                  );
+
+                                                               default:
+                                                                  return null;
+                                                            }
+                                                            })}
+
+                                                            {buttonOrder.length > 3 && (
+                                                            <p
+                                                               className="button-option-style template-previewModal-text text-center"
+                                                               style={{ cursor: "pointer", fontWeight: 500,borderTop: "1px solid lightgray",paddingTop: "10px" }}
+                                                               onClick={() => setShowAll((prev) => !prev)}>
+                                                               <i className="fa-solid fa-list-ul"></i>{" "}
+                                                               {showAll ? "Hide options" : "See all options"}
+                                                            </p>
                                                          )}
                                                       </div>
                                                    </div>

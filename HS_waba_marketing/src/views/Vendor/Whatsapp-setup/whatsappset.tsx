@@ -55,7 +55,10 @@ function Whatsapp_Settings() {
     const [accesstoken, setaccesstoken] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [imgValue, setImgValue] = useState("")
-    const [imgid, setImgid] = useState("")
+    const [imgid, setImgid] = useState("");
+    const [healthError, sethealthError] = useState("");
+    const [tokeninfoError, settokeninfoError] = useState("");
+    const [phonenoError, setphonenoError] = useState("");
     const [fileName, setFileName] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [profileupdLoading, setprofileupdLoading] = useState(false);
@@ -214,8 +217,10 @@ const [isLoading1, setIsLoading1] = useState(false);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    setphonenoError("")
                     handleHealthy();
-                    handlewhatsappwebhookList()
+                    handlewhatsappwebhookList();
+                    handlewhatsapptokenInfo();
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
                     setIsLoading1(false);
@@ -245,6 +250,7 @@ const [isLoading1, setIsLoading1] = useState(false);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    sethealthError("")
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
                     SetShowButton1(false);
@@ -275,20 +281,22 @@ const [isLoading1, setIsLoading1] = useState(false);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    setphonenoError("")
                     setintegrationSubmit(false);
                     setLoading(false);
                     SetShowButton1(false);
-                    setPhoneInfo(responseData.responseData)
-                    setdisplayPhone(responseData.responseData);
-                    const verifiedPhone = responseData.responseData.find((item: any) => item.config_status === true);
+                    setPhoneInfo(responseData?.responseData)
+                    setdisplayPhone(responseData?.responseData);
+                    const verifiedPhone = responseData?.responseData.find((item: any) => item?.config_status === true);
                     setphonenoId(verifiedPhone?.id)
                     if (verifiedPhone?.display_phone_number) {
-                        const formattedPhone = formatPhoneNumber(verifiedPhone.display_phone_number);
+                        const formattedPhone = formatPhoneNumber(verifiedPhone?.display_phone_number);
                         setphoneno(formattedPhone);
                     }
                 } else {
                     setLoading(false)
                 //    toast.error(responseData.apiStatus.message);
+                setphonenoError(responseData.apiStatus.message || "");
                 }
              })
              .catch((error: any) => {
@@ -323,6 +331,7 @@ const [isLoading1, setIsLoading1] = useState(false);
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
+                    sethealthError("")
                     setintegrationSubmit(false);
                     SetShowButton1(false);
                     setHealth(responseData?.responseData?.health_status)
@@ -330,6 +339,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                     setentities(responseData?.responseData?.health_status?.entities || [])
             } else {
                 // toast.error(responseData.apiStatus.message);
+                sethealthError(responseData.apiStatus.message || "");
             }
             })
             .catch((error: any) => {
@@ -343,10 +353,12 @@ const [isLoading1, setIsLoading1] = useState(false);
         apiCall
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
+                settokeninfoError("");
                 settokenInfo(responseData?.responseData);
                 setscopes(responseData?.responseData?.scopes || [])  
             } else {
                 // toast.error(responseData.apiStatus.message);
+                settokeninfoError(responseData.apiStatus.message || "");
             }
             })
             .catch((error: any) => {
@@ -578,8 +590,8 @@ useEffect(() => {
                                                         <div className="col-md-8">
                                                             To get started you should have Facebook App, you mostly need to select Business as type of your app.
                                                         </div>
-                                                        <div className="col-md-4 text-center">
-                                                            <h6 className="text-sm cursor-pointer" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
+                                                        <div className="col-md-4 text-center" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>
+                                                            <h6 className="text-sm cursor-pointer">Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
                                                         </div>
                                                     </div>
                                                     <div>
@@ -679,16 +691,16 @@ useEffect(() => {
                                                         {showbutton && (
                                                             <>
                                                            <div className="col-md-12 text-end">
-                                                                <h6 className="text-sm cursor-pointer">
-                                                                    <span onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")}>
+                                                                <h6 className="text-sm cursor-pointer" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")}>
+                                                                    <span >
                                                                         Help & More Information
                                                                     </span> 
-                                                                    <i className="fa-solid fa-arrow-up-right-from-square px-2"></i>
+                                                                    <i onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")} className="fa-solid fa-arrow-up-right-from-square px-2"></i>
                                                                     <span>|</span>
                                                                     <span className="px-2" onClick={() => window.open("https://www.cloudperitus.com/blog/whatsapp-cloud-api-integration-generating-permanent-access-token", "_blank")}>
                                                                         External Help
                                                                     </span>
-                                                                    <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                                                    <i className="fa-solid fa-arrow-up-right-from-square" onClick={() => window.open("https://www.cloudperitus.com/blog/whatsapp-cloud-api-integration-generating-permanent-access-token", "_blank")}></i>
                                                                 </h6>
                                                             </div>
                                                                 <div className="">
@@ -738,7 +750,8 @@ useEffect(() => {
                                             <h6>Issued at</h6>
                                             <p>{formatDate(tokenInfo?.issued_at)}</p>
                                             <h6>Expiry at</h6>
-                                            <p>{tokenInfo?.expires_at ===0 ? "N/A" :tokenInfo?.expires_at}</p>
+                                            <p>{tokenInfo?.expires_at === 0 ? "N/A" :tokenInfo?.expires_at}</p>
+                                            {tokeninfoError &&(<p className="text-danger text-xs">{tokeninfoError || ""}</p>)}
                                             <p className="border"></p>
                                             {wabaAccesstoken ?
                                             <Link className="setting-whats-share-debug" target="_blank" to={(`https://developers.facebook.com/tools/debug/accesstoken/?access_token=${wabaAccesstoken}&version=v23.0`)}>Debug Token <i className="fa-solid fa-arrow-up-right-from-square"></i></Link>
@@ -762,17 +775,17 @@ useEffect(() => {
                                                 <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-phone"></i> Select Default Phone Number</label>
                                                 <i className="dropdown-icon font-size-dash-arrow fa-solid fa-chevron-down"></i>
                                                 <ul className="dropdown-menu storename-dropdown-menu">
-                                                    {displayPhone.length === 0 ? (
+                                                    {displayPhone?.length === 0 ? (
                                                             <li className="dropdown-nodata-found">No data found</li>
                                                          ) : (
-                                                            displayPhone.map((dropdownValue:any, id:any) => (                                                            
+                                                            displayPhone?.map((dropdownValue:any, id:any) => (                                                            
                                                             <li key={id}>
                                                                <a
                                                                   className="dropdown-item"
                                                                   href="#"
-                                                                  onClick={() => { setphonenoId(dropdownValue.id); setphoneno(dropdownValue.display_phone_number) }}
+                                                                  onClick={() => { setphonenoId(dropdownValue.id); setphoneno(dropdownValue?.display_phone_number) }}
                                                                >
-                                                                  {formatPhoneNumber(dropdownValue.display_phone_number)}
+                                                                  {formatPhoneNumber(dropdownValue?.display_phone_number)}
                                                                </a>
                                                             </li>
                                                         )))}
@@ -846,9 +859,10 @@ useEffect(() => {
                                                 <h6>Quality Rating</h6>
                                                 <p className="text-success">{listData?.quality_rating}</p>
                                                 </React.Fragment>
-                                                ))}  
-                                                <button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal"
-              data-bs-target="#vendorview" onClick={handlewhatsappbussinessInfo}><i className="fa-solid fa-pen"></i> Update Bussiness Profile</button>
+                                                ))} 
+                                                {phonenoError && (<p className="text-danger text-xs">{phonenoError || ""}</p> )}
+                                                {phoneInfo.length===1 &&(<button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#vendorview" onClick={handlewhatsappbussinessInfo}><i className="fa-solid fa-pen"></i> Update Bussiness Profile</button>)}
                                             </div>:<></>
                                             }
                                             <p className="border"></p>
@@ -876,8 +890,10 @@ useEffect(() => {
                                                                second: '2-digit',
                                                                hour12: true
                                                             }).replace(',', '').replace(' ', ' ')}
-                                                    </p>                                                <h6>Overall Health</h6>
+                                                    </p>
+                                                <h6>Overall Health</h6>
                                                 <p>{health?.can_send_message}</p>
+                                                {healthError && (<p className="text-danger text-xs">{healthError ||""}</p>)}
                                             </div>
                                         </div>
                                         <>

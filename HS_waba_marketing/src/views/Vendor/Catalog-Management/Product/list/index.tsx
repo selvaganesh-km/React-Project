@@ -342,7 +342,7 @@ const [file, setFile] = useState<File | null>(null);
                             <nav aria-label="breadcrumb">
                                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                                     <li className="breadcrumb-item text-sm">
-                                        <Link className="opacity-5 text-dark grayFont" to={"/vendor/dashboard"}>Dashboard</Link>
+                                        <Link className="opacity-5 text-dark" to={"/vendor/dashboard"}>Dashboard</Link>
                                     </li>
                                     <li
                                         className="breadcrumb-item text-sm text-dark active"
@@ -621,7 +621,7 @@ const [file, setFile] = useState<File | null>(null);
                                     <h5 className="dynamic-message mt-2 mb-n1">
                                         Drop Anywhere to Import
                                     </h5>
-                                    <label className="label text-primary">
+                                    <label className="label">
                                         or{" "}
                                         <span className="browse-files">
                                         <input
@@ -652,10 +652,7 @@ const [file, setFile] = useState<File | null>(null);
                             <button type="button" onClick={() => { setFileName('');setSubmit(false) }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
                             Close
                             </button>
-                            <button type="button" 
-                            // className="btn btn-primary import-btn-bg"
-                            className="btn btn-primary" 
-                            onClick={handleImport}>
+                            <button type="button" className="btn btn-primary import-btn-bg" onClick={handleImport}>
                             Import
                             </button>
                         </div>

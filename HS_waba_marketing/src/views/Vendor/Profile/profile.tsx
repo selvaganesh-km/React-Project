@@ -21,6 +21,7 @@ function VendorProfile() {
    const[newPassword,setnewPassword]=useState("");
    const[confirmPassword,setconfirmPassword]=useState("");
    const[vendorLogo,setVendorLogo]=useState("");
+   const [submit, setSubmit] = useState(false);
    const [removeImg, setremoveImg] = useState(false);
    const [showPassword, setShowPassword] = useState(false);
    const togglePasswordVisibility = () => {
@@ -87,6 +88,10 @@ function VendorProfile() {
     };
     
    const handlechangePassword = () => {
+      setSubmit(true);
+      if (!oldPassword || !newPassword || !confirmPassword) {
+         return;
+      }
          const apiData = {
             oldPassword: oldPassword,
             newPassword: newPassword,
@@ -185,7 +190,7 @@ function VendorProfile() {
                         <div className="col-md-6 edit-name">
                           <div className="media-upload-container login-input-group">
                           <label htmlFor="vendor-crt-input-2" className="media-upload-label">
-                          <i className="fa-regular fa-images icon-left mt-1" /> 
+                          <i className="fa-brands fa-vimeo icon-left mt-1" /> 
                           <span className="mt-1">Logo</span>
                           </label>
                           <input
@@ -203,7 +208,7 @@ function VendorProfile() {
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           >
-                          <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i>
+                          <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i>
                             Select</button>
                         </div>
                         <p className="text-sm mb-0 p-0" style={{ maxWidth: '400px', wordBreak: 'break-word' }}>
@@ -233,7 +238,7 @@ function VendorProfile() {
                         <div className="col-md-12 login-input-group staff-passwordInput" style={{marginTop:"39px"}}>
                            <div className="edit-container">
                               <input type={showPassword ? 'text' : 'password'} id="vendor-crt-input" name="fake-lastname"
-                                 autoComplete="new-password" onChange={(e)=>setoldPassword(e.target.value)} className="vendor-crt-input" placeholder=" " required />
+                                 autoComplete="new-password" onChange={(e)=>setoldPassword(e.target.value)} className={`vendor-crt-input ${submit && !oldPassword ? 'error' : ''}`} placeholder=" " required />
                               <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-unlock"></i> Current Password</label>
                            </div>
                            <i
@@ -241,10 +246,11 @@ function VendorProfile() {
                             id="togglePassword"
                             onClick={togglePasswordVisibility}
                           ></i>
+                           {submit && oldPassword.length == 0 ? <div className='text-danger error-message-required'>Current password is required</div> : <></>}
                         </div>
                         <div className="col-md-12 new-password login-input-group staff-passwordInput">
                            <div className="edit-container">
-                              <input type={newshowPassword ? 'text' : 'password'} id="vendor-crt-input" autoComplete="off" onChange={(e)=>setnewPassword(e.target.value)} className="vendor-crt-input" placeholder=" " required />
+                              <input type={newshowPassword ? 'text' : 'password'} id="vendor-crt-input" autoComplete="off" onChange={(e)=>setnewPassword(e.target.value)} className={`vendor-crt-input ${submit && !newPassword ? 'error' : ''}`} placeholder=" " required />
                               <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-lock-open"></i> New Password</label>
                            </div>
                            <i
@@ -252,12 +258,22 @@ function VendorProfile() {
                             id="togglePassword"
                             onClick={toggleNewPasswordVisibility}
                           ></i>
+                           {submit && newPassword.length == 0 ? <div className='text-danger error-message-required'>New password is required</div> : <></>}
                         </div>
                         <div className="col-md-12 new-password login-input-group staff-passwordInput">
                            <div className="edit-container">
-                              <input type={confshowPassword ? 'text' : 'password'} id="vendor-crt-input" autoComplete="off" onChange={(e)=>setconfirmPassword(e.target.value)} className="vendor-crt-input" placeholder=" " required />
+                              <input type={confshowPassword ? 'text' : 'password'} id="vendor-crt-input" autoComplete="off" onChange={(e)=>setconfirmPassword(e.target.value)} className={`vendor-crt-input`}
+                              style={
+                                    submit && confirmPassword.length === 0
+                                      ? { borderColor: "red" }
+                                      : confirmPassword.length !== 0 && confirmPassword !== newPassword
+                                      ? { borderColor: "red" }
+                                      : {}
+                                  } 
+                              placeholder=" " required />
                               <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-lock"></i> Confirm New Password</label>
                            </div>
+                           {submit && confirmPassword.length == 0 ? <div className='text-danger error-message-required'>Current password is required</div> : <></>}
                            {confirmPassword !== newPassword && confirmPassword.length !== 0 && <div className='text-danger error-message-required'>Password and confirm password should be same</div>}
                            <i
                             className={`fas ${confshowPassword ? 'fa-eye-slash' : 'fa-eye'} password-eye sadmin-passwordInputicon`}

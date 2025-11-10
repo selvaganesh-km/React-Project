@@ -1930,7 +1930,7 @@ required
                         style={{ cursor: "pointer" }}
                         />
                         <button className="media-upload-button" type="button" onClick={() => fileInputRef.current?.click()}>
-                        <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i> Select
+                        <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i> Select
                         </button>
                       </div>
                       {submit&&(!imgUrl || imgUrl?.length === 0) && (
@@ -1962,7 +1962,7 @@ required
                         style={{ cursor: "pointer" }}
                       />
                       <button className="media-upload-button" type="button" onClick={() => fileInputRef.current?.click()}>
-                        <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i>Select</button>
+                        <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i>Select</button>
                       </div>
                       {submit&&(!imgUrl || imgUrl?.length === 0) && (
                         <div className="text-start text-danger error-message-required mt-1">
@@ -2003,7 +2003,7 @@ required
                         />
 
                         <button className="media-upload-button" type="button" onClick={() => fileInputRef.current?.click()}>
-                          <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i>Select</button>
+                          <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i>Select</button>
                         </div>
                         {submit&&(!imgUrl || imgUrl?.length === 0) && (
                         <div className="text-start text-danger error-message-required mt-1">

@@ -415,7 +415,9 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
         modalElements.forEach((modalElement) => {modalElement?.removeEventListener('hidden.bs.modal', handleHidden);});
       };
     }, []);
-
+   if (redirect) {
+      return <Navigate to={redirect} />;
+   }
    return (
       <DashboardLayout>
          <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
@@ -749,7 +751,7 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
                                                    <h5 className="dynamic-message mt-2 mb-n1">
                                                       Drop Anywhere to Import
                                                    </h5>
-                                                   <label className="label text-primary">
+                                                   <label className="label">
                                                       or{" "}
                                                       <span className="browse-files">
                                                          <input
@@ -782,10 +784,7 @@ const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
                                           <button type="button" onClick={() => { setFileName('') }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
                                              Close
                                           </button>
-                                          <button type="button" 
-                                          // className="btn btn-primary import-btn-bg"
-                                          className="btn btn-primary" 
-                                          onClick={handleImport}>
+                                          <button type="button" className="btn btn-primary import-btn-bg" onClick={handleImport}>
                                              Import
                                           </button>
                                        </div>

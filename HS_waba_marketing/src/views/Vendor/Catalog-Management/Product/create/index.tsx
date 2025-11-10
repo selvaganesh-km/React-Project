@@ -1624,7 +1624,7 @@ const isSalePriceValid = (variant:any) => {
                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                   <li className="breadcrumb-item text-sm">
                     <Link
-                      className="opacity-5 text-dark grayFont"
+                      className="opacity-5 text-dark"
                       to={"/vendor/dashboard"}
                     >
                       Dashboard
@@ -3002,7 +3002,7 @@ const previews = previewMap[imgKey] || [];
                         <p className="dynamic-message mt-2 mb-n1 tblName">
                           Drop Anywhere to Import
                         </p>
-                        <label className="label text-primary">
+                        <label className="label tblName">
                           or{" "}
                           <span className="browse-files">
                             <input
@@ -3025,10 +3025,10 @@ const previews = previewMap[imgKey] || [];
                               }}
                               ref={fileInputRef}
                             />
-                            <span className="browse-files-text">
+                            <span className="browse-files-text text-dark">
                               browse file
                             </span>{" "}
-                            <span>from device</span>
+                            <span className="tblName">from device</span>
                           </span>
                         </label>
                       </div>
@@ -3095,8 +3095,7 @@ const previews = previewMap[imgKey] || [];
                   </button>
                   <button
                     type="button"
-                    // className="btn btn-primary import-btn-bg"
-                    className="btn btn-primary"
+                    className="btn btn-primary import-btn-bg"
                     onClick={mediaSave}
                   >
                     Save

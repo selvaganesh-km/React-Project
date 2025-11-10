@@ -11,7 +11,7 @@ function DefaultFooter() {
                 <div className="row">
                 <div className="col-6 mx-auto text-center">
                         <p className="mb-0 text-secondary">
-                            Copyright © {new Date().getFullYear()} All rights reserved hermonsolutions.com
+                            Copyright © {new Date().getFullYear()} All rights reserved bizconvo.com
                         </p>
                     </div>
                     <div className="col-lg-6 text-end">

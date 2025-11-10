@@ -261,7 +261,7 @@ function CatalogDetails() {
                 <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                   <li className="breadcrumb-item text-sm">
                     <Link
-                      className="opacity-5 text-dark grayFont"
+                      className="opacity-5 text-dark"
                       to={"/vendor/dashboard"}
                     >
                       Dashboard

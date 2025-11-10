@@ -147,3 +147,38 @@
     padding-left: 5px !important;
     padding-right: 5px !important;
 }
+
+.group-tooltip-wrapper {
+    position: relative;
+}
+
+.group-tooltip {
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #474747;
+    color: #fff;
+    text-align: left;
+    border-radius: 4px;
+    padding: 6px 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    /* Adjust above the text */
+    left: 0;
+    min-width: 150px;
+    white-space: normal;
+    transition: opacity 0.2s ease-in-out;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.group-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

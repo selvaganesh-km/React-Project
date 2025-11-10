@@ -43,7 +43,8 @@ function WhatsappTemplate() {
    const [vdoValue, setVdoValue] = useState('')
    const [docValue, setDocValue] = useState('')
    const [loading, setLoading] = useState(false)
-   const [loadingbtn, setLoadingbtn] = useState(false)
+   const [loadingbtn, setLoadingbtn] = useState(false);
+   const [showAll, setShowAll] = useState(false);
    const [submit, setSubmit] = useState(false);
    const [slides,setslides] = useState<any>([]);
    const [currentPage, setCurrentPage] = useState(1);
@@ -164,21 +165,23 @@ function WhatsappTemplate() {
             setLoading(false)
          });
    };
-   const [buttonQuicktxt, setButtonQuicktxt] = useState('');
+   const [buttonQuicktxt, setButtonQuicktxt] = useState<any>([]);
    const [buttonPhonetxt, setButtonPhonetxt] = useState('');
    const [buttonPhoneNotxt, setButtonPhoneNotxt] = useState('');
    const [buttonCopycodetxt, setButtonCopycodetxt] = useState('');
-   const [buttonurltxt, setButtonurltxt] = useState('');
+   const [buttonurltxts, setButtonurltxts] = useState<any>([]);
    const [buttonwebUrltxt, setButtonwebUrltxt] = useState('');
    const [buttondynamicwebUrltxt, setButtondynamicwebUrltxt] = useState('');
    const [buttonexampleUrltxt, setButtonexampleUrltxt] = useState('');
-   const [buttondynamicUrltxt, setButtondynamicUrltxt] = useState('');
+   const [buttondynamicUrltxt, setButtondynamicUrltxt] = useState<any>([]);
    const [quickbtn, setquickbtn] = useState('None')
    const [phoenobtn, setphoenobtn] = useState('None')
    const [copybtn, setcopybtn] = useState('None')
-   const [urlbtn, seturlbtn] = useState('None')
-   const [dynamicurlbtn, setdynamicurlbtn] = useState('None')
+   const [urlbtns, setUrlbtns] = useState<any>([]);
+   const [quickReplybtns, setquickReplybtns] = useState<any>([]);
+   const [dynamicurlbtn, setdynamicurlbtn] = useState<any>([]);
    const [hasClicked, setHasClicked] = useState(false);
+   const [buttonOrder, setButtonOrder] = useState<any[]>([]);
     const handleClick = (id:any) => {
     if (!hasClicked) {
       whatsappGetApi(id);
@@ -221,39 +224,53 @@ function WhatsappTemplate() {
                   setfooterTextValues(component.text);
                }
                else if (component?.type === "BUTTONS") {
-                  component?.buttons.forEach((buttonsValue: any) => {
-                     if (buttonsValue) {
-                        switch (buttonsValue?.type) {
-                           case "QUICK_REPLY":
-                              setquickbtn("QUICK_REPLY");
-                              setButtonQuicktxt(buttonsValue?.text);
-                              break;
-                           case "PHONE_NUMBER":
-                              setphoenobtn("PHONE_NUMBER");
-                              setButtonPhonetxt(buttonsValue?.text);
-                              setButtonPhoneNotxt(buttonsValue?.phone_number);
-                              break;
-                           case "COPY_CODE":
-                              setcopybtn("COPY_CODE");
-                              setButtonCopycodetxt(buttonsValue?.text);
-                              break;
-                           case "URL":
-                              seturlbtn("URL");
-                              setButtonurltxt(buttonsValue?.text);
-                              setButtonwebUrltxt(buttonsValue?.text);
-                              break;
-                           case "URL":
-                              setdynamicurlbtn("URL");
-                              setButtondynamicUrltxt(buttonsValue?.text);
-                              setButtondynamicwebUrltxt(buttonsValue?.text);
-                              setButtonexampleUrltxt(buttonsValue?.text);
-                              break;
-                           default:
-                              break;
-                        }
+                  const buttonOrder: any[] = [];
+
+                  component.buttons.forEach((btn: any) => {
+                     if (!btn) return;
+
+                     switch (btn.type) {
+                        case "QUICK_REPLY":
+                        buttonOrder.push({
+                           type: "QUICK_REPLY",
+                           text: btn.text,
+                        });
+                        break;
+
+                        case "PHONE_NUMBER":
+                        buttonOrder.push({
+                           type: "PHONE_NUMBER",
+                           text: btn.text,
+                           phone_number: btn.phone_number,
+                        });
+                        break;
+
+                        case "COPY_CODE":
+                        buttonOrder.push({
+                           type: "COPY_CODE",
+                           text: btn.text,
+                           example: btn.example,
+                        });
+                        break;
+
+                        case "URL":
+                        const isDynamic = (btn.url && btn.url.includes("{{")) || (btn.example && btn.example.length > 0);
+                        buttonOrder.push({
+                           type: isDynamic ? "DYNAMIC_URL" : "URL",
+                           text: btn.text,
+                           url: btn.url,
+                           example: btn.example,
+                        });
+                        break;
+
+                        default:
+                        break;
                      }
                   });
+                  // Save everything in one state
+                  setButtonOrder(buttonOrder);
                }
+
                else if (component.type === "CAROUSEL") {
                   const formattedSlides = component.cards.map((card: any, index: number) => {
                   const header = card.components.find((c: any) => c.type === "HEADER");
@@ -355,11 +372,11 @@ function WhatsappTemplate() {
       setquickbtn("");
       setphoenobtn("");
       setcopybtn("");
-      seturlbtn("");
+      setUrlbtns([]);
       setdynamicurlbtn("");
       setButtonQuicktxt("");
       setButtonPhonetxt("");
-      setButtonurltxt("");
+      setButtonurltxts([]);
       setButtondynamicUrltxt("");
       setImgValue('');
       setDocValue('');
@@ -598,23 +615,95 @@ function WhatsappTemplate() {
                                           <div className='px-3 mb-1 template-previewModal-text temp-view-footer'>
                                              {footerTextValues}
                                           </div>
-                                          <div className='px-3  text-center temp-view-buttons'>
-                                             {(quickbtn === 'None' || quickbtn === 'QUICK_REPLY') && (
-                                                <p className="button-option-style template-previewModal-text text-center">{quickbtn === "QUICK_REPLY" ? <i className="fa-solid fa-reply bt-1"></i> : ""} {buttonQuicktxt}</p>
-                                             )}
-                                             {(phoenobtn === 'None' || phoenobtn === 'PHONE_NUMBER') && (
-                                                <p className="button-option-style template-previewModal-text text-center">{phoenobtn === "PHONE_NUMBER" ? <i className="fa-solid fa-phone"></i> : ""} {buttonPhonetxt}</p>
-                                             )}
-                                             {(copybtn === 'None' || copybtn === 'COPY_CODE') && (
-                                                <p className="button-option-style template-previewModal-text text-center">{copybtn === "COPY_CODE" ? <i className="fa-solid fa-copy"></i> : ""} {copybtn === "COPY_CODE" ? "Copy Code" : ""}</p>
-                                             )}
-                                             {(urlbtn === 'None' || urlbtn === 'URL') && (
-                                                <p className="button-option-style template-previewModal-text text-center">{urlbtn === "URL" ? <i className="fa-solid fa-square-arrow-up-right"></i> : ""} {buttonurltxt}</p>
-                                             )}
-                                             {(dynamicurlbtn === 'None' || dynamicurlbtn === 'URL') && (
-                                                <p className="button-option-style template-previewModal-text text-center">{dynamicurlbtn === "URL" ? <i className="fa-solid fa-square-arrow-up-right"></i> : ""} {buttondynamicUrltxt}</p>
-                                             )}
+                                          <div className="px-3 text-center temp-view-buttons">
+                                             {/* {buttonOrder.map((btn, index) => {
+                                                switch (btn.type) {
+                                                   case "QUICK_REPLY":
+                                                   return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-reply"></i> {btn.text}
+                                                      </p>
+                                                   );
+
+                                                   case "PHONE_NUMBER":
+                                                   return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-phone"></i> {btn.text} 
+                                                      </p>
+                                                   );
+
+                                                   case "COPY_CODE":
+                                                   return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-copy"></i> {btn.text} 
+                                                      </p>
+                                                   );
+
+                                                   case "URL":
+                                                   return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-square-arrow-up-right"></i> {btn.text}
+                                                      </p>
+                                                   );
+
+                                                   case "DYNAMIC_URL":
+                                                   return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-square-arrow-up-right"></i> {btn.text} 
+                                                      </p>
+                                                   );
+
+                                                   default:
+                                                   return null;
+                                                }
+                                             })} */}
+                                             {buttonOrder.slice(0, showAll ? buttonOrder.length : 3).map((btn, index) => {
+                                                switch (btn.type) {
+                                                   case "QUICK_REPLY":
+                                                      return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-reply"></i> {btn.text}
+                                                      </p>
+                                                      );
+
+                                                   case "PHONE_NUMBER":
+                                                      return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-phone"></i> {btn.text}
+                                                      </p>
+                                                      );
+
+                                                   case "COPY_CODE":
+                                                      return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-copy"></i> {btn.text}
+                                                      </p>
+                                                      );
+
+                                                   case "URL":
+                                                   case "DYNAMIC_URL":
+                                                      return (
+                                                      <p key={index} className="button-option-style template-previewModal-text text-center">
+                                                         <i className="fa-solid fa-square-arrow-up-right"></i> {btn.text}
+                                                      </p>
+                                                      );
+
+                                                   default:
+                                                      return null;
+                                                }
+                                                })}
+
+                                                {buttonOrder.length > 3 && (
+                                                <p
+                                                   className="button-option-style template-previewModal-text text-center"
+                                                   style={{ cursor: "pointer", fontWeight: 500,borderTop: "1px solid lightgray",paddingTop: "10px" }}
+                                                   onClick={() => setShowAll((prev) => !prev)}>
+                                                   <i className="fa-solid fa-list-ul"></i>{" "}
+                                                   {showAll ? "Hide options" : "See all options"}
+                                                </p>
+                                                )}
                                           </div>
+
                                        </div>
                                        {carouselTyp &&(
                                        <div className="main-container-carousels">

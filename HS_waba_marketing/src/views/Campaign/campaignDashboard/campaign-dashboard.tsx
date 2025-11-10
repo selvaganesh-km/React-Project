@@ -475,7 +475,22 @@ function CampaignDashboard() {
                                     <h6 className="campaign-dash-fonts">{campaigndetails?.groupName}</h6>
                                     </>:<></>}
                                     </div>
+                                    <div className="col-md-6">
                                     
+                                    <div className="campaign-dash-fonts">Campaign end date & time </div>
+                                    <h6 className="campaign-dash-fonts">{campaigndetails?.endDate 
+                                        ? new Date(campaigndetails.endDate).toLocaleString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                            hour12: true
+                                        }).replace(',', '')
+                                        : 'N/A'
+                                    }</h6>
+                                    </div>
                                     </div>
                                     </div>
                                 </div>

@@ -214,7 +214,6 @@ function VendorManagement() {
          .catch((error: any) => {
             setSubmit(false)
             console.error("Error during API call:", error);
-            toast.error("An error occurred during the API call.");
          });
    };
 
@@ -753,7 +752,7 @@ useEffect(() => {
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           >
-                          <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i>
+                          <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i>
                             Select</button>
                         </div>
                         <p className="text-sm mb-0 p-0" style={{ maxWidth: '400px', wordBreak: 'break-word' }}>
@@ -902,7 +901,7 @@ useEffect(() => {
                      </div>
                   </div>
                   <div className="modal-footer text-center vendor-delete-footer">
-                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">No</button>&nbsp;
+                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>{setVendorUserName("")}}>No</button>&nbsp;
                      <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={superAdminVendorLogin}>Yes</button>
                   </div>
                </div>
@@ -962,7 +961,7 @@ useEffect(() => {
                      </div>
                   </div>
                   <div className="modal-footer text-center vendor-delete-footer">
-                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeactiveModal">No</button>&nbsp;
+                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeactiveModal" onClick={()=>{setVendorUserName("")}}>No</button>&nbsp;
                      <button type="button" className="btn btn-primary" onClick={()=>{active? superAdminActiveGet("active"):superAdminActiveGet("deactive")}} >Yes</button>
                   </div>
                </div>
@@ -986,7 +985,7 @@ useEffect(() => {
                      </div>
                   </div>
                   <div className="modal-footer text-center vendor-delete-footer">
-                     <button type="button" className="btn btn-secondary" id="deleteCreate" data-bs-dismiss="modal">No</button>&nbsp;
+                     <button type="button" className="btn btn-secondary" id="deleteCreate" data-bs-dismiss="modal" onClick={()=>{setVendorUserName("")}}>No</button>&nbsp;
                      <button type="button" onClick={superAdminVendorListDelete} className="btn btn-primary">Yes</button>
                   </div>
                </div>

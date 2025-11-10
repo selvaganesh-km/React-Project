@@ -1,5 +1,5 @@
 {
-    "name": "bizconvo-app",
+    "name": "hermon-solutions-app",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -15,6 +15,7 @@
         "chart.js": "^4.4.8",
         "ckeditor4-react": "^5.2.1",
         "date-fns": "^4.1.0",
+        "daterangepicker": "^3.1.0",
         "emoji-picker-react": "^4.4.4",
         "jquery": "^3.7.1",
         "moment": "^2.30.1",

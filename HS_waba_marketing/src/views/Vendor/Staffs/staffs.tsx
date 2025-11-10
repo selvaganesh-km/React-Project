@@ -919,7 +919,7 @@ function VendorStaff() {
                                                       <h5 className="dynamic-message mt-2 mb-n1">
                                                          Drop Anywhere to Import
                                                       </h5>
-                                                      <label className="label text-primary">
+                                                      <label className="label">
                                                          or{" "}
                                                          <span className="browse-files">
                                                             <input
@@ -950,10 +950,7 @@ function VendorStaff() {
                                              <button type="button" onClick={() => { setFileName('') }} className="btn btn-secondary" data-bs-dismiss="modal" id="closepopup">
                                                 Close
                                              </button>
-                                             <button type="button" 
-                                             // className="btn btn-primary import-btn-bg"
-                                             className="btn btn-primary"
-                                              onClick={handleImport}>
+                                             <button type="button" className="btn btn-primary import-btn-bg" onClick={handleImport}>
                                                 Import
                                              </button>
                                           </div>

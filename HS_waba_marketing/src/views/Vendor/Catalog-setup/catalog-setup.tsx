@@ -35,6 +35,9 @@ function Catalog_Settings() {
     const [integrationsubmit, setintegrationSubmit] = useState(false);
     const [showbutton, SetShowButton] = useState(false);
     const [submit, setSubmit] = useState(false);
+    const [submit1, setSubmit1] = useState(false);
+    const [submit2, setSubmit2] = useState(false);
+    const [submit3, setSubmit3] = useState(false);
     const [showbutton1, SetShowButton1] = useState(false);
     const [showbutton2, SetShowButton2] = useState(false);
     const [showbutton3, SetShowButton3] = useState(false);
@@ -56,7 +59,10 @@ function Catalog_Settings() {
     const [accesstoken, setaccesstoken] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [imgValue, setImgValue] = useState("")
-    const [imgid, setImgid] = useState("")
+    const [imgid, setImgid] = useState("");
+    const [healthError, sethealthError] = useState("");
+    const [tokeninfoError, settokeninfoError] = useState("");
+    const [phonenoError, setphonenoError] = useState("");
     const [fileName, setFileName] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [profileupdLoading, setprofileupdLoading] = useState(false);
@@ -75,6 +81,9 @@ function Catalog_Settings() {
     const [showdata1, SetShowData1] = useState(false);
     const [showdata2, SetShowData2] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoading2, setIsLoading2] = useState(false);
+    const [isLoading3, setIsLoading3] = useState(false);
+    const [isLoading4, setIsLoading4] = useState(false);
     const [testsubmit, settestSubmit] = useState(false);
     const navigate=useNavigate();
     
@@ -93,28 +102,28 @@ function Catalog_Settings() {
         if (showdata1 === true) {
             SetShowData1(false)
             SetShowButton2(false);
-            setSubmit(false);
+            setSubmit2(false);
         }
         else {
             SetShowData1(true);
         }
         if(showbutton1===true){
             SetShowButton2(false);
-            setSubmit(false);
+            setSubmit2(false);
         }
     };
     const ShowTernary2 = () => {
         if (showdata2 === true) {
             SetShowData2(false)
             SetShowButton3(false);
-            setSubmit(false);
+            setSubmit1(false);
         }
         else {
             SetShowData2(true);
         }
         if(showbutton3===true){
             SetShowButton3(false);
-            setSubmit(false);
+            setSubmit1(false);
         }
     };
     const QuickHelp = () => {
@@ -262,8 +271,11 @@ const [isLoading1, setIsLoading1] = useState(false);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === "200") {
+                    setphonenoError("")
                     handleHealthy();
-                    handlewhatsappwebhookList()
+                    handlewhatsappwebhookList();
+                    handlewhatsappsetupList();
+                    handlewhatsapptokenInfo();
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
                     SetShowButton1(false);
@@ -294,6 +306,7 @@ const [isLoading1, setIsLoading1] = useState(false);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    sethealthError("")
                     setWhatsappInte(true)
                     setintegrationSubmit(false);
                     SetShowButton1(false);
@@ -324,6 +337,7 @@ const [isLoading1, setIsLoading1] = useState(false);
           apiCall
              .then((responseData: any) => {
                 if (responseData.apiStatus.code === '200') {
+                    setphonenoError("")
                     setintegrationSubmit(false);
                     setLoading(false);
                     SetShowButton1(false);
@@ -338,6 +352,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                 } else {
                     setLoading(false)
                 //    toast.error(responseData.apiStatus.message);
+                setphonenoError(responseData.apiStatus.message);
                 }
              })
              .catch((error: any) => {
@@ -376,9 +391,11 @@ const [isLoading1, setIsLoading1] = useState(false);
                     SetShowButton1(false);
                     setHealth(responseData?.responseData?.health_status)
                     setHealthId(responseData?.responseData)
+                    sethealthError("")
                     setentities(responseData?.responseData?.health_status?.entities || [])
             } else {
-                toast.error(responseData.apiStatus.message);
+                // toast.error(responseData.apiStatus.message);
+                sethealthError(responseData.apiStatus.message);
             }
             })
             .catch((error: any) => {
@@ -393,9 +410,11 @@ const [isLoading1, setIsLoading1] = useState(false);
             .then((responseData: any) => {
             if (responseData.apiStatus.code === '200') {
                 settokenInfo(responseData?.responseData);
+                settokeninfoError("");
                 setscopes(responseData?.responseData?.scopes || [])  
             } else {
                 toast.error(responseData.apiStatus.message);
+                settokeninfoError(responseData.apiStatus.message);
             }
             })
             .catch((error: any) => {
@@ -634,10 +653,10 @@ const [isLoading1, setIsLoading1] = useState(false);
                 });
         };
     const handlecatalogLink = () => {
-        setSubmit(true);
-        setIsLoading(true);
+        setSubmit2(true);
+        setIsLoading2(true);
         if(catalogConfig){
-            setIsLoading(false);
+            setIsLoading2(false);
             toast.warn("Delete the existing catalog link before update");
             return;
         }
@@ -651,26 +670,26 @@ const [isLoading1, setIsLoading1] = useState(false);
         apiCall
            .then((responseData: any) => {
               if (responseData.apiStatus.code === '200') {
-                 setSubmit(false);
-                 setIsLoading(false);
+                 setSubmit2(false);
+                 setIsLoading2(false);
                  SetShowData1(false)
                  SetShowButton2(false);
                  toast.success(responseData.apiStatus.message);
                  handleloglistLinked();
               } else {
                  toast.error(responseData.apiStatus.message);
-                 setIsLoading(false);
+                 setIsLoading2(false);
               }
            })
            .catch((error: any) => {
               console.error("Error while linking the catalog:", error);
-              setIsLoading(false);
+              setIsLoading2(false);
               toast.error("An error occurred while linking the catalog.");
            });
      };
     const handlebizIdLink = () => {
-        setSubmit(true);
-        setIsLoading(true);
+        setSubmit1(true);
+        setIsLoading3(true);
         if (!bizId) {
            return;
         }
@@ -681,28 +700,26 @@ const [isLoading1, setIsLoading1] = useState(false);
         apiCall
            .then((responseData: any) => {
               if (responseData.apiStatus.code === '200') {
-                 setSubmit(false);
-                 setIsLoading(false);
+                 setSubmit1(false);
+                 setIsLoading3(false);
                  SetShowData2(false)
                  SetShowButton3(false);
                  toast.success(responseData.apiStatus.message);
                  handlelogBizinfo();
               } else {
                  toast.error(responseData.apiStatus.message);
-                 setSubmit(false);
-                 setIsLoading(false);
+                 setIsLoading3(false);
               }
            })
            .catch((error: any) => {
               console.error("Error while linking the Business ID:", error);
-              setSubmit(false);
-              setIsLoading(false);
+              setIsLoading3(false);
               toast.error("An error occurred while linking the Business ID.");
            });
      };
     const handlecatalogUnlink = () => {
-        setSubmit(true);
-        setIsLoading(true);
+        setSubmit3(true);
+        setIsLoading4(true);
         if (!catalogId1) {
            return;
         }
@@ -713,20 +730,20 @@ const [isLoading1, setIsLoading1] = useState(false);
         apiCall
            .then((responseData: any) => {
               if (responseData.apiStatus.code === '200') {
-                 setSubmit(false);
-                 setIsLoading(false);
+                 setSubmit3(false);
+                 setIsLoading4(false);
                  SetShowData(false);
                  SetShowButtons(false)
                  toast.success(responseData.apiStatus.message);
                  handleloglistLinked();
               } else {
                  toast.error(responseData.apiStatus.message);
-                 setIsLoading(false);
+                 setIsLoading4(false);
 
               }
            })
            .catch((error: any) => {
-              setIsLoading(false);
+              setIsLoading4(false);
               console.error("Error while unlinking the catalog:", error);
               toast.error("An error occurred while unlinking the catalog.");
            });
@@ -761,7 +778,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                     <div className="container-fluid py-1">
                         <nav aria-label="breadcrumb">
                             <ol className="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                                <li className="breadcrumb-item text-sm"><Link className="opacity-5 text-dark grayFont" to={"/vendor/dashboard"}>Dashboard</Link></li>
+                                <li className="breadcrumb-item text-sm"><Link className="opacity-5 text-dark" to={"/vendor/dashboard"}>Dashboard</Link></li>
                                 <li className="breadcrumb-item text-sm active text-dark grayFont" aria-current="page">Settings</li>
                             </ol>
                             <h6 className="font-weight-bolder text-start mb-0 grayFont">Catalog Settings</h6>
@@ -790,8 +807,8 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                         <div className="col-md-8">
                                                             To get started you should have Facebook App, you mostly need to select Business as type of your app.
                                                         </div>
-                                                        <div className="col-md-4 text-center">
-                                                            <h6 className="text-sm cursor-pointer" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
+                                                        <div className="col-md-4 text-center" onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/cloud-api/get-started#set-up-developer-assets", "_blank")}>
+                                                            <h6 className="text-sm cursor-pointer">Help & More Information <i className="fa-solid fa-arrow-up-right-from-square"></i></h6>
                                                         </div>
                                                     </div>
                                                     <div>
@@ -895,12 +912,12 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                                     <span onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")}>
                                                                         Help & More Information
                                                                     </span> 
-                                                                    <i className="fa-solid fa-arrow-up-right-from-square px-2"></i>
+                                                                    <i onClick={() => window.open("https://developers.facebook.com/docs/whatsapp/business-management-api/get-started#1--acquire-an-access-token-using-a-system-user-or-facebook-login", "_blank")} className="fa-solid fa-arrow-up-right-from-square px-2"></i>
                                                                     <span>|</span>
                                                                     <span className="px-2" onClick={() => window.open("https://www.cloudperitus.com/blog/whatsapp-cloud-api-integration-generating-permanent-access-token", "_blank")}>
                                                                         External Help
                                                                     </span>
-                                                                    <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                                                                    <i onClick={() => window.open("https://www.cloudperitus.com/blog/whatsapp-cloud-api-integration-generating-permanent-access-token", "_blank")} className="fa-solid fa-arrow-up-right-from-square"></i>
                                                                 </h6>
                                                             </div>
                                                                 <div className="">
@@ -958,6 +975,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                                             <p>{formatDate(tokenInfo?.issued_at)}</p>
                                             <h6 className="grayFont">Expiry at</h6>
                                             <p>{tokenInfo?.expires_at ===0 ? "N/A" :tokenInfo?.expires_at}</p>
+                                            {tokeninfoError &&(<p className="text-danger text-xs">{tokeninfoError}</p>)}
                                             <p className="border"></p>
                                             {wabacatalogAccesstoken ?
                                             <Link className="setting-whats-share-debug" target="_blank" to={(`https://developers.facebook.com/tools/debug/accesstoken/?access_token=${wabacatalogAccesstoken}&version=v23.0`)}>Debug Token <i className="fa-solid fa-arrow-up-right-from-square"></i></Link>
@@ -981,14 +999,14 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                                         <div className="vendor-create-container">
                                                                         <input type="text" id="vendor-crt-input" 
                                                                         autoComplete="off" onChange={(e) => setbizId(e.target.value)} value={bizId}
-                                                                        className={`vendor-crt-input loginfilled-frame-username ${submit && !bizId ? 'error' : ''}`}
+                                                                        className={`vendor-crt-input loginfilled-frame-username ${submit1 && !bizId ? 'error' : ''}`}
                                                                         placeholder=" " required />
                                                                         <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-book-open-reader"></i> Bussiness Id</label>
                                                                     </div>
-                                                                    {submit && bizId.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
+                                                                    {submit1 && bizId.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
                                                                     </div>
                                                                     <div className="text-end mt-1">
-                                                                        <button className="vendor-crt-btn" disabled={isLoading} onClick={handlebizIdLink}>{isLoading ? ("Save...") : ("Save")}</button>
+                                                                        <button className="vendor-crt-btn" disabled={isLoading3} onClick={handlebizIdLink}>{isLoading3 ? ("Save...") : ("Save")}</button>
                                                                     </div>
                                                                     </>
                                                                 )}
@@ -1029,7 +1047,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                                             type="text"
                                                                             // onClick={handleGetStoreDrop}
                                                                             id="vendor-crt-input"
-                                                                            className={`vendor-crt-input loginfilled-frame-username ${submit && !catalogId ? 'error' : ''}`}
+                                                                            className={`vendor-crt-input loginfilled-frame-username ${submit2 && !catalogId ? 'error' : ''}`}
                                                                             value={catalogName}
                                                                             placeholder=" "
                                                                             required
@@ -1055,9 +1073,9 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                                             )))}
                                                                         </ul>
                                                                     </div>
-                                                                    {submit && catalogId.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
+                                                                    {submit2 && catalogId.length == 0 ? <div className='text-danger error-message-required'>Catalog Name is required</div> : <></>}
                                                                     <div className="text-end mt-1">
-                                                                            <button className="vendor-crt-btn" disabled={isLoading} onClick={handlecatalogLink}>{isLoading ? ("Save...") : ("Save")}</button>
+                                                                            <button className="vendor-crt-btn" disabled={isLoading2} onClick={handlecatalogLink}>{isLoading2 ? ("Save...") : ("Save")}</button>
                                                                         </div>
                                                                     </div>
                                                                 )}
@@ -1095,7 +1113,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                                     type="text"
                                                                     // onClick={handleGetStoreDrop}
                                                                     id="vendor-crt-input"
-                                                                    className={`vendor-crt-input loginfilled-frame-username ${submit && !catalogId1 ? 'error' : ''}`}
+                                                                    className={`vendor-crt-input loginfilled-frame-username ${submit3 && !catalogId1 ? 'error' : ''}`}
                                                                     value={catalogName1}
                                                                     placeholder=" "
                                                                     required
@@ -1122,7 +1140,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                             </div>
                                                             </div>
                                                             <div className="text-end">
-                                                                 <button className="vendor-crt-btn" disabled={isLoading} onClick={handlecatalogUnlink}>{isLoading ? ("Save...") : ("Save")}</button>
+                                                                 <button className="vendor-crt-btn" disabled={isLoading4} onClick={handlecatalogUnlink}>{isLoading4 ? ("Save...") : ("Save")}</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1241,8 +1259,9 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                 <p className="text-success">{listData?.quality_rating}</p>
                                                 </React.Fragment>
                                                 ))}  
-                                                <button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal"
-                                                data-bs-target="#vendorview" onClick={handlewhatsappbussinessInfo}><i className="fa-solid fa-pen"></i> Update Bussiness Profile</button>
+                                                {phonenoError && (<p className="text-danger text-xs">{phonenoError}</p> )}
+                                                {phoneInfo.length===1 &&(<button className="whatsapp-border-btn-0" type="button" data-bs-toggle="modal"
+                                                data-bs-target="#vendorview" onClick={handlewhatsappbussinessInfo}><i className="fa-solid fa-pen"></i> Update Bussiness Profile</button>)}
                                             </div>:<></>
                                             }
                                             <p className="border"></p>
@@ -1272,6 +1291,7 @@ const [isLoading1, setIsLoading1] = useState(false);
                                                     </p>
                                                 <h6 className="grayFont">Overall Health</h6>
                                                 <p>{health?.can_send_message}</p>
+                                                {healthError && (<p className="text-danger text-xs">{healthError}</p>)}
                                             </div>
                                         </div>
                                         <>

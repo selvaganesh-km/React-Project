@@ -177,7 +177,7 @@ function ContactCustomField() {
                console.error("Error while fetching custom fieldlist details:", error);
                toast.error("An error occurred while fetching custom fieldlist details.");
             });
-   };
+   }
    const handlecustomFieldGet = (inputId: any) => {
       VendorAPI.customFieldcontactGet(inputId)
         .then((responseData: any) => {
@@ -345,12 +345,10 @@ useEffect(() => {
                              <div className="card mb-4">
                                 <div className="card-body  px-0 pt-0 pb-2">
                                    <div className="p-0">
-                                   
                                    <div
                                         className="d-flex justify-content-between align-items-center flex-wrap mb-3 sticky-top-container"
                                         style={{ position: "sticky", top: 14, backgroundColor: "white", zIndex: 1000, padding: "0",borderRadius:"10px" }}
                                         >
-                                       {inputListData.length === 0 ? <div className="d-flex align-items-center mt-4"></div>:
                                         <div className="d-flex align-items-center mt-4">
                                             <span className='me-2 show-entries-cnt'>Show</span>
                                             <div className="dropdown">
@@ -365,7 +363,7 @@ useEffect(() => {
                                                 </ul>
                                             </div>
                                             <span className='ms-2 show-entries-cnt'>Entries</span>
-                                        </div>}
+                                        </div>
                                         <div className="vendor-create-container pe-4 mt-4" style={{ width: '40%' }}>
                                             <input type="text" id="vendor-crt-input" className="vendor-crt-input"
                                                 autoComplete="off" onChange={(e) => setSearch(e.target.value)} value={search}

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import Page404 from "./views/Page404";
@@ -45,8 +45,15 @@ import CatalogProductCreate from "./views/Vendor/Catalog-Management/Product/crea
 import Catalog_Settings from "./views/Vendor/Catalog-setup/catalog-setup";
 import CatalogOrderList from "./views/Vendor/Catalog-Management/Orders";
 import ProductImages from "./views/Vendor/Catalog-Management/Product-Images";
+import Catalog_Bot from "./views/Vendor/Catalog-Bot/catalog-bot";
 
 function App() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    document.querySelector(".App")?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+  
     return (
     <div className="App">
       <Routes>
@@ -92,6 +99,7 @@ function App() {
         <Route path='/vendor/settings/general' element={<General_Settings />} />
         <Route path='/vendor/settings/custom-campaign' element={<CustomCampaign />} />
         <Route path='/vendor/settings/catalog' element={<Catalog_Settings />} />
+        <Route path='/vendor/settings/catalog/bot' element={<Catalog_Bot />} />
         <Route path="/vendor/create-sms" element={<CreateSms />} />
         <Route path="/vendor/edit-sms/:id" element={<CreateSms />} />
         <Route path="/vendor/sms-template" element={<Sms />} />

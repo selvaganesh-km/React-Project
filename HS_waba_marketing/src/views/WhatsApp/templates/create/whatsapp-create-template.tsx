@@ -119,34 +119,141 @@ function WhatsappCreateTemplate() {
   const [dynamicurlbtn, setdynamicurlbtn] = useState("None");
   const [buttonActive, setbuttonActive] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
+  
+  const [urlButtons, setUrlButtons] = useState<any>([]);
+  const [dynamicurlButtons, setdynamicUrlButtons] = useState<any>([]);
+  const [quickreplyButtons, setquickreplyButtons] = useState<any>([]);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [quickreplyDisabled, setquickreplyDisabled] = useState(false);
+
   useEffect(() => {
     setEditorReady(true);
   }, []);
-  const handleQuickButtonOpt = () => {
-    setButtonQuickopt(true);
-    setbuttonActive(true);
-    setquickbtn("QUICK_REPLY");
-  };
-  const handlePhoneButtonOpt = () => {
-    setButtonPhoneopt(true);
-    setbuttonActive(true);
-    setphoenobtn("PHONE_NUMBER");
-  };
-  const handleCopycodeButtonOpt = () => {
-    setButtoncopyopt(true);
-    setbuttonActive(true);
-    setcopybtn("COPY_CODE");
-  };
-  const handleurlButtonOpt = () => {
-    setButtonurlopt(true);
-    setbuttonActive(true);
-    seturlbtn("URL");
-  };
-  const handleDynamicurlButtonOpt = () => {
-    setButtondynamicurlopt(true);
-    setbuttonActive(true);
-    setdynamicurlbtn("URL");
-  };
+  // 👇 Add this inside your component
+// useEffect(() => {
+//   const total =
+//     quickreplyButtons.length +
+//     urlButtons.length +
+//     dynamicurlButtons.length +
+//     (buttonPhoneOpt ? 1 : 0) +
+//     (buttoncopyOpt ? 1 : 0);
+
+//   setquickreplyDisabled(total >= 10);
+// }, [
+//   quickreplyButtons.length,
+//   urlButtons.length,
+//   dynamicurlButtons.length,
+//   buttonPhoneOpt,
+//   buttoncopyOpt,
+// ]);
+const [buttonOrder, setButtonOrder] = useState<any[]>([]);
+
+// Update disabled state whenever buttonOrder changes
+useEffect(() => {
+  const quickreplyButtons = buttonOrder.filter((b) => b.type === "QUICK_REPLY");
+  const urlButtons = buttonOrder.filter((b) => b.type === "URL");
+  const dynamicurlButtons = buttonOrder.filter((b) => b.type === "DYNAMIC_URL");
+  const phoneButtons = buttonOrder.filter((b) => b.type === "PHONE_NUMBER");
+  const copyButtons = buttonOrder.filter((b) => b.type === "COPY_CODE");
+
+  const total =
+    quickreplyButtons.length +
+    urlButtons.length +
+    dynamicurlButtons.length +
+    phoneButtons.length +
+    copyButtons.length;
+
+  // Quick Reply button disabled if total >= 10
+  setquickreplyDisabled(total >= 10);
+
+  // URL/Dynamic URL disabled if 2 URL-type buttons exist or total >= 10
+  setButtonDisabled(urlButtons.length + dynamicurlButtons.length >= 2 || total >= 10);
+
+  // Optional: disable Phone Number if already exists
+  setButtonPhoneopt(phoneButtons.length > 0 || total >= 10);
+
+  // Optional: disable Copy Code if already exists
+  setButtoncopyopt(copyButtons.length > 0 || total >= 10  );
+}, [buttonOrder]);
+
+
+  // 🧮 Compute totals dynamically
+const totalUrlButtons = urlButtons.length + dynamicurlButtons.length;
+const totalQuickButtons = quickreplyButtons.length;
+const totalButtons =
+  totalUrlButtons + totalQuickButtons +
+  (buttonPhoneOpt ? 1 : 0) +
+  (buttoncopyOpt ? 1 : 0);
+
+// ✅ Helper function to check total before adding
+const canAddMoreButtons = () => totalButtons < 10;
+
+const handleQuickButtonOpt = () => {
+  if (buttonOrder.length >= 10) return;
+
+  const newBtn = { text: "" };
+  setButtonOrder((prev) => [...prev, { type: "QUICK_REPLY", data: newBtn }]);
+  setbuttonActive(true);
+  setquickbtn("QUICK_REPLY");
+};
+
+const handleUrlButtonOpt = () => {
+  const totalUrls = buttonOrder.filter((b) => b.type === "URL" || b.type === "DYNAMIC_URL").length;
+  if (buttonOrder.length >= 10 || totalUrls >= 2) return;
+
+  const newBtn = { text: "", url: "" };
+  setButtonOrder((prev) => [...prev, { type: "URL", data: newBtn }]);
+  setbuttonActive(true);
+  seturlbtn("URL");
+};
+
+const handleDynamicurlButtonOpt = () => {
+  const totalUrls = buttonOrder.filter((b) => b.type === "URL" || b.type === "DYNAMIC_URL").length;
+  if (buttonOrder.length >= 10 || totalUrls >= 2) return;
+
+  const newBtn = { text: "", url: "", example: [""] };
+  setButtonOrder((prev) => [...prev, { type: "DYNAMIC_URL", data: newBtn }]);
+  setbuttonActive(true);
+  setdynamicurlbtn("URL");
+};
+
+const handlePhoneButtonOpt = () => {
+  if (buttonOrder.some((b) => b.type === "PHONE_NUMBER")) return;
+  setButtonOrder((prev) => [...prev, { type: "PHONE_NUMBER", data: { text: "", phone_number: "91" } }]);
+  setbuttonActive(true);
+  setphoenobtn("PHONE_NUMBER");
+};
+
+const handleCopycodeButtonOpt = () => {
+  if (buttonOrder.some((b) => b.type === "COPY_CODE")) return;
+  setButtonOrder((prev) => [...prev, { type: "COPY_CODE", data: { example: [""] } }]);
+  setbuttonActive(true);
+  setcopybtn("COPY_CODE");
+};
+const handleButtonChangeNew = (index: number, field: string, value: any) => {
+  setButtonOrder((prev) => {
+    const updated = [...prev];
+    const button = { ...updated[index] };
+
+    if (field === "example") {
+      button.data.example = [value];
+    } else {
+      button.data[field] = value;
+    }
+
+    updated[index] = button;
+    return updated;
+  });
+};
+const removeButtonNew = (index: number) => {
+  setButtonOrder((prev) => prev.filter((_, i) => i !== index));
+};
+
+  // const handleDynamicurlButtonOpt = () => {
+  //   setButtondynamicurlopt(true);
+  //   setbuttonActive(true);
+  //   setdynamicurlbtn("URL");
+  // };
 
   const [carouselsubmit, setcarouselSubmit] = useState(false);
   const [carouselMediaIds, setcarouselMediaIds] = useState<any[]>([]);
@@ -643,27 +750,53 @@ function handleRemoveCarousel(id: number) {
         return { ...item, components: updatedComponents };
       })
     );
-    setslides((prevSlides: any[]) => {
-    const indexToUpdate = prevSlides.findIndex((slide) => slide.id === id);
-    const existingButtons = indexToUpdate >= 0 ? prevSlides[indexToUpdate].buttons || [] : [];
-    const updatedButtons = [...existingButtons, newButton];
+  //   setslides((prevSlides: any[]) => {
+  //   const indexToUpdate = prevSlides.findIndex((slide) => slide.id === id);
+  //   const existingButtons = indexToUpdate >= 0 ? prevSlides[indexToUpdate].buttons || [] : [];
+  //   const updatedButtons = [...existingButtons, newButton];
 
-    const newSlide = {
-      id,
-      buttons: updatedButtons,
+  //   const newSlide = {
+  //     id,
+  //     buttons: updatedButtons,
+  //   };
+
+  //   if (indexToUpdate >= 0) {
+  //     const newSlides = [...prevSlides];
+  //     newSlides[indexToUpdate] = {
+  //       ...newSlides[indexToUpdate],
+  //       ...newSlide,
+  //     };
+  //     return newSlides;
+  //   } else {
+  //     return [...prevSlides, newSlide];
+  //   }
+  // });
+  setslides((prevSlides: any[]) => {
+  const indexToUpdate = prevSlides.findIndex((slide) => slide.id === id);
+  const existingButtons = indexToUpdate >= 0 ? prevSlides[indexToUpdate].buttons || [] : [];
+ 
+  // Prevent adding same button twice
+  const alreadyExists = existingButtons.some((btn: any) => btn.type === type);
+  if (alreadyExists) return prevSlides;
+ 
+  const updatedButtons = [...existingButtons, newButton];
+ 
+  const newSlide = {
+    id,
+    buttons: updatedButtons,
+  };
+ 
+  if (indexToUpdate >= 0) {
+    const newSlides = [...prevSlides];
+    newSlides[indexToUpdate] = {
+      ...prevSlides[indexToUpdate],
+      ...newSlide,
     };
-
-    if (indexToUpdate >= 0) {
-      const newSlides = [...prevSlides];
-      newSlides[indexToUpdate] = {
-        ...newSlides[indexToUpdate],
-        ...newSlide,
-      };
-      return newSlides;
-    } else {
-      return [...prevSlides, newSlide];
-    }
-  });
+    return newSlides;
+  } else {
+    return [...prevSlides, newSlide];
+  }
+});
   }
   function getDefaultButtonByType(
     type: ButtonType
@@ -955,6 +1088,37 @@ function handleRemoveButton(
     }
     //   setLoading(true)
     setIsLoading(true);
+const payloadButtons = (() => {
+  const quickReplies: any[] = [];
+  const otherButtons: any[] = [];
+
+  buttonOrder.forEach((b) => {
+    const { type, data } = b;
+    switch (type) {
+      case "QUICK_REPLY":
+        quickReplies.push({ type, text: data.text });
+        break;
+      case "PHONE_NUMBER":
+        otherButtons.push({ type, text: data.text, phone_number: data.phone_number });
+        break;
+      case "COPY_CODE":
+        otherButtons.push({ type, example: data.example?.[0] || "" });
+        break;
+      case "DYNAMIC_URL":
+        otherButtons.push({ type: "URL", text: data.text, url: data.url.replace(/\/$/, "") + "/{{1}}", example: data.example });
+        break;
+      case "URL":
+        otherButtons.push({ type, text: data.text, url: data.url });
+        break;
+      default:
+        return null;
+    }
+  });
+
+  // Combine and filter out falsy/null items
+  return [...quickReplies, ...otherButtons].filter(Boolean);
+})();
+
     let apiData = {
       ...(setValue === "edit-whatsapp-template" && { template_id: whatsappId }),
       name: names.toLowerCase(),
@@ -1012,33 +1176,7 @@ function handleRemoveButton(
         buttonActive
           ? {
               type: "BUTTONS",
-              buttons: [
-                buttonQuicktxt && {
-                  type: quickbtn,
-                  text: buttonQuicktxt,
-                },
-                buttonPhonetxt &&
-                  buttonPhoneNotxt && {
-                    type: phoenobtn,
-                    text: buttonPhonetxt,
-                    phone_number: buttonPhoneNotxt,
-                  },
-                buttonCopycodetxt && {
-                  type: copybtn,
-                  example: buttonCopycodetxt,
-                },
-                buttonurltxt && {
-                  type: urlbtn,
-                  text: buttonurltxt,
-                  url: buttonwebUrltxt,
-                },
-                buttondynamicUrltxt && {
-                  type: dynamicurlbtn,
-                  text: buttondynamicUrltxt,
-                  url: buttondynamicwebUrltxt,
-                  example: [buttonexampleUrltxt],
-                },
-              ].filter(Boolean),
+              buttons: payloadButtons,
             }
           : null,
           selectedValue==="carousel"?
@@ -1175,52 +1313,40 @@ function handleRemoveButton(
               setLoading(false);
               setFooterTextInput(component?.text);
               break;
+            
             case "BUTTONS":
-              setLoading(false);
-              component?.buttons.forEach((buttonsValue: any) => {
-                if (buttonsValue) {
-                  switch (buttonsValue?.type) {
-                    case "QUICK_REPLY":
-                      setButtonQuickopt(true);
-                      setbuttonActive(true);
-                      setquickbtn("QUICK_REPLY");
-                      setButtonQuicktxt(buttonsValue?.text);
-                      break;
-                    case "PHONE_NUMBER":
-                      setButtonPhoneopt(true);
-                      setbuttonActive(true);
-                      setphoenobtn("PHONE_NUMBER");
-                      setButtonPhonetxt(buttonsValue?.text);
-                      setButtonPhoneNotxt(buttonsValue?.phone_number);
-                      break;
-                    case "COPY_CODE":
-                      setButtoncopyopt(true);
-                      setbuttonActive(true);
-                      setcopybtn("COPY_CODE");
-                      setButtonCopycodetxt(buttonsValue?.text);
-                      break;
-                    case "URL":
-                      if (buttonsValue?.text && buttonsValue?.text?.url) {
-                        setButtonurlopt(true);
-                        setbuttonActive(true);
-                        seturlbtn("URL");
-                        setButtonurltxt(buttonsValue?.text);
-                        setButtonwebUrltxt(buttonsValue?.url);
-                      } else {
-                        setButtondynamicurlopt(true);
-                        setbuttonActive(true);
-                        setdynamicurlbtn("URL");
-                        setButtondynamicUrltxt(buttonsValue?.text);
-                        setButtondynamicwebUrltxt(buttonsValue?.url);
-                        setButtonexampleUrltxt(buttonsValue?.example?.[0]);
-                      }
-                      break;
-                    default:
-                      break;
-                  }
-                }
-              });
-              break;
+  setLoading(false);
+
+  if (component?.buttons?.length > 0) {
+    const newButtonOrder: any[] = component.buttons.map((btn: any) => {
+      if (btn.type === "URL") {
+        const isDynamic =
+          (btn.url && btn.url.includes("{{")) || (btn.example && btn.example.length > 0);
+        return isDynamic
+          ? { type: "DYNAMIC_URL", data: { text: btn.text, url: btn.url, example: btn.example || [""] } }
+          : { type: "URL", data: { text: btn.text, url: btn.url } };
+      }
+
+      if (btn.type === "COPY_CODE") {
+        return { type: "COPY_CODE", data: { example: btn.example ? [btn.example] : [""] } };
+      }
+
+      if (btn.type === "PHONE_NUMBER") {
+        return { type: "PHONE_NUMBER", data: { text: btn.text, phone_number: btn.phone_number } };
+      }
+
+      if (btn.type === "QUICK_REPLY") {
+        return { type: "QUICK_REPLY", data: { text: btn.text } };
+      }
+
+      return null;
+    }).filter(Boolean);
+
+    setButtonOrder(newButtonOrder);
+    setbuttonActive(true);
+  }
+  break;
+
             default:
               break;
           }
@@ -1329,16 +1455,16 @@ function handleRemoveButton(
         <TopNav />
         <div className="container-fluid py-1">
           <div className="row">
-            <div className="col-md-5 text-start mt-1">
+            <div className="col-md-4 text-start mt-1">
               <h4>
                 <i className="fa-brands fa-whatsapp"></i>{" "}
                 {setValue === "create-whatsapp-template"
-                  ? "Create" + " Whatsapp Template"
-                  : "Edit" + " Whatsapp Template"}
+                  ? "Create" + " New Template"
+                  : "Edit" + " Template"}
               </h4>
               <h3></h3>
             </div>
-            <div className="col-md-7 text-end whatsapp-three-btn">
+            <div className="col-md-8 text-end whatsapp-three-btn">
               {setValue == "create-whatsapp-template" ? (
                 <>
                   <button
@@ -1878,368 +2004,186 @@ function handleRemoveButton(
                                         respond to your message or take action.
                                       </h6>
                                       <div className="buttons-options">
-                                        {buttonQuickOpt ? (
-                                          <div className="row quick-replybtn">
-                                            <div className="col-md-6">
-                                              <p className="text-xs">
-                                                Quick Reply Button
-                                              </p>
-                                            </div>
-                                            <div
-                                              className="col-md-6 text-end text-xs"
-                                              onClick={(e) => {
-                                                setButtonQuickopt(false);
-                                                setbuttonActive(false);
-                                                setquickbtn("None");
-                                                setButtonQuicktxt("");
-                                              }}
-                                            >
-                                              <i className="fa fa-times text-danger"></i>
-                                            </div>
-                                            <div className="col-md-12 login-input-group">
-                                              <p className="text-xs">
-                                                Button Text
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtonQuicktxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttonQuicktxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-a"></i>
-                                                </label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                        {buttonPhoneOpt ? (
-                                          <div className="row mt-3 quick-replybtn">
-                                            <div className="col-md-6">
-                                              <p className="text-xs">
-                                                Phone Number Button
-                                              </p>
-                                            </div>
-                                            <div
-                                              className="col-md-6 text-end text-xs"
-                                              onClick={() => {
-                                                setbuttonActive(false);
-                                                setButtonPhoneopt(false);
-                                                setphoenobtn("None");
-                                                setButtonPhoneNotxt("91");
-                                                setButtonPhonetxt("");
-                                              }}
-                                            >
-                                              <i className="fa fa-times text-danger"></i>
-                                            </div>
-                                            <div className="col-md-12 login-input-group">
-                                              <p className="text-xs">
-                                                Button Text
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtonPhonetxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttonPhonetxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-a"></i>
-                                                </label>
-                                              </div>
-                                              <br />
-                                              <p className="text-xs">
-                                                Phone Number
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  maxLength={12}
-                                                  onChange={(e) => {
-                                                    setButtonPhoneNotxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttonPhoneNotxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-phone"></i>
-                                                </label>
-                                              </div>
-                                              <div className="error-message-required">
-                                                Contact number should starts
-                                                with country code without 0 or +
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                        {buttoncopyOpt ? (
-                                          <div className="row mt-3 quick-replybtn">
-                                            <div className="col-md-6">
-                                              <p className="text-xs">
-                                                Coupon Code Copy Button
-                                              </p>
-                                            </div>
-                                            <div
-                                              className="col-md-6 text-end text-xs"
-                                              onClick={() => {
-                                                setbuttonActive(false);
-                                                setButtoncopyopt(false);
-                                                setcopybtn("None");
-                                                setButtonCopycodetxt("");
-                                              }}
-                                            >
-                                              <i className="fa fa-times text-danger"></i>
-                                            </div>
-                                            <div className="col-md-12 login-input-group">
-                                              <p className="text-xs">Example</p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtonCopycodetxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttonCopycodetxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                ></label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                        {buttonurlOpt ? (
-                                          <div className="row mt-3 quick-replybtn">
-                                            <div className="col-md-6">
-                                              <p className="text-xs">
-                                                URL Button
-                                              </p>
-                                            </div>
-                                            <div
-                                              className="col-md-6 text-end text-xs"
-                                              onClick={() => {
-                                                setbuttonActive(false);
-                                                setButtonurlopt(false);
-                                                seturlbtn("None");
-                                                setButtonurltxt("");
-                                                setButtonwebUrltxt("");
-                                              }}
-                                            >
-                                              <i className="fa fa-times text-danger"></i>
-                                            </div>
-                                            <div className="col-md-12 login-input-group">
-                                              <p className="text-xs">
-                                                Button Text
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtonurltxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttonurltxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-a"></i>
-                                                </label>
-                                              </div>
-                                              <br />
-                                              <p className="text-xs">
-                                                Website URL
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtonwebUrltxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttonwebUrltxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-link"></i>
-                                                </label>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                        {buttondynamicurlOpt ? (
-                                          <div className="row mt-3 quick-replybtn">
-                                            <div className="col-md-6">
-                                              <p className="text-xs">
-                                                Dynamic URL Button
-                                              </p>
-                                            </div>
-                                            <div
-                                              className="col-md-6 text-end text-xs"
-                                              onClick={() => {
-                                                setbuttonActive(false);
-                                                setButtondynamicurlopt(false);
-                                                setdynamicurlbtn("None");
-                                                setButtondynamicUrltxt("");
-                                                setButtondynamicwebUrltxt("");
-                                                setButtonexampleUrltxt("");
-                                              }}
-                                            >
-                                              <i className="fa fa-times text-danger"></i>
-                                            </div>
-                                            <div className="col-md-12 login-input-group">
-                                              <p className="text-xs">
-                                                Button Text
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtondynamicUrltxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttondynamicUrltxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-a"></i>
-                                                </label>
-                                              </div>
-                                              <br />
-                                              <p className="text-xs">
-                                                Website URL
-                                              </p>
-                                              <div className="vendor-create-container">
-                                                <input
-                                                  type="text"
-                                                  autoComplete="off"
-                                                  onChange={(e) => {
-                                                    setButtondynamicwebUrltxt(
-                                                      e.target.value
-                                                    );
-                                                  }}
-                                                  value={buttondynamicwebUrltxt}
-                                                  id="vendor-crt-input"
-                                                  className={`vendor-crt-input`}
-                                                  placeholder=" "
-                                                  required
-                                                />
-                                                <label
-                                                  htmlFor="vendor-crt-input"
-                                                  className="vendor-crt-label"
-                                                >
-                                                  <i className="fa-solid fa-link"></i>
-                                                </label>
-                                                <p className="staff-passwordInputicon text-sm">
-                                                  {"{{1}}"}
-                                                </p>
-                                              </div>
-                                              <div className="col-md-12 login-input-group">
-                                                <p className="text-xs">
-                                                  Example
-                                                </p>
-                                                <div className="vendor-create-container">
-                                                  <input
-                                                    type="text"
-                                                    autoComplete="off"
-                                                    onChange={(e) => {
-                                                      setButtonexampleUrltxt(
-                                                        e.target.value
-                                                      );
-                                                    }}
-                                                    value={buttonexampleUrltxt}
-                                                    id="vendor-crt-input"
-                                                    className={`vendor-crt-input`}
-                                                    placeholder=" "
-                                                    required
-                                                  />
-                                                  <label
-                                                    htmlFor="vendor-crt-input"
-                                                    className="vendor-crt-label"
-                                                  ></label>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </div>
+  {buttonOrder.map((btnItem, index) => {
+    const { type, data } = btnItem;
+
+    switch (type) {
+      case "QUICK_REPLY":
+        return (
+          <div key={index} className="row quick-replybtn mt-3 mb-3">
+            <div className="col-md-6"><p className="text-xs">Quick Reply Button</p></div>
+            <div className="col-md-6 text-end text-xs" onClick={() => removeButtonNew(index)}>
+              <i className="fa fa-times text-danger cursor-pointer"></i>
+            </div>
+            <div className="col-md-12 login-input-group">
+              <p className="text-xs">Button Text</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.text}
+                onChange={(e) => handleButtonChangeNew(index, "text", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=""
+              />
+              <label className="vendor-crt-label">
+                  <i className="fa-solid fa-a"></i>
+                </label>
+            </div>
+            </div>
+          </div>
+        );
+
+      case "URL":
+        return (
+          <div key={index} className="row mt-3 quick-replybtn">
+            <div className="col-md-6"><p className="text-xs">URL Button</p></div>
+            <div className="col-md-6 text-end text-xs" onClick={() => removeButtonNew(index)}>
+              <i className="fa fa-times text-danger cursor-pointer"></i>
+            </div>
+            <div className="col-md-12 login-input-group">
+              <p className="text-xs">Button Text</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.text}
+                onChange={(e) => handleButtonChangeNew(index, "text", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-a"></i></label>
+              </div>
+              <p className="text-xs mt-2">Website URL</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.url}
+                onChange={(e) => handleButtonChangeNew(index, "url", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-link"></i></label>
+            </div>
+            </div>
+          </div>
+        );
+
+      case "DYNAMIC_URL":
+        return (
+          <div key={index} className="row mt-3 quick-replybtn">
+            <div className="col-md-6"><p className="text-xs">Dynamic URL Button</p></div>
+            <div className="col-md-6 text-end text-xs" onClick={() => removeButtonNew(index)}>
+              <i className="fa fa-times text-danger cursor-pointer"></i>
+            </div>
+            <div className="col-md-12 login-input-group">
+              <p className="text-xs">Button Text</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.text}
+                onChange={(e) => handleButtonChangeNew(index, "text", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />                
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-a"></i></label>
+              </div>
+              <p className="text-xs mt-2">Website URL</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.url}
+                onChange={(e) => handleButtonChangeNew(index, "url", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-link"></i></label>
+              <p className="staff-passwordInputicon text-sm" style={{top:"9px",background: "white",padding:"2px"}}>{"{{1}}"}</p>
+              </div>
+              <p className="text-xs mt-2">Example</p>
+              <input
+                type="text"
+                value={data.example?.[0] || ""}
+                onChange={(e) => handleButtonChangeNew(index, "example", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+            </div>
+          </div>
+        );
+
+      case "PHONE_NUMBER":
+        return (
+          <div key={index} className="row mt-3 quick-replybtn">
+            <div className="col-md-6"><p className="text-xs">Phone Number Button</p></div>
+            <div className="col-md-6 text-end text-xs" onClick={() => removeButtonNew(index)}>
+              <i className="fa fa-times text-danger cursor-pointer"></i>
+            </div>
+            <div className="col-md-12 login-input-group">
+              <p className="text-xs">Button Text</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.text}
+                onChange={(e) => handleButtonChangeNew(index, "text", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-a"></i></label>
+              </div>
+              <p className="text-xs mt-2">Phone Number</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.phone_number}
+                onChange={(e) => handleButtonChangeNew(index, "phone_number", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-phone"></i></label>
+            </div>
+            </div>
+          </div>
+        );
+
+      case "COPY_CODE":
+        return (
+          <div key={index} className="row mt-3 quick-replybtn">
+            <div className="col-md-6"><p className="text-xs">Copy Code Button</p></div>
+            <div className="col-md-6 text-end text-xs" onClick={() => removeButtonNew(index)}>
+              <i className="fa fa-times text-danger cursor-pointer"></i>
+            </div>
+            <div className="col-md-12 login-input-group">
+              <p className="text-xs">Example</p>
+              <div className="vendor-create-container">
+              <input
+                type="text"
+                value={data.example?.[0] || ""}
+                onChange={(e) => handleButtonChangeNew(index, "example", e.target.value)}
+                className="vendor-crt-input"
+                placeholder=" "
+              />
+              <label htmlFor="vendor-crt-input" className="vendor-crt-label"><i className="fa-solid fa-ticket"></i></label>
+            </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  })}
+</div>
+
                                       <button
                                         className="vendor-crt-btn2"
                                         onClick={(e) => {
                                           e.preventDefault();
                                           handleQuickButtonOpt();
+                                        }}
+                                        disabled={quickreplyDisabled || totalButtons >= 10}
+                                        style={{
+                                          cursor: quickreplyDisabled || totalButtons >= 10 ? "not-allowed" : "pointer",
+                                          opacity: quickreplyDisabled || totalButtons >= 10 ? 0.5 : 1,
+                                          pointerEvents: quickreplyDisabled || totalButtons >= 10 ? "none" : "auto",
                                         }}
                                       >
                                         <i className="fa-solid fa-reply"></i>{" "}
@@ -2251,15 +2195,28 @@ function handleRemoveButton(
                                           e.preventDefault();
                                           handlePhoneButtonOpt();
                                         }}
+                                        disabled={buttonPhoneOpt || totalButtons >= 10}
+                                        style={{
+                                          cursor: buttonPhoneOpt || totalButtons >= 10 ? "not-allowed" : "pointer",
+                                          opacity: buttonPhoneOpt || totalButtons >= 10 ? 0.5 : 1,
+                                          pointerEvents: buttonPhoneOpt || totalButtons >= 10 ? "none" : "auto",
+                                        }}
                                       >
                                         <i className="fa-solid fa-phone"></i>{" "}
                                         Phone Number Button
                                       </button>
+
                                       <button
                                         className="vendor-crt-btn2"
                                         onClick={(e) => {
                                           e.preventDefault();
                                           handleCopycodeButtonOpt();
+                                        }}
+                                        disabled={buttoncopyOpt || totalButtons >= 10}
+                                        style={{
+                                          cursor: buttoncopyOpt || totalButtons >= 10 ? "not-allowed" : "pointer",
+                                          opacity: buttoncopyOpt || totalButtons >= 10 ? 0.5 : 1,
+                                          pointerEvents: buttoncopyOpt || totalButtons >= 10 ? "none" : "auto",
                                         }}
                                       >
                                         <i className="fa-solid fa-clipboard"></i>{" "}
@@ -2269,11 +2226,20 @@ function handleRemoveButton(
                                         className="vendor-crt-btn2"
                                         onClick={(e) => {
                                           e.preventDefault();
-                                          handleurlButtonOpt();
+                                          handleUrlButtonOpt();
                                         }}
+                                        disabled={buttonDisabled}
+                                        style={{
+                                        cursor: buttonDisabled
+                                          ? "not-allowed"
+                                          : "pointer",
+                                        opacity: buttonDisabled ? 0.5 : 1,
+                                        pointerEvents: buttonDisabled
+                                          ? "none"
+                                          : "auto",
+                                      }}
                                       >
-                                        <i className="fa-solid fa-link"></i> URL
-                                        Button
+                                        <i className="fa-solid fa-link"></i> URL Button
                                       </button>
                                       <button
                                         className="vendor-crt-btn2"
@@ -2281,6 +2247,16 @@ function handleRemoveButton(
                                           e.preventDefault();
                                           handleDynamicurlButtonOpt();
                                         }}
+                                        disabled={buttonDisabled}
+                                        style={{
+                                        cursor: buttonDisabled
+                                          ? "not-allowed"
+                                          : "pointer",
+                                        opacity: buttonDisabled ? 0.5 : 1,
+                                        pointerEvents: buttonDisabled
+                                          ? "none"
+                                          : "auto",
+                                      }}
                                       >
                                         <i className="fa-solid fa-link"></i>{" "}
                                         Dynamic URL Button
@@ -2292,7 +2268,11 @@ function handleRemoveButton(
                             ) : (
                               <></>
                             )}
-
+                            {buttonOrder.length >= 10 &&(
+                              <div className="alert totatlbtnalert-danger mt-4">
+                                    You have reached maximum buttons allowed by Meta for template
+                                </div>
+                            )}
                             {headerType === "carousel" ? (
                               <>
                                 <div className="row w-100 py-2">
@@ -2629,7 +2609,7 @@ function handleRemoveButton(
                                                           }
                                                         }
                                                       >
-                                                        <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i>{" "}
+                                                        <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i>{" "}
                                                         Select
                                                       </button>
                                                     </div>
@@ -2835,7 +2815,7 @@ function handleRemoveButton(
                                                                             )
                                                                           }
                                                                         >
-                                                                          <i className="fa fa-times text-danger"></i>
+                                                                          <i className="fa fa-times text-danger cursor-pointer"></i>
                                                                         </div>
                                                                         <div className="col-md-12 login-input-group">
                                                                           <p className="text-xs">
@@ -2903,7 +2883,7 @@ function handleRemoveButton(
                                                                             )
                                                                           }
                                                                         >
-                                                                          <i className="fa fa-times text-danger"></i>
+                                                                          <i className="fa fa-times text-danger cursor-pointer"></i>
                                                                         </div>
                                                                         <div className="col-md-12 login-input-group">
                                                                           <p className="text-xs">
@@ -3032,7 +3012,7 @@ function handleRemoveButton(
                                                                               "pointer",
                                                                           }}
                                                                         >
-                                                                          <i className="fa fa-times text-danger"></i>
+                                                                          <i className="fa fa-times text-danger cursor-pointer"></i>
                                                                         </div>
                                                                         <div className="col-md-12 login-input-group">
                                                                           <p className="text-xs">
@@ -3262,7 +3242,7 @@ function handleRemoveButton(
                             )}
                           </div>
                           <div className="col-md-5 sticky-top h-100">
-                            <h5 className="mt-4">Template Preview</h5>
+                            <h5 className="mt-4 ms-3">Template Preview</h5>
                             <div className="text-end">
                               <div className="template-preview px-2">
                                 <div className="conversation">
@@ -3374,16 +3354,22 @@ function handleRemoveButton(
                                               </p>
                                             )}
                                           </div>
-                                          <div className="template-buttontxt">
+                                          {/* <div className="template-buttontxt">
                                             {(quickbtn === "None" ||
                                               quickbtn === "QUICK_REPLY") && (
-                                              <p className="template-buttontxt button-option-style text-center">
-                                                {quickbtn === "QUICK_REPLY" ? (
-                                                  <i className="fa-solid fa-reply bt-1"></i>
-                                                ) : (
-                                                  ""
-                                                )}{" "}
-                                                {buttonQuicktxt}
+                                              
+                                              <p className="template-buttontxt button-option-style text-center" style={{ marginBottom: urlButtons.length > 1 ? "1rem" : "0" }}>
+                                                {quickreplyButtons && quickreplyButtons.length > 0 ? (
+                                                  quickreplyButtons.map((btn:any, index:any) => (
+                                                    <div key={index}>
+                                                      <i className="fa-solid fa-reply bt-1"></i>{" "}
+                                                      {btn.text || ""}
+                                                    </div>
+                                                  ))
+                                                ) 
+                                                : (
+                                                  <></>
+                                                )}
                                               </p>
                                             )}
                                             {(phoenobtn === "None" ||
@@ -3411,29 +3397,137 @@ function handleRemoveButton(
                                                   : ""}
                                               </p>
                                             )}
-                                            {(urlbtn === "None" ||
-                                              urlbtn === "URL") && (
-                                              <p className="template-buttontxt button-option-style text-center">
-                                                {urlbtn === "URL" ? (
-                                                  <i className="fa-solid fa-square-arrow-up-right"></i>
-                                                ) : (
-                                                  ""
-                                                )}{" "}
-                                                {buttonurltxt}
+                                            {(urlbtn === "None" || urlbtn === "URL") && (
+                                              <p className="template-buttontxt button-option-style text-center" style={{ marginBottom: urlButtons.length > 1 ? "1rem" : "0" }}>
+                                                {urlButtons && urlButtons.length > 0 ? (
+                                                  urlButtons.map((btn:any, index:any) => (
+                                                    <div key={index}>
+                                                      <i className="fa-solid fa-square-arrow-up-right"></i>{" "}
+                                                      {btn.text || ""}
+                                                    </div>
+                                                  ))
+                                                ) 
+                                                : (
+                                                  <></>
+                                                )}
                                               </p>
                                             )}
-                                            {(dynamicurlbtn === "None" ||
-                                              dynamicurlbtn === "URL") && (
+                                            {(dynamicurlbtn === "None" || dynamicurlbtn === "URL") && (
                                               <p className="template-buttontxt button-option-style text-center">
-                                                {dynamicurlbtn === "URL" ? (
-                                                  <i className="fa-solid fa-square-arrow-up-right"></i>
-                                                ) : (
-                                                  ""
-                                                )}{" "}
-                                                {buttondynamicUrltxt}
+                                                {dynamicurlButtons && dynamicurlButtons.length > 0 ? (
+                                                  dynamicurlButtons.map((btn:any, index:any) => (
+                                                    <div key={index}>
+                                                      <i className="fa-solid fa-square-arrow-up-right"></i>{" "}
+                                                      {btn.text || ""}
+                                                    </div>
+                                                  ))
+                                                ) 
+                                                : (
+                                                  <></>
+                                                )}
                                               </p>
                                             )}
-                                          </div>
+
+                                            {totalButtons >= 4 && 
+                                              <>
+                                              <p className="template-buttontxt button-option-style text-center">
+                                                <div className="list-group-item"><i className="fa fa-menu"></i> See all options <br/><small className="text-orange" style={{color:"#fb6340"}}>More than 3 buttons will be shown in the list by clicking</small></div>
+                                              </p></>
+                                            }
+                                             
+                                          </div> */}
+                                          <div className="template-buttontxt">
+  {buttonOrder.slice(0, 3).map((btn, index) => {
+    switch (btn.type) {
+      case "QUICK_REPLY":
+        return (
+          <p key={index} className="template-buttontxt button-option-style text-center">
+            <i className="fa-solid fa-reply bt-1"></i> {btn.data.text || ""}
+          </p>
+        );
+
+      case "URL":
+      case "DYNAMIC_URL":
+        return (
+          <p key={index} className="template-buttontxt button-option-style text-center">
+            <i className="fa-solid fa-square-arrow-up-right"></i> {btn.data.text || ""}
+          </p>
+        );
+
+      case "PHONE_NUMBER":
+        return (
+          <p key={index} className="template-buttontxt button-option-style text-center">
+            <i className="fa-solid fa-phone"></i> {btn.data.text}
+          </p>
+        );
+
+      case "COPY_CODE":
+        return (
+          <p key={index} className="template-buttontxt button-option-style text-center">
+            <i className="fa-solid fa-copy"></i> Copy Code
+          </p>
+        );
+
+      default:
+        return null;
+    }
+  })}
+
+  {buttonOrder.length > 3 && (
+    <>
+      {/* 4th place: See all options */}
+      <hr style={{background: "#c9c9c9"}}/>
+      <p className="template-buttontxt button-option-style text-center">
+        <div className="list-group-item">
+          <i className="fa-solid fa-list-ul"></i> See all options <br />
+          <small className="text-orange" style={{ color: "#fb6340" }}>
+            More than 3 buttons will be shown in the list by <br />clicking
+          </small>
+        </div>
+      </p>
+
+      {/* Remaining buttons */}
+      {buttonOrder.slice(3).map((btn, index) => {
+        const realIndex = index + 3; // adjust index
+        switch (btn.type) {
+          case "QUICK_REPLY":
+            return (
+              <p key={realIndex} className="template-buttontxt button-option-style text-center">
+                <i className="fa-solid fa-reply bt-1"></i> {btn.data.text || ""}
+              </p>
+            );
+
+          case "URL":
+          case "DYNAMIC_URL":
+            return (
+              <p key={realIndex} className="template-buttontxt button-option-style text-center">
+                <i className="fa-solid fa-square-arrow-up-right"></i> {btn.data.text || ""}
+              </p>
+            );
+
+          case "PHONE_NUMBER":
+            return (
+              <p key={realIndex} className="template-buttontxt button-option-style text-center">
+                <i className="fa-solid fa-phone"></i> {btn.data.text}
+              </p>
+            );
+
+          case "COPY_CODE":
+            return (
+              <p key={realIndex} className="template-buttontxt button-option-style text-center">
+                <i className="fa-solid fa-copy"></i> Copy Code
+              </p>
+            );
+
+          default:
+            return null;
+        }
+      })}
+    </>
+  )}
+</div>
+
+
                                         </div>
                                       )}
                                     </div>

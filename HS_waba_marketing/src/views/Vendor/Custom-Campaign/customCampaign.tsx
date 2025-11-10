@@ -331,7 +331,7 @@ function CustomCampaign() {
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
                           >
-                          <i className="fa-solid fa-arrow-up-from-bracket text-dark imgField-uparrow"></i>
+                          <i className="fa-solid fa-arrow-up-from-bracket text-dark"></i>
                             Select</button>
                         </div>
                         <p className="text-sm px-3">{fileName&& fileName}</p>
