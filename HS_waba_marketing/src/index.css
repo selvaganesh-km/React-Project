@@ -26280,7 +26280,7 @@ pre[class*=language-] {
     background: transparent;
     border: 0;
     font-size: 13px;
-    color: #00acf0;
+    color: #8ac43f;
 }
 
 .vendorbtn-view {
@@ -27017,7 +27017,7 @@ textarea {
 
 .actionArchive-tooltip-container .actionArchive-tooltip-text {
     visibility: hidden;
-    background-color: #00acf0;
+    background-color: #8ac43f;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
     color: white;
     text-align: center;

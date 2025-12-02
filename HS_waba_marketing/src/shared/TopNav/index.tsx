@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Userimg from "../../assets/img/team-2.jpg"
 import Userimg1 from "../../assets/img/small-logos/logo-spotify.svg";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -8,14 +8,31 @@ import { baseURL } from '../../api/api';
 import noImage from '../../assets/img/no_Image.png';
 import "./index.css";
 import VendorAPI from '../../api/services/vendorLogin/vendorApi';
+import { SkeletonLoading } from '../../src/components/Common/Loading';
 function TopNav() {
    const navigate = useNavigate();
    const location = useLocation();
+   const [open, setOpen] = useState(false);
+   const menuRef = useRef<any>(null);
+  const buttonRef = useRef<any>(null);
+
+  // Close when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event:any) {
+      if (
+        menuRef.current && 
+        !menuRef.current.contains(event.target) &&
+        buttonRef.current && 
+        !buttonRef.current.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
    
-   const handleBacktoSadmin = (e: any) => {
-      e.preventDefault();
-      navigate("/super-admin/dashboard", { replace: true });
-   };
 function formatBadgeValue(count:any) {
   return count > 99 ? "99+" : count;
 }
@@ -54,7 +71,7 @@ function formatBadgeValue(count:any) {
       }
    };
    const userVendorName = sessionStorage.getItem("userVendorName")
-   const [wappCount, setwappCount] = useState("")
+   const [wappCount, setwappCount] = useState(0)
   const handleGetWappCount = () => {
     VendorAPI.sideListWappAPI()
         .then((responseData: any) => {
@@ -63,7 +80,41 @@ function formatBadgeValue(count:any) {
             console.log(responseData,"Respo")
           }
           else if(responseData?.apiStatus?.code==="404") {
-            setwappCount("")
+            setwappCount(0);
+          }
+        })
+        .catch((error: any) => {
+          console.error("Error during login:", error);
+          setwappCount(0);
+        });
+  };
+const[contactSideList,setContactSideList]=useState<any[]>([]);
+   const [loading, setLoading] = useState(false);
+
+  const handleChatNavigate=(contactList:any)=>{
+   console.log(contactList,"JKJKHHJ")
+      const chatDetails1={
+         mobile: contactList.contactNumber,
+      }
+      navigate(`/vendor/whatapp-chat/${contactList?.contactId}`,{state:{chatDetails1}})
+   }
+  const handleContactSideList = () => {
+   setLoading(true)
+    const apiData = {
+      pageIndex:"0",
+      dataLength:4,
+      filter:{search:""},
+      unread:""
+   };
+   VendorAPI.whatsappContactSideListAPI(apiData)
+        .then((responseData: any) => {
+          if (responseData.apiStatus.code === '200') {
+            // setTimeout(()=>{setLoading(false)},100)
+            setLoading(false);
+            setContactSideList(responseData?.responseData?.MessageData);
+          }
+          else if(responseData?.apiStatus?.code==="404") {
+            setContactSideList([])
           }
         })
         .catch((error: any) => {
@@ -113,8 +164,9 @@ function formatBadgeValue(count:any) {
                         {/* <Link to={"/vendor/whatapp-chat"} className="nav-link text-body p-0" id="dropdownMenuButton">
                            <i className="fa-brands fa-whatsapp navbar-notification-icon cursor-pointer whatsapp-notification"></i>{wappCount ? <span className="notification-whatsapp-badge">{formatBadgeValue(wappCount)}</span>:<></>}
                         </Link> */}
-                        {wappCount ?
-                        <button aria-label="Chat on WhatsApp" id="whatsapp-btn">
+                        {wappCount > 0 ?
+                        <>
+                        <button ref={buttonRef} aria-label="Chat on WhatsApp" id="whatsapp-btn"  className="kebab" onClick={() => {setOpen(prev => !prev);if(!open){handleContactSideList()}}}>
                            <div id="notification-badge">
                               <span className="ping"></span>
                                <span className="count">{formatBadgeValue(wappCount)}</span>
@@ -133,7 +185,51 @@ function formatBadgeValue(count:any) {
                            </svg>
 
                            <span id="pulse-ring"></span>
-                        </button>:<></>}
+                        </button>
+                        <>
+                        <figure></figure>
+                        <figure className={`middle ${open ? "active" : ""}`}></figure>
+                        <ul ref={menuRef} className={`waba-dropdown ${open ? "active" : ""}`}>
+                        {loading ? (
+                              <SkeletonLoading/>
+                           ) : contactSideList.length === 0 ? (
+                              <p className="table-list-nodata or-text" style={{ textAlign: "center", marginTop: "40px" }}><span>No data found</span></p>
+                           ) : (
+                           <>
+                           {contactSideList.map((listData:any,index:any)=>(
+                              <li key={listData?.contactId} className="waba-dropdown-item" onClick={() => handleChatNavigate(listData)}>
+                                 <div className="item-wrapper">
+                           <div className="d-flex justify-content-between align-items-center cursor-pointer">
+                                 <div>
+                                 <h5 className="whatsapp-chat-profile-first mt-n1">
+                                    {listData?.contactName?.trim()
+                                    ? listData.contactName
+                                       .trim()
+                                       .split(" ")
+                                       .map((word: string) => Array.from(word)[0]?.toUpperCase())
+                                       .join("")
+                                    : listData?.contactNumber?.slice(0, 2)}
+                                 </h5>
+                                 </div>
+                                 <div className="pt-1" style={{marginRight: "60px",marginTop: "2px"}}>
+                                 <h6 className="whitespace-pre-wrap" style={{fontSize:"14px"}}>
+                                    {listData?.contactName} {listData?.contactNumber}
+                                 </h6>
+                                 
+                                 <p className="whatsapp-chat-profile-first-p mt-n2">
+                                    {listData?.lastMessageTime}{" "}
+                                 </p>
+                                 </div>
+                                 <div className='mt-n3 text-end'>
+                                 {listData.unreadCount ? <span className="whatsChatSide-Count">
+                                       {listData.unreadCount}
+                                    </span>:<></>}
+                                 </div>
+                           </div>
+                           {index==3 ? <></>:<hr className="whatsapp-chat-hr" />}
+                           </div></li>))}</>)}
+                        </ul> </></>
+                        :<></>}
                         <a href="javascript:;" className="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                            {/* <i className="navbar-notification-icon fa-regular fa-bell cursor-pointer"></i> */}
                            <i className="navbar-notification-icon fa-regular fa-bell-slash cursor-pointer"></i>
@@ -160,6 +256,9 @@ function formatBadgeValue(count:any) {
                               </Link>
                            </li>
                         </ul>
+                     </li>
+                     <li>
+                        
                      </li>
                      <li>
                         <div className="dropdown sadmin-content" >

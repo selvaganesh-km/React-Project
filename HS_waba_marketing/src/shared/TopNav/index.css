@@ -152,3 +152,94 @@
         opacity: 0;
     }
 }
+
+:root {
+    --cubic-out: cubic-bezier(.32, 2.04, .85, .54);
+    --cubic-in: cubic-bezier(.72, 1.2, .71, .72);
+    --cyan: #00bcd4;
+    --grey: #9e9e9e;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+
+/* Container */
+
+
+/* .kebab {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    padding: 0 16px;
+    box-sizing: border-box;
+    top: 12px;
+} */
+
+
+/* Dots */
+
+.kebab figure {
+    width: 6px;
+    height: 6px;
+    border-radius: 5px;
+    background: var(--cyan);
+    margin: 3px 0;
+}
+
+.middle {
+    transition: all 0.25s var(--cubic-in);
+    transform: scale(1);
+    box-shadow: 0 0.1px 0.1px rgba(0, 0, 0, 0.16), 0 0.1px 0.3px rgba(0, 0, 0, 0.12);
+    filter: blur(.1px);
+}
+
+.middle.active {
+    transform: scale(4.5);
+    transition: all 0.25s var(--cubic-out);
+}
+
+
+/* waba-Dropdown */
+
+.waba-dropdown {
+    position: absolute;
+    right: 65px;
+    top: 3em;
+    transform: scale(0);
+    transform-origin: 100% 0;
+    transition: all 0.25s ease-out;
+    box-shadow: var(--shadow);
+    background: white;
+    padding: 0;
+    list-style: none;
+    z-index: 999;
+    border-radius: 5px;
+    width: 350px;
+}
+
+.waba-dropdown li {
+    display: block;
+}
+
+.waba-dropdown a p {
+    font-size: 12px;
+}
+
+.waba-dropdown .item-wrapper {
+    display: block;
+    padding: 1px 18px 3px 18px;
+    text-decoration: none;
+    color: #666;
+    margin: 3px 5px;
+}
+
+.waba-dropdown .item-wrapper:hover {
+    background-color: #e3e3e7;
+    color: #00acf0;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.waba-dropdown.active {
+    transform: scale(1);
+    transition: all 0.25s cubic-bezier(.5, 1.8, .9, .8);
+}

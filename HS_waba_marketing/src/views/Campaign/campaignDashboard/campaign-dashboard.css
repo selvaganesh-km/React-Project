@@ -47,7 +47,7 @@
     width: 54px;
     height: 54px;
     position: relative;
-    background-image: linear-gradient(#004aad 16px, transparent 0), linear-gradient(#0dc0df 16px, transparent 0), linear-gradient(#0dc0df 16px, transparent 0), linear-gradient(#004aad 16px, transparent 0);
+    background-image: linear-gradient(#8ac43f 16px, transparent 0), linear-gradient(#0dc0df 16px, transparent 0), linear-gradient(#0dc0df 16px, transparent 0), linear-gradient(#8ac43f 16px, transparent 0);
     background-repeat: no-repeat;
     background-size: 16px 16px;
     background-position: left top, left bottom, right top, right bottom;

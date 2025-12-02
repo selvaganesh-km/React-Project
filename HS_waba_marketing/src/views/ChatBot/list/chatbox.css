@@ -38,6 +38,11 @@
     margin-right: 8px;
 }
 
+
+/* input[type="radio"]:checked {
+    background-color: #ad0000;
+} */
+
 .radio-container label {
     margin-bottom: 0 !important;
 }

@@ -50,9 +50,9 @@ import Catalog_Bot from "./views/Vendor/Catalog-Bot/catalog-bot";
 function App() {
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    document.querySelector(".App")?.scrollTo({ top: 0, behavior: "smooth" });
-  }, [pathname]);
+  // useEffect(() => {
+  //   document.querySelector(".App")?.scrollTo({ top: 0, behavior: "smooth" });
+  // }, [pathname]);
   
     return (
     <div className="App">
