@@ -127,10 +127,10 @@ function SuperAdminLogin() {
                   </div>
                   <div className="oblique position-absolute top-50 w-50 text-start">
                     <h4 className="mt-5 text-white font-weight-bolder position-relative">
-                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">BIZ CONVO</span>
+                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">HERMON SOLUTIONS</span>
                     </h4>
                     <p className="login-bg-text-go position-relative">
-                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">BIZ CONVO</span> your comprehensive WhatsApp <br /> Marketing Platform.
+                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">HERMON SOLUTIONS</span> your comprehensive WhatsApp <br /> Marketing Platform.
                     </p>
                   </div>
                 </div>  <div className="col-md-6 bg-login-query">
@@ -139,10 +139,10 @@ function SuperAdminLogin() {
                   </div>
                   <div className="oblique position-absolute top-50 w-50 text-start">
                     <h4 className="mt-5 text-white font-weight-bolder position-relative">
-                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">BIZ CONVO</span>
+                      Engage Your Customers on <br />WhatsApp Like Never Before <br /> <span className="biz-login-content-side">HERMON SOLUTIONS</span>
                     </h4>
                     <p className="login-bg-text-go position-relative">
-                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">BIZ CONVO</span> your comprehensive WhatsApp <br /> Marketing Platform.
+                      Unlock the full potential of customer engagement with <br /> <span className="biz-login-content-side-1">HERMON SOLUTIONS</span> your comprehensive WhatsApp <br /> Marketing Platform.
                     </p>
                   </div>
                 </div>

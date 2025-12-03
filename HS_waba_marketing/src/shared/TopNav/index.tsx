@@ -8,7 +8,7 @@ import { baseURL } from '../../api/api';
 import noImage from '../../assets/img/no_Image.png';
 import "./index.css";
 import VendorAPI from '../../api/services/vendorLogin/vendorApi';
-import { SkeletonLoading } from '../../src/components/Common/Loading';
+import { SkeletonLoading } from '../../components/Common/Loading';
 function TopNav() {
    const navigate = useNavigate();
    const location = useLocation();

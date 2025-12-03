@@ -72,7 +72,6 @@ const WhatsApp_Chat: React.FC = () => {
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [debouncedSearch1, setDebouncedSearch1] = useState('');
     const [to,setTo] = useState(contactDetailsValue.mobile || contactDetailsValue1.mobile);
-    console.error(to,"22222222")
     const [unreadTo, setUnreadTo] = useState<string[]>([]);
     const [isMediaMessage,setisMediaMessage] = useState(false);
     const [mediaType,setmediaType] = useState("");
@@ -537,7 +536,8 @@ const handleChatList = (to: any, isManual = true) => {
     // Update previousToRef
     previousToRef.current = to;
 
-    const apiData = { filter: { to },
+    const apiData = { filter: 
+        { to },
         pageIndex:"0",
         dataLength: recordsPerPage
     };
